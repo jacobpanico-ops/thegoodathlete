@@ -1,0 +1,3905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Good Athlete</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://tjwtzbnyflyoicnrfyzc.supabase.co">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060608;--g1:#CCFF00;--g4:#A8E600;--g6:#E0FF66;--g7:#F0FFAA;--g0:#5A7A00;--ember:#FF6D00;--grn:#4CAF50;--red:#EF5350;--txt:#E8EAE6;--dim:#4A5050;--sub:#8A9A80}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body,#root{height:100%;overflow-x:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--txt);font-family:'Exo 2',sans-serif;font-weight:500;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(204,255,0,0.02),transparent 50%);pointer-events:none}
+/* Lime shimmer text */
+.gs{background:linear-gradient(90deg,var(--g0),var(--g4),var(--g1),var(--g6),var(--g7),var(--g6),var(--g1),var(--g4),var(--g0));background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3s linear infinite}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
+/* Cards — cool dark */
+.gc{background:linear-gradient(160deg,rgba(18,20,16,0.95),rgba(8,10,6,0.98));border:1px solid rgba(204,255,0,0.06);border-radius:18px}
+.gc2{background:linear-gradient(160deg,rgba(30,35,20,0.6),rgba(12,14,8,0.85));border:1px solid rgba(204,255,0,0.12);border-radius:18px}
+.xb{height:12px;background:rgba(90,122,0,0.15);border-radius:12px;overflow:hidden;border:1px solid rgba(204,255,0,0.08)}
+.xf{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--g0),var(--ember),var(--g4),var(--g1),var(--g6));background-size:200% 100%;transition:width 1s ease;position:relative}
+.gd{height:2px;background:linear-gradient(90deg,transparent,var(--g0),var(--g1),var(--g0),transparent);margin:18px 0;opacity:0.4}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes popIn{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.fu{animation:fadeUp 0.4s ease both}.ci{animation:cardIn 0.35s ease both}.pi{animation:popIn 0.5s cubic-bezier(0.34,1.5,0.64,1) both}
+.fi{display:inline-block;animation:fp .6s ease-in-out infinite alternate}
+@keyframes fp{0%{transform:scale(1)}100%{transform:scale(1.2);filter:brightness(1.5) drop-shadow(0 0 8px #FF6D00)}}
+input,select,textarea{font-family:'Exo 2',sans-serif}
+input::placeholder{color:#2a3020}
+input:focus,select:focus{border-color:var(--g1)!important;box-shadow:0 0 0 3px rgba(204,255,0,0.1);outline:none}
+button{font-family:'Exo 2',sans-serif;cursor:pointer;font-weight:600}
+button:active{transform:scale(0.95)!important}
+::-webkit-scrollbar{width:0}select option{background:#0a0800;color:var(--txt)}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease}
+.toast-ok{background:linear-gradient(135deg,var(--g0),var(--g1));color:var(--bg)}
+.toast-err{background:linear-gradient(135deg,#8B0000,var(--red));color:#fff}
+.btn-gold{padding:18px;border-radius:14px;border:none;font-family:'Anton',sans-serif;font-size:24px;letter-spacing:3px;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(204,255,0,0.2);width:100%}
+.btn-gold:disabled{background:#0a0c08;color:#2a3020;box-shadow:none;opacity:0.5}
+.inp{width:100%;padding:14px 16px;border-radius:14px;background:rgba(12,14,10,0.8);border:2px solid rgba(204,255,0,0.06);color:var(--txt);font-size:16px;font-weight:600;outline:none;box-sizing:border-box}
+.lbl{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--sub);display:block;margin-bottom:6px;letter-spacing:3px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script>
+/* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  APACHE 360 — Student-Athlete Wellness Tracker                     ║
+   ║  Fairview Apaches · Central Local Schools · Ohio                   ║
+   ║  v1.0 · April 2026                                                ║
+   ╠══════════════════════════════════════════════════════════════════════╣
+   ║                                                                     ║
+   ║  §1  TABLE OF CONTENTS (you are here)                              ║
+   ║  §2  SUPABASE CLIENT                                               ║
+   ║  §3  CONSTANTS — Sports, Sessions, RPE, Levels                     ║
+   ║  §4  BODY MAP ZONES                                                ║
+   ║  §5  UTILITY FUNCTIONS — Level calc, date helpers                  ║
+   ║  §6  SHARED COMPONENTS — SportTag, Toast                           ║
+   ║  §7  AUTH SCREEN — Sign Up / Sign In                               ║
+   ║  §8  ONBOARDING — Role, name, grade, sports selection              ║
+   ║  §9  DAILY HUDDLE — Card-stack check-in                            ║
+   ║      §9a  Card 0: Sleep                                            ║
+   ║      §9b  Card 1: Readiness + Stress + Body Map + Pain Slider     ║
+   ║      §9c  Card 2: The Work (multi-session per sport)               ║
+   ║      §9d  Card 3: Fuel (hydration, window, color method)           ║
+   ║      §9e  Card 4: Summary + points breakdown                      ║
+   ║      §9f  Submit logic (Supabase RPC calls)                        ║
+   ║  §10 DASHBOARD — Athlete home with hero Huddle CTA                 ║
+   ║  §11 LEADERBOARD — Live from Supabase leaderboard view            ║
+   ║  §12 NAV — Bottom tab bar                                          ║
+   ║  §13 APP — Auth state machine + route orchestrator                 ║
+   ║  §14 MOUNT                                                         ║
+   ║                                                                     ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+
+var {
+  useState,
+  useEffect,
+  useCallback
+} = React;
+var D = "'Anton',sans-serif",
+  D2 = "'Bebas Neue',sans-serif";
+
+/* ████████████████████████████████████████████████████████████████████████
+   §2  SUPABASE CLIENT
+   ████████████████████████████████████████████████████████████████████████ */
+
+/* SB client initialized after SCHOOL config is defined — see §3 */
+var SB;
+
+/* ████████████████████████████████████████████████████████████████████████
+   §3  CONSTANTS — School Config, Sports, Sessions, RPE, Levels
+   ████████████████████████████████████████████████████████████████████████ */
+
+/* ── SCHOOL CONFIG ──────────────────────────────────────────────────────
+   Change these 8 values to rebrand for any school.
+   Everything else in the app reads from this block.
+   CSS color variables are in the <style> tag at the top of the file.   */
+var SCHOOL = {
+  APP_NAME: "THE GOOD ATHLETE",
+  SCHOOL_NAME: "FAIRVIEW APACHES",
+  // each school customizes this
+  SHORT_NAME: "APACHES",
+  LOGO: "⚡",
+  MASCOT: "Apache",
+  // used in level titles
+  TAGLINE: "TRAIN · TRACK · THRIVE",
+  SUPABASE_URL: 'https://tjwtzbnyflyoicnrfyzc.supabase.co',
+  SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqd3R6Ym55Zmx5b2ljbnJmeXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwOTY2NDgsImV4cCI6MjA5MTY3MjY0OH0.z1LlHS5ouqQgKD7IdQ1BKvp9aK9ZxPFmUbWuiLYe6kc'
+};
+
+/* Initialize Supabase from SCHOOL config */
+SB = supabase.createClient(SCHOOL.SUPABASE_URL, SCHOOL.SUPABASE_KEY);
+var ALL_SPORTS = ["Football", "Basketball", "Volleyball", "Soccer", "Track & Field", "Baseball", "Softball", "Wrestling", "Tennis", "Golf", "Swimming", "Cross Country", "Cheer", "Bowling"];
+var SESSION_TYPES = ["Skill Work", "Strength / Conditioning", "Team Practice", "Game / Tournament", "Open Gym / Pickup", "Film Study", "Recovery / Rehab"];
+var RPE_DESC = [, "", "", "Light", "Light", "Moderate", "Moderate", "High", "High", "Near max", "MAX EFFORT"];
+var RPE_COLOR = [, "#4CAF50", "#4CAF50", "#4CAF50", "#8BC34A", "#FFB300", "#FFB300", "#FF8F00", "#FF6D00", "#FF3D00", "#D50000"];
+
+/* XP levels — {l: level#, x: threshold, t: title, i: icon} */
+var LVS = [{
+  l: 1,
+  x: 0,
+  t: "Scout",
+  i: "🪶"
+}, {
+  l: 2,
+  x: 80,
+  t: "Brave",
+  i: "🏹"
+}, {
+  l: 3,
+  x: 200,
+  t: "Warrior",
+  i: "⚔️"
+}, {
+  l: 4,
+  x: 380,
+  t: "Raider",
+  i: "🪓"
+}, {
+  l: 5,
+  x: 600,
+  t: "Sharpshooter",
+  i: "🎯"
+}, {
+  l: 6,
+  x: 900,
+  t: "Captain",
+  i: "🛡️"
+}, {
+  l: 7,
+  x: 1300,
+  t: "War Chief",
+  i: "⚔️"
+}, {
+  l: 8,
+  x: 1800,
+  t: "Battle Tested",
+  i: "🔥"
+}, {
+  l: 9,
+  x: 2400,
+  t: SCHOOL.MASCOT + " Elite",
+  i: "⭐"
+}, {
+  l: 10,
+  x: 3200,
+  t: "All-Star",
+  i: "🏅"
+}, {
+  l: 11,
+  x: 4200,
+  t: SCHOOL.MASCOT + " MVP",
+  i: "💎"
+}, {
+  l: 12,
+  x: 5500,
+  t: SCHOOL.MASCOT + " Legend",
+  i: "👑"
+}, {
+  l: 13,
+  x: 7500,
+  t: "G.O.A.T.",
+  i: "🐐"
+}];
+
+/* ████████████████████████████████████████████████████████████████████████
+   §5  UTILITY FUNCTIONS — Level calc, date helpers
+   ████████████████████████████████████████████████████████████████████████ */
+
+/* gL(xp): Get current level | gN(xp): Get next level | gP(xp): Progress % */
+function gL(xp) {
+  var v = LVS[0];
+  for (var i = 0; i < LVS.length; i++) if (xp >= LVS[i].x) v = LVS[i];
+  return v;
+}
+function gN(xp) {
+  for (var i = 0; i < LVS.length; i++) if (xp < LVS[i].x) return LVS[i];
+  return null;
+}
+function gP(xp) {
+  var c = gL(xp),
+    n = gN(xp);
+  return n ? Math.min(100, (xp - c.x) / (n.x - c.x) * 100) : 100;
+}
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §6  SHARED COMPONENTS — SportTag, Toast
+   ████████████████████████████████████████████████████████████████████████ */
+
+function ST({
+  s
+}) {
+  var h = ALL_SPORTS.indexOf(s) * 25;
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      fontWeight: 700,
+      padding: "3px 10px",
+      borderRadius: 12,
+      background: "hsla(" + h + ",45%,40%,0.2)",
+      color: "hsla(" + h + ",50%,65%,1)",
+      border: "1px solid hsla(" + h + ",45%,40%,0.25)",
+      letterSpacing: "1.5px",
+      textTransform: "uppercase",
+      fontFamily: D2
+    }
+  }, s);
+}
+var toastTimer = null;
+function Toast({
+  msg,
+  type
+}) {
+  if (!msg) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "toast toast-" + (type || "ok")
+  }, msg);
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §7  AUTH SCREEN — Sign Up / Sign In
+   ████████████████████████████████████████████████████████████████████████ */
+
+function AuthScreen({
+  onAuth,
+  toast
+}) {
+  var [mode, setMode] = useState("signin"); // signin | signup
+  var [email, setEmail] = useState("");
+  var [pass, setPass] = useState("");
+  var [loading, setLoading] = useState(false);
+  async function handleSubmit() {
+    if (!email.trim() || !pass.trim()) return toast("Fill in all fields", "err");
+    if (pass.length < 6) return toast("Password must be 6+ characters", "err");
+    setLoading(true);
+    var res;
+    if (mode === "signup") {
+      res = await SB.auth.signUp({
+        email: email.trim(),
+        password: pass
+      });
+      if (res.error) {
+        setLoading(false);
+        return toast(res.error.message, "err");
+      }
+      toast("Account created! Check your email if confirmation is required.", "ok");
+    } else {
+      res = await SB.auth.signInWithPassword({
+        email: email.trim(),
+        password: pass
+      });
+      if (res.error) {
+        setLoading(false);
+        return toast(res.error.message, "err");
+      }
+    }
+    setLoading(false);
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: "40px 24px",
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      top: "5%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: 600,
+      height: 600,
+      borderRadius: "50%",
+      background: "radial-gradient(circle,rgba(204,255,0,0.06),transparent 60%)",
+      pointerEvents: "none"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 40,
+      position: "relative",
+      zIndex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 72,
+      marginBottom: 16
+    },
+    className: "pi"
+  }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("h1", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 72,
+      margin: 0,
+      lineHeight: 0.85,
+      letterSpacing: "3px"
+    }
+  }, SCHOOL.APP_NAME), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 20,
+      color: "var(--g0)",
+      margin: "10px 0 0",
+      letterSpacing: "8px"
+    }
+  }, SCHOOL.SCHOOL_NAME)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 400,
+      margin: "0 auto",
+      width: "100%",
+      position: "relative",
+      zIndex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      marginBottom: 24
+    }
+  }, ["signin", "signup"].map(function (m) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: m,
+      onClick: function () {
+        setMode(m);
+      },
+      style: {
+        flex: 1,
+        padding: "10px",
+        borderRadius: 12,
+        fontFamily: D2,
+        fontSize: 16,
+        letterSpacing: "3px",
+        background: mode === m ? "rgba(204,255,0,0.1)" : "transparent",
+        color: mode === m ? "var(--g1)" : "var(--dim)",
+        border: "1.5px solid " + (mode === m ? "rgba(204,255,0,0.2)" : "rgba(204,255,0,0.04)")
+      }
+    }, m === "signin" ? "SIGN IN" : "SIGN UP");
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "EMAIL"), /*#__PURE__*/React.createElement("input", {
+    className: "inp",
+    value: email,
+    onChange: function (e) {
+      setEmail(e.target.value);
+    },
+    type: "email",
+    placeholder: "you@school.edu",
+    style: {
+      marginBottom: 16
+    }
+  }), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "PASSWORD"), /*#__PURE__*/React.createElement("input", {
+    className: "inp",
+    value: pass,
+    onChange: function (e) {
+      setPass(e.target.value);
+    },
+    type: "password",
+    placeholder: mode === "signup" ? "Create a password (6+ chars)" : "Your password",
+    style: {
+      marginBottom: 24
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "btn-gold",
+    onClick: handleSubmit,
+    disabled: loading || !email.trim() || !pass.trim()
+  }, loading ? "..." : mode === "signin" ? "LET'S GO →" : "CREATE ACCOUNT →"), mode === "signup" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginTop: 16,
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--dim)",
+      letterSpacing: "1px"
+    }
+  }, "ALREADY HAVE AN ACCOUNT? ", /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setMode("signin");
+    },
+    style: {
+      background: "none",
+      border: "none",
+      color: "var(--g4)",
+      fontFamily: D2,
+      fontSize: 13,
+      letterSpacing: "1px",
+      textDecoration: "underline"
+    }
+  }, "SIGN IN"))));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §8  ONBOARDING — Role, name, grade, sports selection
+   ████████████████████████████████████████████████████████████████████████ */
+
+function Onboarding({
+  user,
+  onDone,
+  toast
+}) {
+  var [role, setRole] = useState(null);
+  var [first, setFirst] = useState("");
+  var [last, setLast] = useState("");
+  var [grade, setGrade] = useState("");
+  var [sports, setSports] = useState([]);
+  var [loading, setLoading] = useState(false);
+  function togSport(s) {
+    setSports(function (p) {
+      return p.includes(s) ? p.filter(function (x) {
+        return x !== s;
+      }) : [].concat(p, [s]);
+    });
+  }
+  var ok = first.trim() && last.trim() && role && (role !== "athlete" || grade && sports.length > 0) && (role !== "coach" || sports.length === 1);
+  async function submit() {
+    setLoading(true);
+    var res = await SB.rpc('complete_onboarding', {
+      p_role: role,
+      p_first_name: first.trim(),
+      p_last_name: last.trim(),
+      p_grade: role === "athlete" ? parseInt(grade) : null,
+      p_sports: sports
+    });
+    if (res.error) {
+      setLoading(false);
+      return toast(res.error.message, "err");
+    }
+    toast("Welcome to " + SCHOOL.APP_NAME + "!", "ok");
+    onDone();
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      padding: "40px 24px",
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 32
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 48,
+      marginBottom: 8
+    }
+  }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("h1", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 44,
+      lineHeight: 0.85
+    }
+  }, "SET UP YOUR PROFILE")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 420,
+      margin: "0 auto"
+    }
+  }, !role && /*#__PURE__*/React.createElement("div", {
+    className: "fu"
+  }, /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--dim)",
+      textAlign: "center",
+      letterSpacing: "4px",
+      marginBottom: 16
+    }
+  }, "I AM A..."), [{
+    id: "athlete",
+    l: "STUDENT-ATHLETE",
+    i: "⚔️"
+  }, {
+    id: "coach",
+    l: "COACH",
+    i: "🛡️"
+  }, {
+    id: "ad",
+    l: "ATHLETIC DIRECTOR",
+    i: SCHOOL.LOGO
+  }].map(function (r) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: r.id,
+      onClick: function () {
+        setRole(r.id);
+      },
+      className: "gc2",
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        padding: "18px 20px",
+        width: "100%",
+        textAlign: "left",
+        marginBottom: 12
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 30
+      }
+    }, r.i), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D,
+        fontSize: 26,
+        color: "var(--g6)"
+      }
+    }, r.l));
+  })), role && /*#__PURE__*/React.createElement("div", {
+    className: "fu"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setRole(null);
+      setSports([]);
+    },
+    style: {
+      background: "none",
+      border: "none",
+      color: "var(--dim)",
+      fontFamily: D2,
+      fontSize: 16,
+      letterSpacing: "3px",
+      marginBottom: 18
+    }
+  }, "\u2190 BACK"), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "FIRST NAME"), /*#__PURE__*/React.createElement("input", {
+    className: "inp",
+    value: first,
+    onChange: function (e) {
+      setFirst(e.target.value);
+    },
+    placeholder: "First name",
+    style: {
+      marginBottom: 16
+    }
+  }), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "LAST NAME"), /*#__PURE__*/React.createElement("input", {
+    className: "inp",
+    value: last,
+    onChange: function (e) {
+      setLast(e.target.value);
+    },
+    placeholder: "Last name",
+    style: {
+      marginBottom: 16
+    }
+  }), role === "athlete" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "GRADE"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 16
+    }
+  }, ["9", "10", "11", "12"].map(function (g) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: g,
+      onClick: function () {
+        setGrade(g);
+      },
+      style: {
+        flex: 1,
+        padding: "12px",
+        borderRadius: 12,
+        fontFamily: D,
+        fontSize: 24,
+        background: grade === g ? "rgba(204,255,0,0.15)" : "rgba(12,14,10,0.8)",
+        color: grade === g ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (grade === g ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, g);
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "MY SPORTS ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--dim)"
+    }
+  }, "(SELECT ALL)")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 8,
+      marginBottom: 24
+    }
+  }, ALL_SPORTS.map(function (s) {
+    var on = sports.includes(s);
+    return /*#__PURE__*/React.createElement("button", {
+      key: s,
+      onClick: function () {
+        togSport(s);
+      },
+      style: {
+        padding: "8px 14px",
+        borderRadius: 12,
+        fontFamily: D2,
+        fontSize: 13,
+        letterSpacing: "1px",
+        background: on ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        color: on ? "var(--g1)" : "var(--dim)",
+        border: "1.5px solid " + (on ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, on ? "✓ " : "", s.toUpperCase());
+  }))), role === "coach" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "MY TEAM (SELECT ONE)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 8,
+      marginBottom: 24
+    }
+  }, ALL_SPORTS.map(function (s) {
+    var on = sports.includes(s);
+    return /*#__PURE__*/React.createElement("button", {
+      key: s,
+      onClick: function () {
+        setSports([s]);
+      },
+      style: {
+        padding: "8px 14px",
+        borderRadius: 12,
+        fontFamily: D2,
+        fontSize: 13,
+        letterSpacing: "1px",
+        background: on ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        color: on ? "var(--g1)" : "var(--dim)",
+        border: "1.5px solid " + (on ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, on ? "✓ " : "", s.toUpperCase());
+  }))), /*#__PURE__*/React.createElement("button", {
+    className: "btn-gold",
+    onClick: submit,
+    disabled: !ok || loading
+  }, loading ? "SAVING..." : "LET'S GO →"))));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §9  DAILY HUDDLE — Card-stack check-in
+   Cards: Sleep → Readiness/Stress/Body → Work → Fuel → Summary
+   ████████████████████████████████████████████████████████████████████████ */
+
+function Huddle({
+  profile,
+  onDone,
+  onCancel,
+  toast
+}) {
+  var TOTAL = 5;
+  var [card, setCard] = useState(0);
+  var [saving, setSaving] = useState(false);
+  var [sleepHrs, setSleepHrs] = useState(null);
+  var [sleepQ, setSleepQ] = useState(null);
+  var [readiness, setReadiness] = useState(null);
+  var [stress, setStress] = useState(null);
+  var [painZones, setPainZones] = useState([]);
+  var [painLevel, setPainLevel] = useState(3);
+  var [sessions, setSessions] = useState([]);
+  var [editSport, setEditSport] = useState(null);
+  var [editType, setEditType] = useState("");
+  var [editRpe, setEditRpe] = useState(6);
+  var [editDur, setEditDur] = useState(null);
+  var [editPhoto, setEditPhoto] = useState(null); /* proof of grind photo/video */
+  var [coachTask, setCoachTask] = useState(false);
+  var [didWork, setDidWork] = useState(null);
+  var [hydration, setHydration] = useState(0);
+  var [fuelWindow, setFuelWindow] = useState(null);
+  var [mealColor, setMealColor] = useState(null);
+  var fileRef = React.useRef(null);
+  function togZone(id) {
+    setPainZones(function (p) {
+      return p.includes(id) ? p.filter(function (x) {
+        return x !== id;
+      }) : [].concat(p, [id]);
+    });
+  }
+  function addSession() {
+    if (editSport && editType && editDur) {
+      setSessions(function (p) {
+        return [].concat(p, [{
+          sport: editSport,
+          type: editType,
+          rpe: editRpe,
+          dur: parseInt(editDur),
+          proof: !!editPhoto,
+          proofThumb: editPhoto
+        }]);
+      });
+      setEditSport(null);
+      setEditType("");
+      setEditRpe(6);
+      setEditDur(null);
+      setEditPhoto(null);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+  function canNext() {
+    if (card === 0) return sleepHrs != null && sleepQ != null;
+    if (card === 1) return readiness != null && stress != null;
+    if (card === 2) return didWork != null && (didWork === false || sessions.length > 0 && !editSport);
+    if (card === 3) return mealColor != null;
+    return true;
+  }
+  function calcPts() {
+    var p = 10;
+    if (sleepHrs && ["8", "9", "10+"].includes(sleepHrs)) p += 20;
+    if (coachTask) p += 15;
+    if (mealColor === "green") p += 5;
+    /* +5 per session with proof attached */
+    var proofCount = sessions.filter(function (s) {
+      return s.proof;
+    }).length;
+    p += proofCount * 5;
+    return p;
+  }
+
+  /* §9f-1 Readiness Score + Red Flag calculation
+     Score: 0-100 (higher = better). Three weighted components:
+       Sleep (35 pts):  hours + quality
+       Stress (30 pts): school/life stress inverse
+       Pain (35 pts):   zone count, severity, critical zones
+     Red Flag triggers (any one = true):
+       - Head or neck pain
+       - Self-reported "exhausted"
+       - Readiness score below 30
+       - Stress 5 + pain zones 2+                                       */
+  function calcReadiness() {
+    var score = 0;
+    var redFlag = false;
+    var reasons = [];
+
+    // ── Sleep component (35 pts max) ──
+    var hrsMap = {
+      "<6": 5,
+      "6": 12,
+      "7": 22,
+      "8": 30,
+      "9": 35,
+      "10+": 35
+    };
+    var sleepScore = hrsMap[sleepHrs] || 15;
+    if (sleepQ === "bad") sleepScore = Math.max(0, sleepScore - 12);
+    score += sleepScore;
+
+    // ── Stress component (30 pts max) ──
+    // Inverse: stress 1 = 30pts, stress 5 = 0pts
+    var stressScore = Math.max(0, 30 - (stress - 1) * 7.5);
+    score += stressScore;
+
+    // ── Pain component (35 pts max) ──
+    var CRITICAL = ["head", "neck"];
+    var hasCritical = painZones.some(function (z) {
+      return CRITICAL.includes(z);
+    });
+    var painScore = 35;
+    if (hasCritical) {
+      painScore = 0;
+      redFlag = true;
+      reasons.push("Head/neck pain reported");
+    } else if (painZones.length >= 3) {
+      painScore = 5;
+    } else if (painZones.length >= 1) {
+      // Scale by pain level: mild (1-3) = small hit, severe (7+) = big hit
+      var severityPenalty = Math.min(30, painZones.length * painLevel * 2);
+      painScore = Math.max(5, 35 - severityPenalty);
+    }
+    score += painScore;
+
+    // ── Red flag checks ──
+    if (readiness === "exhausted") {
+      redFlag = true;
+      reasons.push("Self-reported exhausted");
+    }
+    if (score < 30 && !redFlag) {
+      redFlag = true;
+      reasons.push("Readiness score critical (" + Math.round(score) + "/100)");
+    }
+    if (stress >= 5 && painZones.length >= 2 && !redFlag) {
+      redFlag = true;
+      reasons.push("Max stress + multiple pain zones");
+    }
+    return {
+      score: Math.round(Math.min(100, Math.max(0, score))),
+      redFlag: redFlag,
+      reasons: reasons
+    };
+  }
+
+  /* §9f-2 Submit to Supabase */
+  async function finish() {
+    setSaving(true);
+
+    // Calculate readiness score + red flag
+    var rd = calcReadiness();
+
+    // 1. Submit check-in with readiness data
+    var ciRes = await SB.rpc('submit_checkin', {
+      p_sleep_hrs: sleepHrs,
+      p_sleep_quality: sleepQ,
+      p_readiness: readiness,
+      p_stress: stress,
+      p_pain_zones: painZones.length > 0 ? [].concat(painZones, ["level_" + painLevel]) : painZones,
+      p_hydration: hydration,
+      p_fuel_window: fuelWindow || 'na',
+      p_meal_color: mealColor,
+      p_coach_task: coachTask,
+      p_readiness_score: rd.score,
+      p_red_flag: rd.redFlag,
+      p_red_flag_reasons: rd.reasons
+    });
+    if (ciRes.error) {
+      setSaving(false);
+      return toast(ciRes.error.message || "Check-in failed", "err");
+    }
+    var ciData = ciRes.data;
+    if (ciData.error) {
+      setSaving(false);
+      return toast(ciData.error, "err");
+    }
+
+    // 2. Log each work session
+    for (var i = 0; i < sessions.length; i++) {
+      var s = sessions[i];
+      await SB.rpc('log_session', {
+        p_checkin_id: ciData.checkin_id,
+        p_sport: s.sport,
+        p_session_type: s.type,
+        p_rpe: s.rpe,
+        p_duration: s.dur
+      });
+    }
+    setSaving(false);
+    onDone({
+      points: ciData.points,
+      streak: ciData.streak,
+      xp: ciData.xp,
+      sessions: sessions,
+      readiness: rd
+    });
+  }
+
+  /* §4 BODY MAP ZONES — {id, l:label, x/y:position%, w/h:size%} */
+  var ZONES = [{
+    id: "head",
+    l: "Head",
+    x: 46,
+    y: 3,
+    w: 12,
+    h: 7
+  }, {
+    id: "neck",
+    l: "Neck",
+    x: 47,
+    y: 11,
+    w: 10,
+    h: 4
+  }, {
+    id: "l_shoulder",
+    l: "L Shoulder",
+    x: 32,
+    y: 15,
+    w: 14,
+    h: 6
+  }, {
+    id: "r_shoulder",
+    l: "R Shoulder",
+    x: 58,
+    y: 15,
+    w: 14,
+    h: 6
+  }, {
+    id: "chest",
+    l: "Chest",
+    x: 40,
+    y: 21,
+    w: 24,
+    h: 10
+  }, {
+    id: "l_arm",
+    l: "L Arm",
+    x: 24,
+    y: 22,
+    w: 10,
+    h: 18
+  }, {
+    id: "r_arm",
+    l: "R Arm",
+    x: 70,
+    y: 22,
+    w: 10,
+    h: 18
+  }, {
+    id: "core",
+    l: "Core",
+    x: 40,
+    y: 32,
+    w: 24,
+    h: 12
+  }, {
+    id: "low_back",
+    l: "Low Back",
+    x: 40,
+    y: 38,
+    w: 24,
+    h: 8
+  }, {
+    id: "l_hip",
+    l: "L Hip",
+    x: 36,
+    y: 44,
+    w: 12,
+    h: 7
+  }, {
+    id: "r_hip",
+    l: "R Hip",
+    x: 56,
+    y: 44,
+    w: 12,
+    h: 7
+  }, {
+    id: "l_quad",
+    l: "L Quad",
+    x: 34,
+    y: 52,
+    w: 14,
+    h: 14
+  }, {
+    id: "r_quad",
+    l: "R Quad",
+    x: 56,
+    y: 52,
+    w: 14,
+    h: 14
+  }, {
+    id: "l_knee",
+    l: "L Knee",
+    x: 36,
+    y: 66,
+    w: 10,
+    h: 7
+  }, {
+    id: "r_knee",
+    l: "R Knee",
+    x: 58,
+    y: 66,
+    w: 10,
+    h: 7
+  }, {
+    id: "l_shin",
+    l: "L Shin",
+    x: 35,
+    y: 74,
+    w: 12,
+    h: 14
+  }, {
+    id: "r_shin",
+    l: "R Shin",
+    x: 57,
+    y: 74,
+    w: 12,
+    h: 14
+  }, {
+    id: "l_ankle",
+    l: "L Foot",
+    x: 36,
+    y: 89,
+    w: 10,
+    h: 8
+  }, {
+    id: "r_ankle",
+    l: "R Foot",
+    x: 58,
+    y: 89,
+    w: 10,
+    h: 8
+  }];
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      background: "var(--bg)",
+      color: "var(--txt)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px 20px 0"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      card > 0 ? setCard(card - 1) : onCancel();
+    },
+    style: {
+      background: "none",
+      border: "none",
+      color: "var(--sub)",
+      fontFamily: D2,
+      fontSize: 18,
+      letterSpacing: "3px"
+    }
+  }, card === 0 ? "✕" : "←"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "3px"
+    }
+  }, "DAILY HUDDLE")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4
+    }
+  }, Array.from({
+    length: TOTAL
+  }, function (_, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        flex: 1,
+        height: 4,
+        borderRadius: 4,
+        background: i < card ? "var(--g1)" : i === card ? "var(--g4)" : "rgba(204,255,0,0.08)"
+      }
+    });
+  }))), card === 0 && /*#__PURE__*/React.createElement("div", {
+    className: "ci",
+    key: "c0",
+    style: {
+      flex: 1,
+      padding: "28px 20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 48,
+      marginBottom: 8
+    }
+  }, "\uD83D\uDE34"), /*#__PURE__*/React.createElement("h2", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 52,
+      lineHeight: 0.85
+    }
+  }, "SLEEP"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      margin: "8px 0 24px"
+    }
+  }, "HOW'D YOU SLEEP?"), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "HOURS"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 24
+    }
+  }, ["<6", "6", "7", "8", "9", "10+"].map(function (h) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: h,
+      onClick: function () {
+        setSleepHrs(h);
+      },
+      style: {
+        flex: 1,
+        padding: "14px 0",
+        borderRadius: 14,
+        fontFamily: D,
+        fontSize: 22,
+        background: sleepHrs === h ? "rgba(204,255,0,0.15)" : "rgba(12,14,10,0.8)",
+        color: sleepHrs === h ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (sleepHrs === h ? "rgba(204,255,0,0.35)" : "rgba(204,255,0,0.04)")
+      }
+    }, h);
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "QUALITY"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12
+    }
+  }, [{
+    id: "good",
+    i: "👍",
+    l: "GOOD"
+  }, {
+    id: "bad",
+    i: "👎",
+    l: "ROUGH"
+  }].map(function (q) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: q.id,
+      onClick: function () {
+        setSleepQ(q.id);
+      },
+      style: {
+        flex: 1,
+        padding: "20px",
+        borderRadius: 16,
+        textAlign: "center",
+        background: sleepQ === q.id ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        border: "2px solid " + (sleepQ === q.id ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 40
+      }
+    }, q.i), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 16,
+        color: sleepQ === q.id ? "var(--g1)" : "var(--dim)",
+        letterSpacing: "2px",
+        marginTop: 6
+      }
+    }, q.l));
+  }))), card === 1 && /*#__PURE__*/React.createElement("div", {
+    className: "ci",
+    key: "c1",
+    style: {
+      flex: 1,
+      padding: "24px 20px",
+      overflowY: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 44,
+      lineHeight: 0.85
+    }
+  }, "READINESS"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      margin: "6px 0 16px"
+    }
+  }, "HOW DO YOU FEEL?"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 20
+    }
+  }, [{
+    id: "ready",
+    i: "😃",
+    l: "Ready"
+  }, {
+    id: "sluggish",
+    i: "😐",
+    l: "Sluggish"
+  }, {
+    id: "exhausted",
+    i: "😫",
+    l: "Exhausted"
+  }].map(function (r) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: r.id,
+      onClick: function () {
+        setReadiness(r.id);
+      },
+      style: {
+        flex: 1,
+        padding: "14px 6px",
+        borderRadius: 14,
+        textAlign: "center",
+        background: readiness === r.id ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        border: "2px solid " + (readiness === r.id ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 32
+      }
+    }, r.i), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 13,
+        color: readiness === r.id ? "var(--g1)" : "var(--dim)",
+        letterSpacing: "1px",
+        marginTop: 4
+      }
+    }, r.l.toUpperCase()));
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "SCHOOL / LIFE STRESS"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 20
+    }
+  }, [{
+    n: 1,
+    i: "😌",
+    l: "Chill"
+  }, {
+    n: 2,
+    i: "🙂",
+    l: "Normal"
+  }, {
+    n: 3,
+    i: "😐",
+    l: "Some"
+  }, {
+    n: 4,
+    i: "😰",
+    l: "Heavy"
+  }, {
+    n: 5,
+    i: "🤯",
+    l: "Maxed"
+  }].map(function (s) {
+    var on = stress === s.n;
+    var c = s.n <= 2 ? "#4CAF50" : s.n <= 3 ? "#FFB300" : s.n <= 4 ? "#FF8F00" : "#EF5350";
+    return /*#__PURE__*/React.createElement("button", {
+      key: s.n,
+      onClick: function () {
+        setStress(s.n);
+      },
+      style: {
+        flex: 1,
+        padding: "10px 4px",
+        borderRadius: 12,
+        textAlign: "center",
+        background: on ? c + "20" : "rgba(12,14,10,0.8)",
+        border: "1.5px solid " + (on ? c + "50" : "rgba(204,255,0,0.04)")
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 22
+      }
+    }, s.i), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: on ? c : "var(--dim)",
+        letterSpacing: "0.5px",
+        marginTop: 2
+      }
+    }, s.l.toUpperCase()));
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "BODY MAP \u2014 TAP WHERE IT HURTS ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--dim)"
+    }
+  }, "(OPTIONAL)")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      width: "100%",
+      maxWidth: 220,
+      margin: "0 auto",
+      aspectRatio: "0.4",
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 104 100",
+    style: {
+      width: "100%",
+      height: "100%",
+      position: "absolute",
+      inset: 0
+    }
+  }, /*#__PURE__*/React.createElement("ellipse", {
+    cx: "52",
+    cy: "7",
+    rx: "7",
+    ry: "7",
+    fill: "none",
+    stroke: "rgba(204,255,0,0.12)",
+    strokeWidth: "0.8"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "52",
+    y1: "14",
+    x2: "52",
+    y2: "44",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "1"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "52",
+    y1: "20",
+    x2: "30",
+    y2: "36",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "0.8"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "52",
+    y1: "20",
+    x2: "74",
+    y2: "36",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "0.8"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "52",
+    y1: "44",
+    x2: "38",
+    y2: "70",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "1"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "52",
+    y1: "44",
+    x2: "66",
+    y2: "70",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "1"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "38",
+    y1: "70",
+    x2: "36",
+    y2: "95",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "0.8"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "66",
+    y1: "70",
+    x2: "68",
+    y2: "95",
+    stroke: "rgba(204,255,0,0.1)",
+    strokeWidth: "0.8"
+  })), ZONES.map(function (z) {
+    var on = painZones.includes(z.id);
+    return /*#__PURE__*/React.createElement("button", {
+      key: z.id,
+      onClick: function () {
+        togZone(z.id);
+      },
+      title: z.l,
+      style: {
+        position: "absolute",
+        left: z.x + "%",
+        top: z.y + "%",
+        width: z.w + "%",
+        height: z.h + "%",
+        borderRadius: 6,
+        background: on ? "rgba(239,83,80,0.35)" : "rgba(204,255,0,0.02)",
+        border: "1px solid " + (on ? "rgba(239,83,80,0.5)" : "rgba(204,255,0,0.05)"),
+        boxShadow: on ? "0 0 10px rgba(239,83,80,0.3)" : "none"
+      }
+    });
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      fontFamily: D2,
+      fontSize: 12,
+      color: painZones.length ? "var(--red)" : "var(--dim)",
+      letterSpacing: "1px"
+    }
+  }, painZones.length ? painZones.map(function (z) {
+    var f = ZONES.find(function (x) {
+      return x.id === z;
+    });
+    return f ? f.l : z;
+  }).join(", ").toUpperCase() : "NO PAIN — TAP ABOVE IF SOMETHING HURTS"), painZones.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16,
+      padding: "16px 18px",
+      borderRadius: 16,
+      background: "rgba(239,83,80,0.06)",
+      border: "1.5px solid rgba(239,83,80,0.15)"
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--red)",
+      letterSpacing: "3px",
+      display: "block",
+      marginBottom: 8
+    }
+  }, "PAIN LEVEL"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D,
+      fontSize: 44,
+      color: painLevel <= 3 ? "#FFB300" : painLevel <= 6 ? "#FF8F00" : painLevel <= 8 ? "#FF6D00" : "#D50000",
+      lineHeight: 0.9
+    }
+  }, painLevel), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    min: "1",
+    max: "10",
+    value: painLevel,
+    onChange: function (e) {
+      setPainLevel(+e.target.value);
+    },
+    style: {
+      width: "100%",
+      accentColor: painLevel <= 3 ? "#FFB300" : painLevel <= 6 ? "#FF8F00" : painLevel <= 8 ? "#FF6D00" : "#D50000",
+      height: 8
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginTop: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "#FFB300",
+      letterSpacing: "1px"
+    }
+  }, "MILD"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "#FF8F00",
+      letterSpacing: "1px"
+    }
+  }, "MODERATE"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "#D50000",
+      letterSpacing: "1px"
+    }
+  }, "SEVERE")))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--dim)",
+      letterSpacing: "0.5px",
+      marginTop: 8,
+      textAlign: "center"
+    }
+  }, painLevel <= 2 ? "SLIGHT DISCOMFORT — MANAGEABLE" : painLevel <= 4 ? "NOTICEABLE — AFFECTING MOVEMENT A BIT" : painLevel <= 6 ? "MODERATE — HARD TO IGNORE" : painLevel <= 8 ? "SIGNIFICANT — LIMITING ACTIVITY" : "SEVERE — NEEDS ATTENTION NOW"))), card === 2 && /*#__PURE__*/React.createElement("div", {
+    className: "ci",
+    key: "c2",
+    style: {
+      flex: 1,
+      padding: "24px 20px",
+      overflowY: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 44,
+      marginBottom: 4
+    }
+  }, "\u2694\uFE0F"), /*#__PURE__*/React.createElement("h2", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 48,
+      lineHeight: 0.85
+    }
+  }, "THE WORK"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      margin: "6px 0 16px"
+    }
+  }, "LOG EVERY SESSION"), /*#__PURE__*/React.createElement("input", {
+    ref: fileRef,
+    type: "file",
+    accept: "image/*,video/*",
+    capture: "environment",
+    style: {
+      display: "none"
+    },
+    onChange: function (e) {
+      if (e.target.files && e.target.files[0]) {
+        setEditPhoto(URL.createObjectURL(e.target.files[0]));
+      }
+    }
+  }), sessions.map(function (s, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "gc2",
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "12px 14px",
+        marginBottom: 8
+      }
+    }, s.proofThumb && /*#__PURE__*/React.createElement("img", {
+      src: s.proofThumb,
+      style: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        objectFit: "cover",
+        border: "2px solid rgba(76,175,80,0.3)",
+        flexShrink: 0
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 6,
+        alignItems: "center"
+      }
+    }, /*#__PURE__*/React.createElement(ST, {
+      s: s.sport
+    }), s.proof ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        padding: "2px 8px",
+        borderRadius: 8,
+        background: "rgba(76,175,80,0.12)",
+        color: "var(--grn)",
+        border: "1px solid rgba(76,175,80,0.2)",
+        letterSpacing: "1px"
+      }
+    }, "\u2713 VERIFIED") : /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        padding: "2px 8px",
+        borderRadius: 8,
+        background: "rgba(204,255,0,0.04)",
+        color: "var(--dim)",
+        border: "1px solid rgba(204,255,0,0.04)",
+        letterSpacing: "1px"
+      }
+    }, "SELF-REPORTED")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 13,
+        color: "var(--sub)",
+        marginTop: 4
+      }
+    }, s.type, " \xB7 RPE ", s.rpe, " \xB7 ", s.dur, "min \xB7 LOAD ", s.rpe * s.dur)), /*#__PURE__*/React.createElement("button", {
+      onClick: function () {
+        setSessions(function (p) {
+          return p.filter(function (_, idx) {
+            return idx !== i;
+          });
+        });
+      },
+      style: {
+        background: "none",
+        border: "1px solid rgba(239,83,80,0.3)",
+        borderRadius: 8,
+        padding: "4px 10px",
+        fontFamily: D2,
+        fontSize: 12,
+        color: "var(--red)"
+      }
+    }, "\u2715"));
+  }), didWork === null && sessions.length === 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 12,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setDidWork(true);
+    },
+    style: {
+      flex: 1,
+      padding: "18px",
+      borderRadius: 16,
+      textAlign: "center",
+      background: "rgba(12,14,10,0.8)",
+      border: "2px solid rgba(204,255,0,0.04)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 32
+    }
+  }, "\uD83D\uDCAA"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--g1)",
+      marginTop: 4
+    }
+  }, "YES")), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setDidWork(false);
+    },
+    style: {
+      flex: 1,
+      padding: "18px",
+      borderRadius: 16,
+      textAlign: "center",
+      background: "rgba(12,14,10,0.8)",
+      border: "2px solid rgba(204,255,0,0.04)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 32
+    }
+  }, "\uD83D\uDECB\uFE0F"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--dim)",
+      marginTop: 4
+    }
+  }, "REST DAY"))), (didWork || sessions.length > 0) && !editSport && /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setEditSport("_pick");
+      setDidWork(true);
+    },
+    style: {
+      width: "100%",
+      padding: "14px",
+      borderRadius: 14,
+      border: "2px dashed rgba(204,255,0,0.15)",
+      background: "transparent",
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--g4)",
+      letterSpacing: "2px",
+      marginBottom: 12
+    }
+  }, "+ ADD SESSION"), editSport === "_pick" && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "SPORT"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 8
+    }
+  }, (profile.sports || []).map(function (s) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: s,
+      onClick: function () {
+        setEditSport(s);
+      },
+      className: "gc",
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "14px 16px",
+        textAlign: "left"
+      }
+    }, /*#__PURE__*/React.createElement(ST, {
+      s: s
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D,
+        fontSize: 20,
+        color: "var(--g6)",
+        flex: 1
+      }
+    }, s.toUpperCase()), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: "var(--dim)"
+      }
+    }, "\u2192"));
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setEditSport(null);
+    },
+    style: {
+      background: "none",
+      border: "none",
+      color: "var(--dim)",
+      fontFamily: D2,
+      fontSize: 14
+    }
+  }, "CANCEL"))), editSport && editSport !== "_pick" && /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: 16,
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 22
+    }
+  }, editSport.toUpperCase()), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setEditSport(null);
+      setEditType("");
+      setEditDur(null);
+      setEditPhoto(null);
+    },
+    style: {
+      background: "none",
+      border: "none",
+      color: "var(--dim)",
+      fontFamily: D2,
+      fontSize: 14
+    }
+  }, "\u2715")), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "TYPE"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 6,
+      marginBottom: 14
+    }
+  }, SESSION_TYPES.map(function (t) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: t,
+      onClick: function () {
+        setEditType(t);
+      },
+      style: {
+        padding: "8px 12px",
+        borderRadius: 10,
+        fontFamily: D2,
+        fontSize: 12,
+        letterSpacing: "0.5px",
+        background: editType === t ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        color: editType === t ? "var(--g1)" : "var(--dim)",
+        border: "1.5px solid " + (editType === t ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, t.toUpperCase());
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "RPE ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D,
+      fontSize: 32,
+      color: RPE_COLOR[editRpe] || "var(--g1)"
+    }
+  }, editRpe), "/10 ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: RPE_COLOR[editRpe],
+      fontFamily: D2,
+      fontSize: 13
+    }
+  }, RPE_DESC[editRpe] || "")), /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    min: "1",
+    max: "10",
+    value: editRpe,
+    onChange: function (e) {
+      setEditRpe(+e.target.value);
+    },
+    style: {
+      width: "100%",
+      accentColor: RPE_COLOR[editRpe] || "var(--g1)",
+      height: 8,
+      marginBottom: 14
+    }
+  }), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "DURATION (MIN)"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      flexWrap: "wrap",
+      marginBottom: 14
+    }
+  }, ["15", "30", "45", "60", "90", "120"].map(function (d) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: d,
+      onClick: function () {
+        setEditDur(d);
+      },
+      style: {
+        padding: "10px 0",
+        flex: "1 1 28%",
+        borderRadius: 12,
+        fontFamily: D,
+        fontSize: 20,
+        background: editDur === d ? "rgba(204,255,0,0.15)" : "rgba(12,14,10,0.8)",
+        color: editDur === d ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (editDur === d ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, d);
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px",
+      borderRadius: 16,
+      background: editPhoto ? "rgba(76,175,80,0.06)" : "rgba(204,255,0,0.02)",
+      border: "2px solid " + (editPhoto ? "rgba(76,175,80,0.2)" : "rgba(204,255,0,0.08)"),
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      marginBottom: editPhoto ? 12 : 0
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 28
+    }
+  }, editPhoto ? "✅" : "📸"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 18,
+      color: editPhoto ? "var(--grn)" : "var(--g1)"
+    }
+  }, editPhoto ? "PROOF ATTACHED" : "PROOF OF GRIND"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 12,
+      color: editPhoto ? "var(--grn)" : "var(--dim)",
+      letterSpacing: "0.5px"
+    }
+  }, editPhoto ? "VERIFIED SESSION · +5 GP BONUS" : "SNAP A PHOTO OR VIDEO · +5 GP")), !editPhoto && /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      if (fileRef.current) fileRef.current.click();
+    },
+    style: {
+      padding: "10px 18px",
+      borderRadius: 12,
+      border: "none",
+      background: "linear-gradient(135deg,var(--g0),var(--g4))",
+      fontFamily: D,
+      fontSize: 16,
+      color: "var(--bg)",
+      letterSpacing: "1px",
+      flexShrink: 0
+    }
+  }, "\uD83D\uDCF7 SNAP")), editPhoto && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: editPhoto,
+    style: {
+      width: 64,
+      height: 64,
+      borderRadius: 12,
+      objectFit: "cover",
+      border: "2px solid rgba(76,175,80,0.3)"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      if (fileRef.current) fileRef.current.click();
+    },
+    style: {
+      background: "none",
+      border: "1px solid rgba(204,255,0,0.1)",
+      borderRadius: 10,
+      padding: "6px 14px",
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--g4)",
+      letterSpacing: "1px",
+      marginRight: 8
+    }
+  }, "RETAKE"), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setEditPhoto(null);
+      if (fileRef.current) fileRef.current.value = "";
+    },
+    style: {
+      background: "none",
+      border: "1px solid rgba(239,83,80,0.2)",
+      borderRadius: 10,
+      padding: "6px 14px",
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--red)",
+      letterSpacing: "1px"
+    }
+  }, "REMOVE"))), !editPhoto && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "var(--dim)",
+      letterSpacing: "0.5px",
+      marginTop: 8
+    }
+  }, "SWEAT ON THE FLOOR \xB7 WEIGHT ON THE BAR \xB7 LAST REP OF THE SET")), /*#__PURE__*/React.createElement("button", {
+    onClick: addSession,
+    disabled: !editType || !editDur,
+    className: "btn-gold",
+    style: {
+      fontSize: 20,
+      padding: 14
+    }
+  }, "LOG SESSION \u2713")), didWork !== null && !editSport && /*#__PURE__*/React.createElement("div", {
+    onClick: function () {
+      setCoachTask(!coachTask);
+    },
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      padding: "16px 18px",
+      borderRadius: 16,
+      background: coachTask ? "rgba(76,175,80,0.1)" : "rgba(12,14,10,0.8)",
+      border: "2px solid " + (coachTask ? "rgba(76,175,80,0.3)" : "rgba(204,255,0,0.04)"),
+      marginTop: 8,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 26,
+      height: 26,
+      borderRadius: 8,
+      border: "2px solid " + (coachTask ? "#4CAF50" : "rgba(204,255,0,0.15)"),
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: coachTask ? "#4CAF50" : "transparent",
+      fontSize: 14,
+      color: "#fff"
+    }
+  }, coachTask ? "✓" : ""), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 15,
+      color: coachTask ? "#4CAF50" : "var(--txt)",
+      letterSpacing: "1px"
+    }
+  }, "COACH'S DAILY TASK"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "var(--dim)"
+    }
+  }, "+15 GP")))), card === 3 && /*#__PURE__*/React.createElement("div", {
+    className: "ci",
+    key: "c3",
+    style: {
+      flex: 1,
+      padding: "24px 20px",
+      overflowY: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 44,
+      marginBottom: 4
+    }
+  }, "\uD83C\uDF7D\uFE0F"), /*#__PURE__*/React.createElement("h2", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 52,
+      lineHeight: 0.85
+    }
+  }, "FUEL"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      margin: "6px 0 20px"
+    }
+  }, "HOW DID YOU FUEL?"), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "HYDRATION"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 4,
+      marginBottom: 4,
+      justifyContent: "center"
+    }
+  }, [1, 2, 3, 4, 5, 6, 7, 8].map(function (b) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: b,
+      onClick: function () {
+        setHydration(b);
+      },
+      style: {
+        fontSize: b <= hydration ? 26 : 22,
+        filter: b <= hydration ? "none" : "grayscale(1) opacity(0.2)",
+        background: "none",
+        border: "none",
+        padding: 2
+      }
+    }, "\uD83D\uDCA7");
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      fontFamily: D2,
+      fontSize: 14,
+      color: hydration >= 6 ? "var(--grn)" : "var(--dim)",
+      letterSpacing: "1px",
+      marginBottom: 20
+    }
+  }, hydration, " BOTTLE", hydration !== 1 ? "S" : ""), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "EAT WITHIN 45 MIN OF WORKOUT?"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 10,
+      marginBottom: 20
+    }
+  }, [{
+    id: "yes",
+    l: "YES"
+  }, {
+    id: "no",
+    l: "NO"
+  }, {
+    id: "na",
+    l: "N/A"
+  }].map(function (o) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: o.id,
+      onClick: function () {
+        setFuelWindow(o.id);
+      },
+      style: {
+        flex: 1,
+        padding: "14px",
+        borderRadius: 14,
+        fontFamily: D,
+        fontSize: 22,
+        background: fuelWindow === o.id ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        color: fuelWindow === o.id ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (fuelWindow === o.id ? "rgba(204,255,0,0.25)" : "rgba(204,255,0,0.04)")
+      }
+    }, o.l);
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "MEALS WERE MOSTLY..."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 10
+    }
+  }, [{
+    id: "green",
+    i: "🟢",
+    l: "Whole foods, veggies, protein",
+    c: "#4CAF50"
+  }, {
+    id: "yellow",
+    i: "🟡",
+    l: "Processed but okay",
+    c: "#FFB300"
+  }, {
+    id: "red",
+    i: "🔴",
+    l: "Fast food / junk / sugar",
+    c: "#EF5350"
+  }].map(function (m) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: m.id,
+      onClick: function () {
+        setMealColor(m.id);
+      },
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "16px 18px",
+        background: mealColor === m.id ? m.c + "18" : "rgba(12,14,10,0.8)",
+        border: "2px solid " + (mealColor === m.id ? m.c + "50" : "rgba(204,255,0,0.04)"),
+        borderRadius: 16
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 22
+      }
+    }, m.i), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 15,
+        color: mealColor === m.id ? m.c : "var(--dim)",
+        letterSpacing: "0.5px",
+        textAlign: "left"
+      }
+    }, m.l.toUpperCase()), mealColor === m.id && /*#__PURE__*/React.createElement("span", {
+      style: {
+        marginLeft: "auto",
+        color: m.c,
+        fontSize: 18
+      }
+    }, "\u2713"));
+  }))), card === 4 && function () {
+    var rd = calcReadiness();
+    var scoreColor = rd.score >= 70 ? "var(--grn)" : rd.score >= 40 ? "var(--g4)" : "var(--red)";
+    return /*#__PURE__*/React.createElement("div", {
+      className: "ci",
+      key: "c4",
+      style: {
+        flex: 1,
+        padding: "24px 20px",
+        overflowY: "auto"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: "center",
+        marginBottom: 16
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 56,
+        marginBottom: 12
+      },
+      className: "pi"
+    }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("h2", {
+      className: "gs",
+      style: {
+        fontFamily: D,
+        fontSize: 48,
+        lineHeight: 0.85,
+        marginBottom: 16
+      }
+    }, "HUDDLE COMPLETE")), /*#__PURE__*/React.createElement("div", {
+      className: "gc2",
+      style: {
+        padding: 20,
+        width: "100%",
+        maxWidth: 320,
+        margin: "0 auto",
+        marginBottom: 16
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "gs",
+      style: {
+        fontFamily: D,
+        fontSize: 56,
+        lineHeight: 0.9,
+        marginBottom: 12,
+        textAlign: "center"
+      }
+    }, "+", calcPts(), " GP"), function () {
+      var proofCount = sessions.filter(function (s) {
+        return s.proof;
+      }).length;
+      return [{
+        l: "Daily Streak",
+        p: 10,
+        on: true
+      }, {
+        l: "8+ Hours Sleep",
+        p: 20,
+        on: ["8", "9", "10+"].includes(sleepHrs)
+      }, {
+        l: "Coach's Task",
+        p: 15,
+        on: coachTask
+      }, {
+        l: "Green Nutrition",
+        p: 5,
+        on: mealColor === "green"
+      }, {
+        l: "Proof of Grind (×" + proofCount + ")",
+        p: proofCount * 5,
+        on: proofCount > 0
+      }].map(function (r) {
+        return /*#__PURE__*/React.createElement("div", {
+          key: r.l,
+          style: {
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "5px 0",
+            borderBottom: "1px solid rgba(204,255,0,0.04)"
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          style: {
+            fontFamily: D2,
+            fontSize: 13,
+            color: r.on ? "var(--txt)" : "var(--dim)",
+            letterSpacing: "0.5px"
+          }
+        }, r.l.toUpperCase()), /*#__PURE__*/React.createElement("span", {
+          style: {
+            fontFamily: D,
+            fontSize: 18,
+            color: r.on ? "var(--g1)" : "var(--dim)"
+          }
+        }, r.on ? "+" + r.p : "—"));
+      });
+    }()), /*#__PURE__*/React.createElement("div", {
+      className: "gc",
+      style: {
+        padding: "16px 20px",
+        maxWidth: 320,
+        margin: "0 auto",
+        border: rd.redFlag ? "2px solid rgba(239,83,80,0.3)" : "1px solid rgba(204,255,0,0.08)"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 8
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 14,
+        color: "var(--sub)",
+        letterSpacing: "2px"
+      }
+    }, "READINESS SCORE"), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D,
+        fontSize: 36,
+        color: scoreColor,
+        lineHeight: 0.9
+      }
+    }, rd.score, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 14,
+        color: "var(--dim)"
+      }
+    }, "/100"))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        height: 8,
+        background: "rgba(204,255,0,0.06)",
+        borderRadius: 8,
+        overflow: "hidden",
+        marginBottom: rd.redFlag ? 12 : 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        height: "100%",
+        width: rd.score + "%",
+        background: scoreColor,
+        borderRadius: 8,
+        transition: "width 0.8s ease"
+      }
+    })), rd.redFlag && /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "10px 14px",
+        borderRadius: 12,
+        background: "rgba(239,83,80,0.08)",
+        border: "1px solid rgba(239,83,80,0.15)"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 16,
+        color: "var(--red)",
+        marginBottom: 4
+      }
+    }, "\uD83D\uDEA9 RED FLAG"), rd.reasons.map(function (r, i) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: i,
+        style: {
+          fontFamily: D2,
+          fontSize: 13,
+          color: "var(--red)",
+          letterSpacing: "0.5px"
+        }
+      }, "\xB7 ", r.toUpperCase());
+    }), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 11,
+        color: "var(--dim)",
+        letterSpacing: "0.5px",
+        marginTop: 6
+      }
+    }, "YOUR COACHING STAFF WILL BE NOTIFIED"))));
+  }(), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px 20px 28px"
+    }
+  }, card < 4 ? /*#__PURE__*/React.createElement("button", {
+    className: "btn-gold",
+    onClick: function () {
+      if (canNext()) setCard(card + 1);
+    },
+    disabled: !canNext()
+  }, "NEXT \u2192") : /*#__PURE__*/React.createElement("button", {
+    className: "btn-gold",
+    onClick: finish,
+    disabled: saving
+  }, saving ? "SAVING..." : "LOCK IT IN 🔒")));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §10  DASHBOARD — Athlete home with hero Huddle CTA
+   ████████████████████████████████████████████████████████████████████████ */
+
+function Dashboard({
+  profile,
+  todayCheckin,
+  todaySessions,
+  onHuddle,
+  onSignOut
+}) {
+  var lv = gL(profile.xp),
+    nxt = gN(profile.xp),
+    pr = gP(profile.xp);
+  var first = profile.first_name || profile.name.split(" ")[0] || "";
+  var hr = new Date().getHours();
+  var greet = hr < 12 ? "GOOD MORNING" : hr < 17 ? "GOOD AFTERNOON" : "GOOD EVENING";
+
+  /* ── Conflict detection from today's sessions ── */
+  var LOAD_CAUTION = 600,
+    LOAD_DANGER = 900;
+  var totalLoad = todaySessions.reduce(function (sum, s) {
+    return sum + (s.training_load || s.rpe * s.duration);
+  }, 0);
+  var sportSet = {};
+  todaySessions.forEach(function (s) {
+    sportSet[s.sport] = true;
+  });
+  var distinctSports = Object.keys(sportSet);
+  var hasConflict = distinctSports.length >= 2;
+  var loadLevel = totalLoad >= LOAD_DANGER ? "danger" : totalLoad >= LOAD_CAUTION ? "caution" : "ok";
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "0 0 110px"
+    }
+  }, !todayCheckin ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "4px"
+    }
+  }, greet), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 40,
+      lineHeight: 0.9
+    }
+  }, first.toUpperCase(), " \uD83D\uDC4B")), /*#__PURE__*/React.createElement("button", {
+    onClick: onHuddle,
+    style: {
+      width: "100%",
+      padding: "0",
+      borderRadius: 24,
+      border: "3px solid rgba(204,255,0,0.25)",
+      background: "linear-gradient(160deg,rgba(20,30,10,0.4),rgba(10,14,8,0.95))",
+      textAlign: "center",
+      marginBottom: 20,
+      position: "relative",
+      overflow: "hidden",
+      boxShadow: "0 0 40px rgba(204,255,0,0.08),0 0 80px rgba(204,255,0,0.03)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      top: -60,
+      right: -60,
+      width: 200,
+      height: 200,
+      borderRadius: "50%",
+      background: "radial-gradient(circle,rgba(204,255,0,0.1),transparent 70%)",
+      animation: "orbFloat 3s ease infinite"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      bottom: -40,
+      left: -40,
+      width: 160,
+      height: 160,
+      borderRadius: "50%",
+      background: "radial-gradient(circle,rgba(255,140,0,0.06),transparent 70%)",
+      animation: "orbFloat 4s ease 1s infinite"
+    }
+  }), /*#__PURE__*/React.createElement("style", null, "@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);opacity:0.5}50%{transform:translate(-5px,-12px) scale(1.15);opacity:1}}@keyframes huddlePulse{0%,100%{box-shadow:0 0 40px rgba(204,255,0,0.08),0 0 80px rgba(204,255,0,0.03)}50%{box-shadow:0 0 60px rgba(204,255,0,0.15),0 0 100px rgba(204,255,0,0.06)}}"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      zIndex: 1,
+      padding: "32px 24px 28px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 64,
+      marginBottom: 12
+    }
+  }, "\u2694\uFE0F"), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 52,
+      lineHeight: 0.85,
+      letterSpacing: "2px"
+    }
+  }, "DAILY HUDDLE"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--sub)",
+      letterSpacing: "3px",
+      marginTop: 8
+    }
+  }, "SLEEP \xB7 BODY \xB7 WORK \xB7 FUEL"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 3,
+      background: "linear-gradient(90deg,transparent,var(--g0),var(--g1),var(--g0),transparent)",
+      margin: "20px auto",
+      maxWidth: 200,
+      opacity: 0.5
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "inline-block",
+      padding: "14px 40px",
+      borderRadius: 16,
+      background: "linear-gradient(135deg,var(--g0),var(--g4),var(--g1),var(--g6))",
+      fontFamily: D,
+      fontSize: 26,
+      color: "var(--bg)",
+      letterSpacing: "3px",
+      boxShadow: "0 4px 30px rgba(204,255,0,0.3)"
+    }
+  }, "START CHECK-IN \u2192"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--g4)",
+      letterSpacing: "2px",
+      marginTop: 12
+    }
+  }, "EARN UP TO +50 GP")))) : /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "4px"
+    }
+  }, greet), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 40,
+      lineHeight: 0.9
+    }
+  }, first.toUpperCase(), " \uD83D\uDC4B")), /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "20px",
+      marginBottom: 20,
+      border: "1.5px solid rgba(76,175,80,0.15)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 48,
+      height: 48,
+      borderRadius: 14,
+      background: "rgba(76,175,80,0.1)",
+      border: "1.5px solid rgba(76,175,80,0.2)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 26
+    }
+  }, "\uD83D\uDEE1\uFE0F"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 24
+    }
+  }, "HUDDLE COMPLETE"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--grn)",
+      letterSpacing: "2px"
+    }
+  }, "+", todayCheckin.points_earned, " GP EARNED TODAY"))), /*#__PURE__*/React.createElement("div", {
+    className: "gd",
+    style: {
+      margin: "10px 0"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 10,
+      flexWrap: "wrap",
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      letterSpacing: "0.5px"
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "\uD83D\uDE34 ", todayCheckin.sleep_hrs, "h ", todayCheckin.sleep_quality === "good" ? "👍" : "👎"), /*#__PURE__*/React.createElement("span", null, todayCheckin.readiness === "ready" ? "😃" : todayCheckin.readiness === "sluggish" ? "😐" : "😫"), /*#__PURE__*/React.createElement("span", null, "\uD83E\uDDE0 ", todayCheckin.stress, "/5"), /*#__PURE__*/React.createElement("span", null, todayCheckin.meal_color === "green" ? "🟢" : todayCheckin.meal_color === "yellow" ? "🟡" : "🔴"), /*#__PURE__*/React.createElement("span", null, "\uD83D\uDCA7 ", todayCheckin.hydration), todayCheckin.coach_task && /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--grn)"
+    }
+  }, "\u2705 TASK")), todayCheckin.pain_zones && todayCheckin.pain_zones.length > 0 && todayCheckin.pain_zones.some(function (z) {
+    return !z.startsWith("level_");
+  }) && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--red)",
+      letterSpacing: "0.5px",
+      marginTop: 8
+    }
+  }, "\u26A0\uFE0F PAIN: ", todayCheckin.pain_zones.filter(function (z) {
+    return !z.startsWith("level_");
+  }).map(function (z) {
+    var f = z.replace(/_/g, " ");
+    return f.charAt(0).toUpperCase() + f.slice(1);
+  }).join(", "), todayCheckin.pain_zones.filter(function (z) {
+    return z.startsWith("level_");
+  }).map(function (z) {
+    return " · Level " + z.replace("level_", "") + "/10";
+  })))), todaySessions.length > 0 && (hasConflict || loadLevel !== "ok") && /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "0 20px",
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px 18px",
+      borderRadius: 18,
+      background: loadLevel === "danger" ? "rgba(239,83,80,0.08)" : hasConflict ? "rgba(255,179,0,0.06)" : "rgba(204,255,0,0.04)",
+      border: "2px solid " + (loadLevel === "danger" ? "rgba(239,83,80,0.25)" : hasConflict ? "rgba(255,179,0,0.2)" : "rgba(204,255,0,0.1)")
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: 10,
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 22
+    }
+  }, loadLevel === "danger" ? "🚨" : hasConflict ? "⚡" : "📊"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: loadLevel === "danger" ? "var(--red)" : hasConflict ? "#FFB300" : "var(--g1)"
+    }
+  }, hasConflict ? "MULTI-SPORT DAY" : "HIGH TRAINING LOAD"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--dim)",
+      letterSpacing: "1px"
+    }
+  }, distinctSports.length, " SPORT", distinctSports.length > 1 ? "S" : "", " \xB7 ", todaySessions.length, " SESSION", todaySessions.length > 1 ? "S" : ""))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 4
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      letterSpacing: "2px"
+    }
+  }, "DAILY LOAD"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D,
+      fontSize: 24,
+      color: loadLevel === "danger" ? "var(--red)" : loadLevel === "caution" ? "#FFB300" : "var(--g1)"
+    }
+  }, totalLoad)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 8,
+      background: "rgba(204,255,0,0.06)",
+      borderRadius: 8,
+      overflow: "hidden",
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: "100%",
+      width: Math.min(100, totalLoad / LOAD_DANGER * 100) + "%",
+      background: loadLevel === "danger" ? "var(--red)" : loadLevel === "caution" ? "#FFB300" : "var(--g1)",
+      borderRadius: 8
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      left: LOAD_CAUTION / LOAD_DANGER * 100 + "%",
+      top: 0,
+      bottom: 0,
+      width: 2,
+      background: "rgba(255,179,0,0.4)"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)"
+    }
+  }, "0"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "#FFB300"
+    }
+  }, "CAUTION ", LOAD_CAUTION), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--red)"
+    }
+  }, "DANGER ", LOAD_DANGER))), distinctSports.map(function (sport) {
+    var sportSessions = todaySessions.filter(function (s) {
+      return s.sport === sport;
+    });
+    var sportLoad = sportSessions.reduce(function (sum, s) {
+      return sum + (s.training_load || s.rpe * s.duration);
+    }, 0);
+    return /*#__PURE__*/React.createElement("div", {
+      key: sport,
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "6px 0",
+        borderTop: "1px solid rgba(204,255,0,0.04)"
+      }
+    }, /*#__PURE__*/React.createElement(ST, {
+      s: sport
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 12,
+        color: "var(--sub)",
+        flex: 1
+      }
+    }, sportSessions.map(function (s) {
+      return s.session_type;
+    }).join(", ")), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D,
+        fontSize: 18,
+        color: sportLoad > 400 ? "var(--ember)" : "var(--g4)"
+      }
+    }, sportLoad));
+  }), hasConflict && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: loadLevel === "danger" ? "var(--red)" : "#FFB300",
+      letterSpacing: "0.5px",
+      marginTop: 8,
+      padding: "8px 12px",
+      borderRadius: 10,
+      background: loadLevel === "danger" ? "rgba(239,83,80,0.06)" : "rgba(255,179,0,0.04)"
+    }
+  }, loadLevel === "danger" ? "⚠️ TOTAL LOAD IS IN THE DANGER ZONE. CONSIDER REDUCING INTENSITY TOMORROW." : "⚡ MULTI-SPORT DAY LOGGED. YOUR COACHES CAN SEE YOUR COMBINED LOAD."))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "0 20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      borderRadius: 20,
+      padding: 22,
+      marginBottom: 16,
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      inset: -3,
+      borderRadius: 23,
+      background: "conic-gradient(from 0deg,#5A7A00,#A8E600,#CCFF00,#E0FF66,#F0FFAA,#E0FF66,#CCFF00,#A8E600,#5A7A00)",
+      animation: "spin 3s linear infinite",
+      zIndex: 0
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      inset: 2,
+      borderRadius: 18,
+      background: "linear-gradient(160deg,#10140a,#060808)",
+      zIndex: 0
+    }
+  }), /*#__PURE__*/React.createElement("style", null, "@keyframes spin{to{transform:rotate(360deg)}}"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "relative",
+      zIndex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--dim)",
+      letterSpacing: "4px"
+    }
+  }, "LEVEL ", lv.l), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 36,
+      lineHeight: 0.9
+    }
+  }, lv.i, " ", lv.t.toUpperCase())), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "right"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 42,
+      lineHeight: 0.85
+    }
+  }, profile.xp), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--dim)",
+      letterSpacing: "3px"
+    }
+  }, "TOTAL GP"))), /*#__PURE__*/React.createElement("div", {
+    className: "xb",
+    style: {
+      height: 14,
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "xf",
+    style: {
+      width: pr + "%",
+      height: "100%",
+      position: "relative"
+    }
+  })), nxt && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginTop: 8,
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--dim)",
+      letterSpacing: "1px"
+    }
+  }, /*#__PURE__*/React.createElement("span", null, profile.xp, " GP"), /*#__PURE__*/React.createElement("span", null, nxt.i, " ", nxt.t, " \u2014 ", nxt.x, " GP")))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: 10,
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gc2",
+    style: {
+      padding: "16px 12px",
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "fi",
+    style: {
+      fontSize: 24
+    }
+  }, "\uD83D\uDD25"), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 36,
+      lineHeight: 0.9,
+      marginTop: 4
+    }
+  }, profile.streak), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginTop: 4
+    }
+  }, "DAY STREAK")), /*#__PURE__*/React.createElement("div", {
+    className: "gc2",
+    style: {
+      padding: "16px 12px",
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 24
+    }
+  }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 36,
+      lineHeight: 0.9,
+      marginTop: 4
+    }
+  }, profile.longest_streak), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginTop: 4
+    }
+  }, "BEST STREAK"))), /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "12px 16px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      marginBottom: 6
+    }
+  }, "MY SPORTS"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      flexWrap: "wrap"
+    }
+  }, (profile.sports || []).map(function (s) {
+    return /*#__PURE__*/React.createElement(ST, {
+      key: s,
+      s: s
+    });
+  })))));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §11  LEADERBOARD — Live from Supabase leaderboard view
+   ████████████████████████████████████████████████████████████████████████ */
+
+function Leaderboard({
+  myId
+}) {
+  var [data, setData] = useState([]);
+  var [loading, setLoading] = useState(true);
+  var LOAD_CAUTION = 600,
+    LOAD_DANGER = 900;
+  useEffect(function () {
+    // Query the today_athlete_load view for leaderboard + conflict data
+    SB.from('today_athlete_load').select('*').limit(50).then(function (res) {
+      if (res.error) {
+        // Fallback to basic leaderboard if view doesn't exist yet
+        SB.from('leaderboard').select('*').limit(50).then(function (r2) {
+          if (!r2.error) setData(r2.data || []);
+          setLoading(false);
+        });
+      } else {
+        // Sort by XP descending
+        var sorted = (res.data || []).sort(function (a, b) {
+          return (b.xp || 0) - (a.xp || 0);
+        });
+        setData(sorted);
+        setLoading(false);
+      }
+    });
+  }, []);
+  if (loading) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: 40,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 24
+    }
+  }, "LOADING..."));
+
+  // Count conflicts for summary
+  var conflictCount = data.filter(function (a) {
+    return (a.sports_today || 0) >= 2;
+  }).length;
+  var dangerCount = data.filter(function (a) {
+    return (a.today_load || 0) >= LOAD_DANGER;
+  }).length;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "20px 20px 110px"
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 48,
+      margin: "0 0 4px",
+      lineHeight: 0.9
+    }
+  }, SCHOOL.LOGO, " LEADERBOARD"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--dim)",
+      margin: "0 0 16px",
+      letterSpacing: "4px"
+    }
+  }, "ALL ", SCHOOL.SHORT_NAME), (conflictCount > 0 || dangerCount > 0) && /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 8,
+      marginBottom: 16
+    }
+  }, conflictCount > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      padding: "10px 14px",
+      borderRadius: 14,
+      background: "rgba(255,179,0,0.06)",
+      border: "1.5px solid rgba(255,179,0,0.2)",
+      display: "flex",
+      alignItems: "center",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 16
+    }
+  }, "\u26A1"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "#FFB300"
+    }
+  }, conflictCount), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)",
+      letterSpacing: "1px"
+    }
+  }, "MULTI-SPORT"))), dangerCount > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      padding: "10px 14px",
+      borderRadius: 14,
+      background: "rgba(239,83,80,0.06)",
+      border: "1.5px solid rgba(239,83,80,0.2)",
+      display: "flex",
+      alignItems: "center",
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 16
+    }
+  }, "\uD83D\uDEA8"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--red)"
+    }
+  }, dangerCount), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)",
+      letterSpacing: "1px"
+    }
+  }, "HIGH LOAD")))), data.length === 0 && /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: 20,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 16,
+      color: "var(--dim)",
+      letterSpacing: "2px"
+    }
+  }, "NO ATHLETES YET \u2014 BE THE FIRST!")), data.map(function (a, i) {
+    var isMe = a.id === myId || a.athlete_id === myId;
+    var lv = gL(a.xp || 0);
+    var load = a.today_load || 0;
+    var sportsToday = a.sports_today || 0;
+    var hasConflict = sportsToday >= 2;
+    var loadLvl = load >= LOAD_DANGER ? "danger" : load >= LOAD_CAUTION ? "caution" : "ok";
+    var hasFlag = a.red_flag;
+    return /*#__PURE__*/React.createElement("div", {
+      key: a.id || a.athlete_id,
+      className: isMe ? "gc2" : "gc",
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "14px 16px",
+        marginBottom: 10,
+        border: hasFlag ? "2px solid rgba(239,83,80,0.2)" : hasConflict ? "1.5px solid rgba(255,179,0,0.15)" : undefined
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        width: 32,
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D,
+        fontSize: i < 3 ? 22 : 20,
+        color: i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "var(--dim)"
+      }
+    }, i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        minWidth: 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 18,
+        color: "var(--txt)",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        letterSpacing: "1px"
+      }
+    }, (a.name || "").toUpperCase()), isMe && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 11,
+        padding: "2px 8px",
+        borderRadius: 8,
+        background: "rgba(204,255,0,0.1)",
+        color: "var(--g1)",
+        letterSpacing: "2px"
+      }
+    }, "YOU"), hasFlag && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 12
+      }
+    }, "\uD83D\uDEA9")), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 5,
+        marginTop: 3,
+        flexWrap: "wrap"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 12,
+        color: "var(--dim)"
+      }
+    }, lv.i, " LVL ", lv.l), (a.sports || []).slice(0, 2).map(function (s) {
+      return /*#__PURE__*/React.createElement(ST, {
+        key: s,
+        s: s
+      });
+    }), (a.streak || 0) > 0 && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 11,
+        color: "var(--ember)"
+      }
+    }, "\uD83D\uDD25", a.streak, "d")), (hasConflict || load > 0) && /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 4,
+        marginTop: 4,
+        flexWrap: "wrap"
+      }
+    }, hasConflict && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        padding: "2px 8px",
+        borderRadius: 8,
+        background: "rgba(255,179,0,0.1)",
+        color: "#FFB300",
+        border: "1px solid rgba(255,179,0,0.15)",
+        letterSpacing: "1px"
+      }
+    }, "\u26A1 ", sportsToday, " SPORTS"), load > 0 && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        padding: "2px 8px",
+        borderRadius: 8,
+        background: loadLvl === "danger" ? "rgba(239,83,80,0.1)" : loadLvl === "caution" ? "rgba(255,179,0,0.08)" : "rgba(204,255,0,0.06)",
+        color: loadLvl === "danger" ? "var(--red)" : loadLvl === "caution" ? "#FFB300" : "var(--g4)",
+        border: "1px solid " + (loadLvl === "danger" ? "rgba(239,83,80,0.15)" : "rgba(204,255,0,0.08)"),
+        letterSpacing: "1px"
+      }
+    }, "LOAD ", load))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: "right"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "gs",
+      style: {
+        fontFamily: D,
+        fontSize: 28,
+        lineHeight: 1
+      }
+    }, a.xp || 0), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 11,
+        color: "var(--dim)",
+        letterSpacing: "2px"
+      }
+    }, "XP")));
+  }));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §12a  PROFILE PAGE — Settings, edit sports, sign out
+   ████████████████████████████████████████████████████████████████████████ */
+
+function ProfilePage({
+  profile,
+  onSignOut,
+  onUpdateSports
+}) {
+  var lv = gL(profile.xp);
+  var [editing, setEditing] = useState(false);
+  var [sel, setSel] = useState([].concat(profile.sports || []));
+  function togSport(s) {
+    setSel(function (p) {
+      return p.includes(s) ? p.filter(function (x) {
+        return x !== s;
+      }) : [].concat(p, [s]);
+    });
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "20px 20px 110px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: 80,
+      height: 80,
+      borderRadius: "50%",
+      background: "linear-gradient(135deg,rgba(204,255,0,0.12),rgba(255,140,0,0.06))",
+      border: "3px solid rgba(204,255,0,0.2)",
+      margin: "0 auto 14px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 36
+    }
+  }, lv.i), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 36,
+      lineHeight: 0.9
+    }
+  }, profile.name.toUpperCase()), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginTop: 6
+    }
+  }, "GRADE ", profile.grade, " \xB7 ", lv.t.toUpperCase(), " \xB7 LVL ", lv.l), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      letterSpacing: "1px",
+      marginTop: 4
+    }
+  }, profile.email)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr 1fr",
+      gap: 10,
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "14px 8px",
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 28
+    }
+  }, profile.xp), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginTop: 4
+    }
+  }, "TOTAL GP")), /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "14px 8px",
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 28
+    }
+  }, profile.streak), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginTop: 4
+    }
+  }, "STREAK")), /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "14px 8px",
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 28
+    }
+  }, profile.longest_streak), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginTop: 4
+    }
+  }, "BEST"))), /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "18px",
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--sub)"
+    }
+  }, "MY SPORTS"), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      setEditing(!editing);
+      setSel([].concat(profile.sports || []));
+    },
+    style: {
+      background: "none",
+      border: "1px solid rgba(204,255,0,0.1)",
+      borderRadius: 10,
+      padding: "4px 14px",
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--g4)",
+      letterSpacing: "1px"
+    }
+  }, editing ? "CANCEL" : "EDIT")), !editing ? /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      flexWrap: "wrap"
+    }
+  }, (profile.sports || []).map(function (s) {
+    return /*#__PURE__*/React.createElement(ST, {
+      key: s,
+      s: s
+    });
+  })) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: 8,
+      marginBottom: 14
+    }
+  }, ALL_SPORTS.map(function (s) {
+    var on = sel.includes(s);
+    return /*#__PURE__*/React.createElement("button", {
+      key: s,
+      onClick: function () {
+        togSport(s);
+      },
+      style: {
+        padding: "8px 14px",
+        borderRadius: 12,
+        fontFamily: D2,
+        fontSize: 13,
+        letterSpacing: "1px",
+        background: on ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        color: on ? "var(--g1)" : "var(--dim)",
+        border: "1.5px solid " + (on ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+      }
+    }, on ? "✓ " : "", s.toUpperCase());
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      if (sel.length > 0) {
+        onUpdateSports(sel);
+        setEditing(false);
+      }
+    },
+    disabled: sel.length === 0,
+    className: "btn-gold",
+    style: {
+      fontSize: 18,
+      padding: 14
+    }
+  }, "SAVE SPORTS"))), /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: "18px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--sub)",
+      marginBottom: 14
+    }
+  }, "ACCOUNT"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "0.5px",
+      marginBottom: 12
+    }
+  }, "ROLE: ", (profile.role || "athlete").toUpperCase()), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "0.5px",
+      marginBottom: 16
+    }
+  }, "MEMBER SINCE: ", new Date(profile.created_at).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric'
+  }).toUpperCase()), /*#__PURE__*/React.createElement("button", {
+    onClick: onSignOut,
+    style: {
+      width: "100%",
+      padding: "16px",
+      borderRadius: 14,
+      border: "2px solid rgba(239,83,80,0.2)",
+      background: "rgba(239,83,80,0.04)",
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--red)",
+      letterSpacing: "2px"
+    }
+  }, "SIGN OUT")));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §12b  LEVEL UP CELEBRATION — Full-screen overlay on XP threshold
+   ████████████████████████████████████████████████████████████████████████ */
+
+function LevelUp({
+  level,
+  onDismiss
+}) {
+  var [phase, setPhase] = useState(0);
+  useEffect(function () {
+    var a = setTimeout(function () {
+      setPhase(1);
+    }, 200);
+    var b = setTimeout(function () {
+      setPhase(2);
+    }, 800);
+    var c = setTimeout(function () {
+      setPhase(3);
+    }, 1600);
+    return function () {
+      clearTimeout(a);
+      clearTimeout(b);
+      clearTimeout(c);
+    };
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      inset: 0,
+      zIndex: 250,
+      background: "rgba(2,2,1,0.95)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 40
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      width: 500,
+      height: 500,
+      borderRadius: "50%",
+      background: "radial-gradient(circle,rgba(204,255,0,0.12),rgba(255,140,0,0.04) 40%,transparent 65%)",
+      animation: "fadeUp 1s ease"
+    }
+  }), phase >= 1 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 96,
+      marginBottom: 16,
+      animation: "popIn 0.6s cubic-bezier(0.34,1.5,0.64,1) both"
+    }
+  }, /*#__PURE__*/React.createElement("style", null, "@keyframes popIn{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}"), level.i), phase >= 1 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      animation: "fadeUp 0.5s ease both"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 22,
+      color: "var(--g4)",
+      letterSpacing: "6px",
+      textAlign: "center"
+    }
+  }, "LEVEL UP"), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 64,
+      lineHeight: 0.85,
+      textAlign: "center",
+      letterSpacing: "2px"
+    }
+  }, level.t.toUpperCase()), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 18,
+      color: "var(--dim)",
+      letterSpacing: "4px",
+      textAlign: "center",
+      marginTop: 8
+    }
+  }, "LEVEL ", level.l)), phase >= 2 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 24,
+      animation: "fadeUp 0.5s ease both"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--sub)",
+      letterSpacing: "3px",
+      textAlign: "center"
+    }
+  }, "GP THRESHOLD REACHED"), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 40,
+      textAlign: "center"
+    }
+  }, level.x, " GP")), phase >= 3 && /*#__PURE__*/React.createElement("button", {
+    onClick: onDismiss,
+    style: {
+      marginTop: 32,
+      padding: "16px 48px",
+      borderRadius: 16,
+      border: "none",
+      fontFamily: D,
+      fontSize: 24,
+      letterSpacing: "3px",
+      background: "linear-gradient(135deg,var(--g0),var(--g4),var(--g1),var(--g6))",
+      color: "var(--bg)",
+      boxShadow: "0 4px 40px rgba(204,255,0,0.3)",
+      animation: "fadeUp 0.4s ease both"
+    }
+  }, "CONTINUE"));
+}
+
+// ═══ NAV ═══
+
+/* ████████████████████████████████████████████████████████████████████████
+   §12  NAV — Bottom tab bar
+   ████████████████████████████████████████████████████████████████████████ */
+
+function Nav({
+  page,
+  onNav
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      display: "flex",
+      justifyContent: "center",
+      padding: "8px 0 16px",
+      background: "linear-gradient(180deg,transparent,rgba(2,2,1,0.98) 30%,var(--bg))",
+      borderTop: "1px solid rgba(204,255,0,0.06)",
+      zIndex: 100
+    }
+  }, [{
+    id: "home",
+    i: "⚔️",
+    l: "HOME"
+  }, {
+    id: "board",
+    i: SCHOOL.LOGO,
+    l: "BOARD"
+  }, {
+    id: "profile",
+    i: "👤",
+    l: "PROFILE"
+  }].map(function (it) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: it.id,
+      onClick: function () {
+        onNav(it.id);
+      },
+      style: {
+        flex: 1,
+        maxWidth: 110,
+        background: "none",
+        border: "none",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4,
+        padding: "6px 0"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 26,
+        filter: page === it.id ? "drop-shadow(0 0 8px rgba(204,255,0,0.4))" : "grayscale(1) opacity(0.25)"
+      }
+    }, it.i), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 13,
+        letterSpacing: "3px",
+        color: page === it.id ? "var(--g1)" : "var(--dim)"
+      }
+    }, it.l));
+  }));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §13  APP — Auth state machine + route orchestrator
+   ████████████████████████████████████████████████████████████████████████ */
+
+function App() {
+  var [loading, setLoading] = useState(true);
+  var [user, setUser] = useState(null); // auth user
+  var [profile, setProfile] = useState(null); // profiles row
+  var [page, setPage] = useState("home");
+  var [inHuddle, setInHuddle] = useState(false);
+  var [todayCheckin, setTodayCheckin] = useState(null);
+  var [todaySessions, setTodaySessions] = useState([]);
+  var [levelUp, setLevelUp] = useState(null); /* level-up celebration data */
+  var [toastMsg, setToastMsg] = useState(null);
+  var [toastType, setToastType] = useState("ok");
+  function toast(msg, type) {
+    setToastMsg(msg);
+    setToastType(type || "ok");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      setToastMsg(null);
+    }, 3000);
+  }
+
+  // Load profile + today's check-in + today's sessions
+  async function loadProfile(uid) {
+    var p = await SB.from('profiles').select('*').eq('id', uid).single();
+    if (p.data) setProfile(p.data);
+    var c = await SB.from('checkins').select('*').eq('athlete_id', uid).eq('date', today()).maybeSingle();
+    if (c.data) setTodayCheckin(c.data);
+    var s = await SB.from('sessions').select('*').eq('athlete_id', uid).eq('date', today());
+    if (s.data) setTodaySessions(s.data);
+    return p.data;
+  }
+
+  // Auth listener
+  useEffect(function () {
+    SB.auth.getSession().then(function (res) {
+      var s = res.data.session;
+      if (s && s.user) {
+        setUser(s.user);
+        loadProfile(s.user.id).then(function () {
+          setLoading(false);
+        });
+      } else {
+        setLoading(false);
+      }
+    });
+    var {
+      data: {
+        subscription
+      }
+    } = SB.auth.onAuthStateChange(function (event, session) {
+      if (event === 'SIGNED_IN' && session) {
+        setUser(session.user);
+        loadProfile(session.user.id);
+      }
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setProfile(null);
+        setTodayCheckin(null);
+        setTodaySessions([]);
+      }
+    });
+    return function () {
+      subscription.unsubscribe();
+    };
+  }, []);
+  async function signOut() {
+    await SB.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    setPage("home");
+  }
+  if (loading) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 32
+    }
+  }, "LOADING..."));
+
+  // Not logged in → Auth screen
+  if (!user) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
+    msg: toastMsg,
+    type: toastType
+  }), /*#__PURE__*/React.createElement(AuthScreen, {
+    toast: toast
+  }));
+
+  // Logged in but profile incomplete → Onboarding
+  if (profile && (!profile.name || !profile.first_name || profile.name === '')) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
+    msg: toastMsg,
+    type: toastType
+  }), /*#__PURE__*/React.createElement(Onboarding, {
+    user: user,
+    toast: toast,
+    onDone: function () {
+      loadProfile(user.id);
+    }
+  }));
+
+  // Logged in but profile not loaded yet
+  if (!profile) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 32
+    }
+  }, "LOADING..."));
+
+  // In huddle
+  if (inHuddle) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
+    msg: toastMsg,
+    type: toastType
+  }), /*#__PURE__*/React.createElement(Huddle, {
+    profile: profile,
+    toast: toast,
+    onCancel: function () {
+      setInHuddle(false);
+    },
+    onDone: function (data) {
+      var oldLevel = gL(profile.xp);
+      var newLevel = gL(data.xp);
+      setInHuddle(false);
+      setProfile(Object.assign({}, profile, {
+        xp: data.xp,
+        streak: data.streak,
+        longest_streak: Math.max(profile.longest_streak, data.streak)
+      }));
+      loadProfile(user.id);
+      toast("+" + data.points + " GP EARNED!", "ok");
+      /* Check for level-up */
+      if (newLevel.l > oldLevel.l) {
+        setLevelUp(newLevel);
+      }
+    }
+  }));
+
+  /* Level-up celebration overlay */
+  if (levelUp) return /*#__PURE__*/React.createElement(LevelUp, {
+    level: levelUp,
+    onDismiss: function () {
+      setLevelUp(null);
+    }
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: "var(--bg)",
+      minHeight: "100vh",
+      color: "var(--txt)",
+      maxWidth: 480,
+      margin: "0 auto"
+    }
+  }, /*#__PURE__*/React.createElement(Toast, {
+    msg: toastMsg,
+    type: toastType
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+      padding: "12px 20px",
+      background: "linear-gradient(180deg,var(--bg),rgba(2,2,1,0.97))",
+      borderBottom: "1px solid rgba(204,255,0,0.08)",
+      backdropFilter: "blur(20px)",
+      display: "flex",
+      alignItems: "center"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 24
+    }
+  }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginLeft: 10
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 22,
+      lineHeight: 1
+    }
+  }, SCHOOL.APP_NAME), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
+      color: "var(--dim)",
+      letterSpacing: "3px"
+    }
+  }, profile.first_name.toUpperCase(), " \xB7 ", (profile.sports || []).slice(0, 2).join(" · ").toUpperCase()))), page === "home" && /*#__PURE__*/React.createElement(Dashboard, {
+    profile: profile,
+    todayCheckin: todayCheckin,
+    todaySessions: todaySessions,
+    onHuddle: function () {
+      setInHuddle(true);
+    },
+    onSignOut: signOut
+  }), page === "board" && /*#__PURE__*/React.createElement(Leaderboard, {
+    myId: user.id
+  }), page === "profile" && /*#__PURE__*/React.createElement(ProfilePage, {
+    profile: profile,
+    onSignOut: signOut,
+    onUpdateSports: function (s) {
+      SB.rpc('update_my_sports', {
+        p_sports: s
+      }).then(function () {
+        loadProfile(user.id);
+        toast("Sports updated!", "ok");
+      });
+    }
+  }), /*#__PURE__*/React.createElement(Nav, {
+    page: page,
+    onNav: setPage
+  }));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §14  MOUNT
+   ████████████████████████████████████████████████████████████████████████ */
+
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+</script>
+</body>
+</html>
