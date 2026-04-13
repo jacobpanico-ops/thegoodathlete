@@ -8,41 +8,41 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://tjwtzbnyflyoicnrfyzc.supabase.co">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#060608;--g1:#CCFF00;--g4:#A8E600;--g6:#E0FF66;--g7:#F0FFAA;--g0:#5A7A00;--ember:#FF6D00;--grn:#4CAF50;--red:#EF5350;--txt:#E8EAE6;--dim:#4A5050;--sub:#8A9A80}
+:root{--bg:#08080C;--g1:#00FF87;--g4:#00CC6A;--g6:#66FFAA;--g7:#99FFCC;--g0:#009950;--pr:#7C3AED;--pr2:#A855F7;--ember:#FF6D00;--grn:#00FF87;--red:#EF5350;--txt:#F0F0F4;--dim:#4A4A5A;--sub:#8A8A9A}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body,#root{height:100%;overflow-x:hidden;overscroll-behavior:none}
-body{background:var(--bg);color:var(--txt);font-family:'Exo 2',sans-serif;font-weight:500;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(204,255,0,0.02),transparent 50%);pointer-events:none}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-weight:500;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(124,58,237,0.04),transparent 50%),radial-gradient(ellipse at 70% 100%,rgba(0,255,135,0.02),transparent 50%);pointer-events:none}
 /* Lime shimmer text */
-.gs{background:linear-gradient(90deg,var(--g0),var(--g4),var(--g1),var(--g6),var(--g7),var(--g6),var(--g1),var(--g4),var(--g0));background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3s linear infinite}
+.gs{background:linear-gradient(90deg,var(--g0),var(--g4),var(--g1),var(--g6),#fff,var(--g6),var(--g1),var(--pr),var(--g0));background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3s linear infinite}
 @keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
 /* Cards — cool dark */
-.gc{background:linear-gradient(160deg,rgba(18,20,16,0.95),rgba(8,10,6,0.98));border:1px solid rgba(204,255,0,0.06);border-radius:18px}
-.gc2{background:linear-gradient(160deg,rgba(30,35,20,0.6),rgba(12,14,8,0.85));border:1px solid rgba(204,255,0,0.12);border-radius:18px}
-.xb{height:12px;background:rgba(90,122,0,0.15);border-radius:12px;overflow:hidden;border:1px solid rgba(204,255,0,0.08)}
-.xf{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--g0),var(--ember),var(--g4),var(--g1),var(--g6));background-size:200% 100%;transition:width 1s ease;position:relative}
-.gd{height:2px;background:linear-gradient(90deg,transparent,var(--g0),var(--g1),var(--g0),transparent);margin:18px 0;opacity:0.4}
+.gc{background:linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98));border:1px solid rgba(124,58,237,0.06);border-radius:18px}
+.gc2{background:linear-gradient(160deg,rgba(28,24,40,0.6),rgba(12,10,20,0.85));border:1px solid rgba(0,255,135,0.12);border-radius:18px}
+.xb{height:12px;background:rgba(0,100,55,0.15);border-radius:12px;overflow:hidden;border:1px solid rgba(0,255,135,0.08)}
+.xf{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--pr),var(--g0),var(--g4),var(--g1),var(--g6));background-size:200% 100%;transition:width 1s ease;position:relative}
+.gd{height:2px;background:linear-gradient(90deg,transparent,var(--pr),var(--g1),var(--pr),transparent);margin:18px 0;opacity:0.4}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes cardIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 @keyframes popIn{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
 .fu{animation:fadeUp 0.4s ease both}.ci{animation:cardIn 0.35s ease both}.pi{animation:popIn 0.5s cubic-bezier(0.34,1.5,0.64,1) both}
 .fi{display:inline-block;animation:fp .6s ease-in-out infinite alternate}
 @keyframes fp{0%{transform:scale(1)}100%{transform:scale(1.2);filter:brightness(1.5) drop-shadow(0 0 8px #FF6D00)}}
-input,select,textarea{font-family:'Exo 2',sans-serif}
-input::placeholder{color:#2a3020}
-input:focus,select:focus{border-color:var(--g1)!important;box-shadow:0 0 0 3px rgba(204,255,0,0.1);outline:none}
-button{font-family:'Exo 2',sans-serif;cursor:pointer;font-weight:600}
+input,select,textarea{font-family:'Inter',sans-serif}
+input::placeholder{color:#2a2a38}
+input:focus,select:focus{border-color:var(--g1)!important;box-shadow:0 0 0 3px rgba(0,255,135,0.1);outline:none}
+button{font-family:'Inter',sans-serif;cursor:pointer;font-weight:600}
 button:active{transform:scale(0.95)!important}
 ::-webkit-scrollbar{width:0}select option{background:#0a0800;color:var(--txt)}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:14px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease}
 .toast-ok{background:linear-gradient(135deg,var(--g0),var(--g1));color:var(--bg)}
 .toast-err{background:linear-gradient(135deg,#8B0000,var(--red));color:#fff}
-.btn-gold{padding:18px;border-radius:14px;border:none;font-family:'Anton',sans-serif;font-size:24px;letter-spacing:3px;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(204,255,0,0.2);width:100%}
-.btn-gold:disabled{background:#0a0c08;color:#2a3020;box-shadow:none;opacity:0.5}
-.inp{width:100%;padding:14px 16px;border-radius:14px;background:rgba(12,14,10,0.8);border:2px solid rgba(204,255,0,0.06);color:var(--txt);font-size:16px;font-weight:600;outline:none;box-sizing:border-box}
-.lbl{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--sub);display:block;margin-bottom:6px;letter-spacing:3px}
+.btn-gold{padding:18px;border-radius:14px;border:none;font-family:'Space Grotesk',sans-serif;font-size:24px;letter-spacing:3px;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(0,255,135,0.2);width:100%}
+.btn-gold:disabled{background:#0a0a10;color:#2a2a38;box-shadow:none;opacity:0.5}
+.inp{width:100%;padding:14px 16px;border-radius:14px;background:rgba(12,12,18,0.8);border:2px solid rgba(124,58,237,0.06);color:var(--txt);font-size:16px;font-weight:600;outline:none;box-sizing:border-box}
+.lbl{font-family:'Inter',sans-serif;font-size:14px;color:var(--sub);display:block;margin-bottom:6px;letter-spacing:3px}
 </style>
 </head>
 <body>
@@ -85,8 +85,8 @@ var {
   useEffect,
   useCallback
 } = React;
-var D = "'Anton',sans-serif",
-  D2 = "'Bebas Neue',sans-serif";
+var D = "'Space Grotesk',sans-serif",
+  D2 = "'Inter',sans-serif";
 
 /* ████████████████████████████████████████████████████████████████████████
    §2  SUPABASE CLIENT
@@ -105,13 +105,13 @@ var SB;
    CSS color variables are in the <style> tag at the top of the file.   */
 var SCHOOL = {
   APP_NAME: "THE GOOD ATHLETE",
-  SCHOOL_NAME: "FAIRVIEW APACHES",
+  SCHOOL_NAME: "",
   // each school customizes this
-  SHORT_NAME: "APACHES",
-  LOGO: "⚡",
-  MASCOT: "Apache",
+  SHORT_NAME: "ATHLETES",
+  LOGO: "◆",
+  MASCOT: "Good",
   // used in level titles
-  TAGLINE: "TRAIN · TRACK · THRIVE",
+  TAGLINE: "TRAIN · TRACK · DOMINATE",
   SUPABASE_URL: 'https://tjwtzbnyflyoicnrfyzc.supabase.co',
   SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqd3R6Ym55Zmx5b2ljbnJmeXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwOTY2NDgsImV4cCI6MjA5MTY3MjY0OH0.z1LlHS5ouqQgKD7IdQ1BKvp9aK9ZxPFmUbWuiLYe6kc'
 };
@@ -127,68 +127,68 @@ var RPE_COLOR = [, "#4CAF50", "#4CAF50", "#4CAF50", "#8BC34A", "#FFB300", "#FFB3
 var LVS = [{
   l: 1,
   x: 0,
-  t: "Scout",
-  i: "🪶"
+  t: "Rookie",
+  i: "◇"
 }, {
   l: 2,
   x: 80,
-  t: "Brave",
-  i: "🏹"
+  t: "Contender",
+  i: "◈"
 }, {
   l: 3,
   x: 200,
-  t: "Warrior",
-  i: "⚔️"
+  t: "Competitor",
+  i: "▲"
 }, {
   l: 4,
   x: 380,
-  t: "Raider",
-  i: "🪓"
+  t: "Grinder",
+  i: "◆"
 }, {
   l: 5,
   x: 600,
-  t: "Sharpshooter",
-  i: "🎯"
+  t: "Threat",
+  i: "⬡"
 }, {
   l: 6,
   x: 900,
-  t: "Captain",
-  i: "🛡️"
+  t: "Dominant",
+  i: "◆"
 }, {
   l: 7,
   x: 1300,
-  t: "War Chief",
-  i: "⚔️"
+  t: "Relentless",
+  i: "▶"
 }, {
   l: 8,
   x: 1800,
-  t: "Battle Tested",
-  i: "🔥"
+  t: "Elite",
+  i: "◆"
 }, {
   l: 9,
   x: 2400,
-  t: SCHOOL.MASCOT + " Elite",
-  i: "⭐"
+  t: "Prime",
+  i: "◆"
 }, {
   l: 10,
   x: 3200,
-  t: "All-Star",
-  i: "🏅"
+  t: "All-World",
+  i: "◆"
 }, {
   l: 11,
   x: 4200,
-  t: SCHOOL.MASCOT + " MVP",
-  i: "💎"
+  t: "MVP",
+  i: "◆"
 }, {
   l: 12,
   x: 5500,
-  t: SCHOOL.MASCOT + " Legend",
-  i: "👑"
+  t: "Legend",
+  i: "◆"
 }, {
   l: 13,
   x: 7500,
   t: "G.O.A.T.",
-  i: "🐐"
+  i: "◆"
 }];
 
 /* ████████████████████████████████████████████████████████████████████████
@@ -305,7 +305,7 @@ function AuthScreen({
       width: 600,
       height: 600,
       borderRadius: "50%",
-      background: "radial-gradient(circle,rgba(204,255,0,0.06),transparent 60%)",
+      background: "radial-gradient(circle,rgba(124,58,237,0.06),transparent 60%)",
       pointerEvents: "none"
     }
   }), /*#__PURE__*/React.createElement("div", {
@@ -338,7 +338,7 @@ function AuthScreen({
       margin: "10px 0 0",
       letterSpacing: "8px"
     }
-  }, SCHOOL.SCHOOL_NAME)), /*#__PURE__*/React.createElement("div", {
+  }, SCHOOL.SCHOOL_NAME || SCHOOL.TAGLINE)), /*#__PURE__*/React.createElement("div", {
     style: {
       maxWidth: 400,
       margin: "0 auto",
@@ -365,9 +365,9 @@ function AuthScreen({
         fontFamily: D2,
         fontSize: 16,
         letterSpacing: "3px",
-        background: mode === m ? "rgba(204,255,0,0.1)" : "transparent",
+        background: mode === m ? "rgba(0,255,135,0.1)" : "transparent",
         color: mode === m ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (mode === m ? "rgba(204,255,0,0.2)" : "rgba(204,255,0,0.04)")
+        border: "1.5px solid " + (mode === m ? "rgba(0,255,135,0.2)" : "rgba(0,255,135,0.04)")
       }
     }, m === "signin" ? "SIGN IN" : "SIGN UP");
   })), /*#__PURE__*/React.createElement("label", {
@@ -506,15 +506,15 @@ function Onboarding({
   }, "I AM A..."), [{
     id: "athlete",
     l: "STUDENT-ATHLETE",
-    i: "⚔️"
+    i: "◆"
   }, {
     id: "coach",
     l: "COACH",
-    i: "🛡️"
+    i: "▲"
   }, {
     id: "ad",
     l: "ATHLETIC DIRECTOR",
-    i: SCHOOL.LOGO
+    i: "⬡"
   }].map(function (r) {
     return /*#__PURE__*/React.createElement("button", {
       key: r.id,
@@ -602,9 +602,9 @@ function Onboarding({
         borderRadius: 12,
         fontFamily: D,
         fontSize: 24,
-        background: grade === g ? "rgba(204,255,0,0.15)" : "rgba(12,14,10,0.8)",
+        background: grade === g ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
         color: grade === g ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (grade === g ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        border: "2px solid " + (grade === g ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, g);
   })), /*#__PURE__*/React.createElement("label", {
@@ -633,9 +633,9 @@ function Onboarding({
         fontFamily: D2,
         fontSize: 13,
         letterSpacing: "1px",
-        background: on ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
         color: on ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (on ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        border: "1.5px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, on ? "✓ " : "", s.toUpperCase());
   }))), role === "coach" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
@@ -660,9 +660,9 @@ function Onboarding({
         fontFamily: D2,
         fontSize: 13,
         letterSpacing: "1px",
-        background: on ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
         color: on ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (on ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        border: "1.5px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, on ? "✓ " : "", s.toUpperCase());
   }))), /*#__PURE__*/React.createElement("button", {
@@ -1062,7 +1062,7 @@ function Huddle({
         flex: 1,
         height: 4,
         borderRadius: 4,
-        background: i < card ? "var(--g1)" : i === card ? "var(--g4)" : "rgba(204,255,0,0.08)"
+        background: i < card ? "var(--g1)" : i === card ? "var(--g4)" : "rgba(0,255,135,0.08)"
       }
     });
   }))), card === 0 && /*#__PURE__*/React.createElement("div", {
@@ -1112,9 +1112,9 @@ function Huddle({
         borderRadius: 14,
         fontFamily: D,
         fontSize: 22,
-        background: sleepHrs === h ? "rgba(204,255,0,0.15)" : "rgba(12,14,10,0.8)",
+        background: sleepHrs === h ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
         color: sleepHrs === h ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (sleepHrs === h ? "rgba(204,255,0,0.35)" : "rgba(204,255,0,0.04)")
+        border: "2px solid " + (sleepHrs === h ? "rgba(0,255,135,0.35)" : "rgba(0,255,135,0.04)")
       }
     }, h);
   })), /*#__PURE__*/React.createElement("label", {
@@ -1143,8 +1143,8 @@ function Huddle({
         padding: "20px",
         borderRadius: 16,
         textAlign: "center",
-        background: sleepQ === q.id ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
-        border: "2px solid " + (sleepQ === q.id ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        background: sleepQ === q.id ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
+        border: "2px solid " + (sleepQ === q.id ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -1211,8 +1211,8 @@ function Huddle({
         padding: "14px 6px",
         borderRadius: 14,
         textAlign: "center",
-        background: readiness === r.id ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
-        border: "2px solid " + (readiness === r.id ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        background: readiness === r.id ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
+        border: "2px solid " + (readiness === r.id ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -1268,8 +1268,8 @@ function Huddle({
         padding: "10px 4px",
         borderRadius: 12,
         textAlign: "center",
-        background: on ? c + "20" : "rgba(12,14,10,0.8)",
-        border: "1.5px solid " + (on ? c + "50" : "rgba(204,255,0,0.04)")
+        background: on ? c + "20" : "rgba(12,12,18,0.8)",
+        border: "1.5px solid " + (on ? c + "50" : "rgba(0,255,135,0.04)")
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -1313,56 +1313,56 @@ function Huddle({
     rx: "7",
     ry: "7",
     fill: "none",
-    stroke: "rgba(204,255,0,0.12)",
+    stroke: "rgba(124,58,237,0.15)",
     strokeWidth: "0.8"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "52",
     y1: "14",
     x2: "52",
     y2: "44",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "1"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "52",
     y1: "20",
     x2: "30",
     y2: "36",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "0.8"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "52",
     y1: "20",
     x2: "74",
     y2: "36",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "0.8"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "52",
     y1: "44",
     x2: "38",
     y2: "70",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "1"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "52",
     y1: "44",
     x2: "66",
     y2: "70",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "1"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "38",
     y1: "70",
     x2: "36",
     y2: "95",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "0.8"
   }), /*#__PURE__*/React.createElement("line", {
     x1: "66",
     y1: "70",
     x2: "68",
     y2: "95",
-    stroke: "rgba(204,255,0,0.1)",
+    stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "0.8"
   })), ZONES.map(function (z) {
     var on = painZones.includes(z.id);
@@ -1379,8 +1379,8 @@ function Huddle({
         width: z.w + "%",
         height: z.h + "%",
         borderRadius: 6,
-        background: on ? "rgba(239,83,80,0.35)" : "rgba(204,255,0,0.02)",
-        border: "1px solid " + (on ? "rgba(239,83,80,0.5)" : "rgba(204,255,0,0.05)"),
+        background: on ? "rgba(239,83,80,0.35)" : "rgba(0,255,135,0.02)",
+        border: "1px solid " + (on ? "rgba(239,83,80,0.5)" : "rgba(0,255,135,0.05)"),
         boxShadow: on ? "0 0 10px rgba(239,83,80,0.3)" : "none"
       }
     });
@@ -1493,7 +1493,7 @@ function Huddle({
       fontSize: 44,
       marginBottom: 4
     }
-  }, "\u2694\uFE0F"), /*#__PURE__*/React.createElement("h2", {
+  }, "\u25C6"), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -1571,9 +1571,9 @@ function Huddle({
         fontSize: 10,
         padding: "2px 8px",
         borderRadius: 8,
-        background: "rgba(204,255,0,0.04)",
+        background: "rgba(0,255,135,0.04)",
         color: "var(--dim)",
-        border: "1px solid rgba(204,255,0,0.04)",
+        border: "1px solid rgba(0,255,135,0.04)",
         letterSpacing: "1px"
       }
     }, "SELF-REPORTED")), /*#__PURE__*/React.createElement("div", {
@@ -1616,8 +1616,8 @@ function Huddle({
       padding: "18px",
       borderRadius: 16,
       textAlign: "center",
-      background: "rgba(12,14,10,0.8)",
-      border: "2px solid rgba(204,255,0,0.04)"
+      background: "rgba(12,12,18,0.8)",
+      border: "2px solid rgba(0,255,135,0.04)"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1639,8 +1639,8 @@ function Huddle({
       padding: "18px",
       borderRadius: 16,
       textAlign: "center",
-      background: "rgba(12,14,10,0.8)",
-      border: "2px solid rgba(204,255,0,0.04)"
+      background: "rgba(12,12,18,0.8)",
+      border: "2px solid rgba(0,255,135,0.04)"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1662,7 +1662,7 @@ function Huddle({
       width: "100%",
       padding: "14px",
       borderRadius: 14,
-      border: "2px dashed rgba(204,255,0,0.15)",
+      border: "2px dashed rgba(0,255,135,0.15)",
       background: "transparent",
       fontFamily: D2,
       fontSize: 16,
@@ -1775,9 +1775,9 @@ function Huddle({
         fontFamily: D2,
         fontSize: 12,
         letterSpacing: "0.5px",
-        background: editType === t ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        background: editType === t ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
         color: editType === t ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (editType === t ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        border: "1.5px solid " + (editType === t ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, t.toUpperCase());
   })), /*#__PURE__*/React.createElement("label", {
@@ -1829,17 +1829,17 @@ function Huddle({
         borderRadius: 12,
         fontFamily: D,
         fontSize: 20,
-        background: editDur === d ? "rgba(204,255,0,0.15)" : "rgba(12,14,10,0.8)",
+        background: editDur === d ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
         color: editDur === d ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (editDur === d ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        border: "2px solid " + (editDur === d ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, d);
   })), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "16px",
       borderRadius: 16,
-      background: editPhoto ? "rgba(76,175,80,0.06)" : "rgba(204,255,0,0.02)",
-      border: "2px solid " + (editPhoto ? "rgba(76,175,80,0.2)" : "rgba(204,255,0,0.08)"),
+      background: editPhoto ? "rgba(76,175,80,0.06)" : "rgba(0,255,135,0.02)",
+      border: "2px solid " + (editPhoto ? "rgba(76,175,80,0.2)" : "rgba(0,255,135,0.08)"),
       marginBottom: 14
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -1910,7 +1910,7 @@ function Huddle({
     },
     style: {
       background: "none",
-      border: "1px solid rgba(204,255,0,0.1)",
+      border: "1px solid rgba(0,255,135,0.1)",
       borderRadius: 10,
       padding: "6px 14px",
       fontFamily: D2,
@@ -1960,8 +1960,8 @@ function Huddle({
       gap: 14,
       padding: "16px 18px",
       borderRadius: 16,
-      background: coachTask ? "rgba(76,175,80,0.1)" : "rgba(12,14,10,0.8)",
-      border: "2px solid " + (coachTask ? "rgba(76,175,80,0.3)" : "rgba(204,255,0,0.04)"),
+      background: coachTask ? "rgba(76,175,80,0.1)" : "rgba(12,12,18,0.8)",
+      border: "2px solid " + (coachTask ? "rgba(76,175,80,0.3)" : "rgba(0,255,135,0.04)"),
       marginTop: 8,
       cursor: "pointer"
     }
@@ -1970,7 +1970,7 @@ function Huddle({
       width: 26,
       height: 26,
       borderRadius: 8,
-      border: "2px solid " + (coachTask ? "#4CAF50" : "rgba(204,255,0,0.15)"),
+      border: "2px solid " + (coachTask ? "#4CAF50" : "rgba(0,255,135,0.15)"),
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -2080,9 +2080,9 @@ function Huddle({
         borderRadius: 14,
         fontFamily: D,
         fontSize: 22,
-        background: fuelWindow === o.id ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        background: fuelWindow === o.id ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
         color: fuelWindow === o.id ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (fuelWindow === o.id ? "rgba(204,255,0,0.25)" : "rgba(204,255,0,0.04)")
+        border: "2px solid " + (fuelWindow === o.id ? "rgba(0,255,135,0.25)" : "rgba(0,255,135,0.04)")
       }
     }, o.l);
   })), /*#__PURE__*/React.createElement("label", {
@@ -2119,8 +2119,8 @@ function Huddle({
         alignItems: "center",
         gap: 12,
         padding: "16px 18px",
-        background: mealColor === m.id ? m.c + "18" : "rgba(12,14,10,0.8)",
-        border: "2px solid " + (mealColor === m.id ? m.c + "50" : "rgba(204,255,0,0.04)"),
+        background: mealColor === m.id ? m.c + "18" : "rgba(12,12,18,0.8)",
+        border: "2px solid " + (mealColor === m.id ? m.c + "50" : "rgba(0,255,135,0.04)"),
         borderRadius: 16
       }
     }, /*#__PURE__*/React.createElement("span", {
@@ -2221,7 +2221,7 @@ function Huddle({
             display: "flex",
             justifyContent: "space-between",
             padding: "5px 0",
-            borderBottom: "1px solid rgba(204,255,0,0.04)"
+            borderBottom: "1px solid rgba(0,255,135,0.04)"
           }
         }, /*#__PURE__*/React.createElement("span", {
           style: {
@@ -2244,7 +2244,7 @@ function Huddle({
         padding: "16px 20px",
         maxWidth: 320,
         margin: "0 auto",
-        border: rd.redFlag ? "2px solid rgba(239,83,80,0.3)" : "1px solid rgba(204,255,0,0.08)"
+        border: rd.redFlag ? "2px solid rgba(239,83,80,0.3)" : "1px solid rgba(0,255,135,0.08)"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -2276,7 +2276,7 @@ function Huddle({
     }, "/100"))), /*#__PURE__*/React.createElement("div", {
       style: {
         height: 8,
-        background: "rgba(204,255,0,0.06)",
+        background: "rgba(124,58,237,0.06)",
         borderRadius: 8,
         overflow: "hidden",
         marginBottom: rd.redFlag ? 12 : 0
@@ -2402,13 +2402,13 @@ function Dashboard({
       width: "100%",
       padding: "0",
       borderRadius: 24,
-      border: "3px solid rgba(204,255,0,0.25)",
-      background: "linear-gradient(160deg,rgba(20,30,10,0.4),rgba(10,14,8,0.95))",
+      border: "3px solid rgba(0,255,135,0.25)",
+      background: "linear-gradient(160deg,rgba(20,16,30,0.5),rgba(8,8,14,0.95))",
       textAlign: "center",
       marginBottom: 20,
       position: "relative",
       overflow: "hidden",
-      boxShadow: "0 0 40px rgba(204,255,0,0.08),0 0 80px rgba(204,255,0,0.03)"
+      boxShadow: "0 0 40px rgba(0,255,135,0.08),0 0 80px rgba(0,255,135,0.03)"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2418,7 +2418,7 @@ function Dashboard({
       width: 200,
       height: 200,
       borderRadius: "50%",
-      background: "radial-gradient(circle,rgba(204,255,0,0.1),transparent 70%)",
+      background: "radial-gradient(circle,rgba(0,255,135,0.1),transparent 70%)",
       animation: "orbFloat 3s ease infinite"
     }
   }), /*#__PURE__*/React.createElement("div", {
@@ -2429,10 +2429,10 @@ function Dashboard({
       width: 160,
       height: 160,
       borderRadius: "50%",
-      background: "radial-gradient(circle,rgba(255,140,0,0.06),transparent 70%)",
+      background: "radial-gradient(circle,rgba(124,58,237,0.08),transparent 70%)",
       animation: "orbFloat 4s ease 1s infinite"
     }
-  }), /*#__PURE__*/React.createElement("style", null, "@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);opacity:0.5}50%{transform:translate(-5px,-12px) scale(1.15);opacity:1}}@keyframes huddlePulse{0%,100%{box-shadow:0 0 40px rgba(204,255,0,0.08),0 0 80px rgba(204,255,0,0.03)}50%{box-shadow:0 0 60px rgba(204,255,0,0.15),0 0 100px rgba(204,255,0,0.06)}}"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("style", null, "@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);opacity:0.5}50%{transform:translate(-5px,-12px) scale(1.15);opacity:1}}@keyframes huddlePulse{0%,100%{box-shadow:0 0 40px rgba(0,255,135,0.08),0 0 80px rgba(0,255,135,0.03)}50%{box-shadow:0 0 60px rgba(0,255,135,0.15),0 0 100px rgba(124,58,237,0.06)}}"), /*#__PURE__*/React.createElement("div", {
     style: {
       position: "relative",
       zIndex: 1,
@@ -2462,7 +2462,7 @@ function Dashboard({
   }, "SLEEP \xB7 BODY \xB7 WORK \xB7 FUEL"), /*#__PURE__*/React.createElement("div", {
     style: {
       height: 3,
-      background: "linear-gradient(90deg,transparent,var(--g0),var(--g1),var(--g0),transparent)",
+      background: "linear-gradient(90deg,transparent,var(--pr),var(--g1),var(--pr),transparent)",
       margin: "20px auto",
       maxWidth: 200,
       opacity: 0.5
@@ -2472,12 +2472,12 @@ function Dashboard({
       display: "inline-block",
       padding: "14px 40px",
       borderRadius: 16,
-      background: "linear-gradient(135deg,var(--g0),var(--g4),var(--g1),var(--g6))",
+      background: "linear-gradient(135deg,var(--g0),var(--g4),var(--g1),#fff)",
       fontFamily: D,
       fontSize: 26,
       color: "var(--bg)",
       letterSpacing: "3px",
-      boxShadow: "0 4px 30px rgba(204,255,0,0.3)"
+      boxShadow: "0 4px 30px rgba(0,255,135,0.3)"
     }
   }, "START CHECK-IN \u2192"), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2535,7 +2535,7 @@ function Dashboard({
       justifyContent: "center",
       fontSize: 26
     }
-  }, "\uD83D\uDEE1\uFE0F"), /*#__PURE__*/React.createElement("div", {
+  }, "\u25C6"), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1
     }
@@ -2599,8 +2599,8 @@ function Dashboard({
     style: {
       padding: "16px 18px",
       borderRadius: 18,
-      background: loadLevel === "danger" ? "rgba(239,83,80,0.08)" : hasConflict ? "rgba(255,179,0,0.06)" : "rgba(204,255,0,0.04)",
-      border: "2px solid " + (loadLevel === "danger" ? "rgba(239,83,80,0.25)" : hasConflict ? "rgba(255,179,0,0.2)" : "rgba(204,255,0,0.1)")
+      background: loadLevel === "danger" ? "rgba(239,83,80,0.08)" : hasConflict ? "rgba(255,179,0,0.06)" : "rgba(0,255,135,0.04)",
+      border: "2px solid " + (loadLevel === "danger" ? "rgba(239,83,80,0.25)" : hasConflict ? "rgba(255,179,0,0.2)" : "rgba(0,255,135,0.1)")
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2656,7 +2656,7 @@ function Dashboard({
   }, totalLoad)), /*#__PURE__*/React.createElement("div", {
     style: {
       height: 8,
-      background: "rgba(204,255,0,0.06)",
+      background: "rgba(124,58,237,0.06)",
       borderRadius: 8,
       overflow: "hidden",
       position: "relative"
@@ -2715,7 +2715,7 @@ function Dashboard({
         alignItems: "center",
         gap: 8,
         padding: "6px 0",
-        borderTop: "1px solid rgba(204,255,0,0.04)"
+        borderTop: "1px solid rgba(0,255,135,0.04)"
       }
     }, /*#__PURE__*/React.createElement(ST, {
       s: sport
@@ -2763,7 +2763,7 @@ function Dashboard({
       position: "absolute",
       inset: -3,
       borderRadius: 23,
-      background: "conic-gradient(from 0deg,#5A7A00,#A8E600,#CCFF00,#E0FF66,#F0FFAA,#E0FF66,#CCFF00,#A8E600,#5A7A00)",
+      background: "conic-gradient(from 0deg,#7C3AED,#A855F7,#00FF87,#66FFAA,#fff,#66FFAA,#00FF87,#A855F7,#7C3AED)",
       animation: "spin 3s linear infinite",
       zIndex: 0
     }
@@ -2772,7 +2772,7 @@ function Dashboard({
       position: "absolute",
       inset: 2,
       borderRadius: 18,
-      background: "linear-gradient(160deg,#10140a,#060808)",
+      background: "linear-gradient(160deg,#12101C,#08080E)",
       zIndex: 0
     }
   }), /*#__PURE__*/React.createElement("style", null, "@keyframes spin{to{transform:rotate(360deg)}}"), /*#__PURE__*/React.createElement("div", {
@@ -2885,7 +2885,7 @@ function Dashboard({
     style: {
       fontSize: 24
     }
-  }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("div", {
+  }, "\u25B2"), /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -3130,7 +3130,7 @@ function Leaderboard({
         fontSize: 11,
         padding: "2px 8px",
         borderRadius: 8,
-        background: "rgba(204,255,0,0.1)",
+        background: "rgba(0,255,135,0.1)",
         color: "var(--g1)",
         letterSpacing: "2px"
       }
@@ -3187,9 +3187,9 @@ function Leaderboard({
         fontSize: 10,
         padding: "2px 8px",
         borderRadius: 8,
-        background: loadLvl === "danger" ? "rgba(239,83,80,0.1)" : loadLvl === "caution" ? "rgba(255,179,0,0.08)" : "rgba(204,255,0,0.06)",
+        background: loadLvl === "danger" ? "rgba(239,83,80,0.1)" : loadLvl === "caution" ? "rgba(255,179,0,0.08)" : "rgba(124,58,237,0.06)",
         color: loadLvl === "danger" ? "var(--red)" : loadLvl === "caution" ? "#FFB300" : "var(--g4)",
-        border: "1px solid " + (loadLvl === "danger" ? "rgba(239,83,80,0.15)" : "rgba(204,255,0,0.08)"),
+        border: "1px solid " + (loadLvl === "danger" ? "rgba(239,83,80,0.15)" : "rgba(0,255,135,0.08)"),
         letterSpacing: "1px"
       }
     }, "LOAD ", load))), /*#__PURE__*/React.createElement("div", {
@@ -3247,8 +3247,8 @@ function ProfilePage({
       width: 80,
       height: 80,
       borderRadius: "50%",
-      background: "linear-gradient(135deg,rgba(204,255,0,0.12),rgba(255,140,0,0.06))",
-      border: "3px solid rgba(204,255,0,0.2)",
+      background: "linear-gradient(135deg,rgba(0,255,135,0.12),rgba(255,140,0,0.06))",
+      border: "3px solid rgba(0,255,135,0.2)",
       margin: "0 auto 14px",
       display: "flex",
       alignItems: "center",
@@ -3371,7 +3371,7 @@ function ProfilePage({
     },
     style: {
       background: "none",
-      border: "1px solid rgba(204,255,0,0.1)",
+      border: "1px solid rgba(0,255,135,0.1)",
       borderRadius: 10,
       padding: "4px 14px",
       fontFamily: D2,
@@ -3410,9 +3410,9 @@ function ProfilePage({
         fontFamily: D2,
         fontSize: 13,
         letterSpacing: "1px",
-        background: on ? "rgba(204,255,0,0.12)" : "rgba(12,14,10,0.8)",
+        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
         color: on ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (on ? "rgba(204,255,0,0.3)" : "rgba(204,255,0,0.04)")
+        border: "1.5px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
       }
     }, on ? "✓ " : "", s.toUpperCase());
   })), /*#__PURE__*/React.createElement("button", {
@@ -3518,7 +3518,7 @@ function LevelUp({
       width: 500,
       height: 500,
       borderRadius: "50%",
-      background: "radial-gradient(circle,rgba(204,255,0,0.12),rgba(255,140,0,0.04) 40%,transparent 65%)",
+      background: "radial-gradient(circle,rgba(0,255,135,0.12),rgba(255,140,0,0.04) 40%,transparent 65%)",
       animation: "fadeUp 1s ease"
     }
   }), phase >= 1 && /*#__PURE__*/React.createElement("div", {
@@ -3587,9 +3587,9 @@ function LevelUp({
       fontFamily: D,
       fontSize: 24,
       letterSpacing: "3px",
-      background: "linear-gradient(135deg,var(--g0),var(--g4),var(--g1),var(--g6))",
+      background: "linear-gradient(135deg,var(--g0),var(--g4),var(--g1),#fff)",
       color: "var(--bg)",
-      boxShadow: "0 4px 40px rgba(204,255,0,0.3)",
+      boxShadow: "0 4px 40px rgba(0,255,135,0.3)",
       animation: "fadeUp 0.4s ease both"
     }
   }, "CONTINUE"));
@@ -3615,12 +3615,12 @@ function Nav({
       justifyContent: "center",
       padding: "8px 0 16px",
       background: "linear-gradient(180deg,transparent,rgba(2,2,1,0.98) 30%,var(--bg))",
-      borderTop: "1px solid rgba(204,255,0,0.06)",
+      borderTop: "1px solid rgba(124,58,237,0.06)",
       zIndex: 100
     }
   }, [{
     id: "home",
-    i: "⚔️",
+    i: "◆",
     l: "HOME"
   }, {
     id: "board",
@@ -3650,7 +3650,7 @@ function Nav({
     }, /*#__PURE__*/React.createElement("span", {
       style: {
         fontSize: 26,
-        filter: page === it.id ? "drop-shadow(0 0 8px rgba(204,255,0,0.4))" : "grayscale(1) opacity(0.25)"
+        filter: page === it.id ? "drop-shadow(0 0 8px rgba(0,255,135,0.4))" : "grayscale(1) opacity(0.25)"
       }
     }, it.i), /*#__PURE__*/React.createElement("span", {
       style: {
@@ -3841,7 +3841,7 @@ function App() {
       zIndex: 100,
       padding: "12px 20px",
       background: "linear-gradient(180deg,var(--bg),rgba(2,2,1,0.97))",
-      borderBottom: "1px solid rgba(204,255,0,0.08)",
+      borderBottom: "1px solid rgba(0,255,135,0.08)",
       backdropFilter: "blur(20px)",
       display: "flex",
       alignItems: "center"
