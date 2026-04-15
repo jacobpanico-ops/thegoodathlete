@@ -4,19 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#08080C">
 <title>The Good Athlete</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://tjwtzbnyflyoicnrfyzc.supabase.co">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#08080C;--g1:#00FF87;--g4:#00CC6A;--g6:#66FFAA;--g7:#99FFCC;--g0:#009950;--pr:#7C3AED;--pr2:#A855F7;--ember:#FF6D00;--grn:#00FF87;--red:#EF5350;--txt:#F0F0F4;--dim:#4A4A5A;--sub:#8A8A9A}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body,#root{height:100%;overflow-x:hidden;overscroll-behavior:none}
-body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-weight:500;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--txt);font-family:'Barlow Condensed',sans-serif;font-weight:600;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(124,58,237,0.04),transparent 50%),radial-gradient(ellipse at 70% 100%,rgba(0,255,135,0.02),transparent 50%);pointer-events:none}
 /* Lime shimmer text */
-.gs{background:linear-gradient(90deg,var(--g0),var(--g4),var(--g1),var(--g6),#fff,var(--g6),var(--g1),var(--pr),var(--g0));background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3s linear infinite}
+.gs{background:linear-gradient(90deg,var(--g0),var(--g4),var(--g1),var(--g6),#fff,var(--g6),var(--g1),var(--pr),var(--g0));background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3s linear infinite;letter-spacing:-0.02em;text-transform:uppercase}
 @keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
 /* Cards — cool dark */
 .gc{background:linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98));border:1px solid rgba(124,58,237,0.06);border-radius:18px}
@@ -30,19 +33,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .fu{animation:fadeUp 0.4s ease both}.ci{animation:cardIn 0.35s ease both}.pi{animation:popIn 0.5s cubic-bezier(0.34,1.5,0.64,1) both}
 .fi{display:inline-block;animation:fp .6s ease-in-out infinite alternate}
 @keyframes fp{0%{transform:scale(1)}100%{transform:scale(1.2);filter:brightness(1.5) drop-shadow(0 0 8px #FF6D00)}}
-input,select,textarea{font-family:'Inter',sans-serif}
+input,select,textarea{font-family:'Barlow Condensed',sans-serif;font-weight:600}
 input::placeholder{color:#2a2a38}
 input:focus,select:focus{border-color:var(--g1)!important;box-shadow:0 0 0 3px rgba(0,255,135,0.1);outline:none}
-button{font-family:'Inter',sans-serif;cursor:pointer;font-weight:600}
+button{font-family:'Barlow Condensed',sans-serif;cursor:pointer;font-weight:600}
 button:active{transform:scale(0.95)!important}
 ::-webkit-scrollbar{width:0}select option{background:#0a0800;color:var(--txt)}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:14px;font-family:'Inter',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease}
 .toast-ok{background:linear-gradient(135deg,var(--g0),var(--g1));color:var(--bg)}
 .toast-err{background:linear-gradient(135deg,#8B0000,var(--red));color:#fff}
-.btn-gold{padding:18px;border-radius:14px;border:none;font-family:'Space Grotesk',sans-serif;font-size:24px;letter-spacing:3px;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(0,255,135,0.2);width:100%}
+.btn-gold{padding:18px;border-radius:14px;border:none;font-family:'Big Shoulders Display',sans-serif;font-size:24px;letter-spacing:-0.02em;text-transform:uppercase;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(0,255,135,0.2);width:100%}
 .btn-gold:disabled{background:#0a0a10;color:#2a2a38;box-shadow:none;opacity:0.5}
 .inp{width:100%;padding:14px 16px;border-radius:14px;background:rgba(12,12,18,0.8);border:2px solid rgba(124,58,237,0.06);color:var(--txt);font-size:16px;font-weight:600;outline:none;box-sizing:border-box}
-.lbl{font-family:'Inter',sans-serif;font-size:14px;color:var(--sub);display:block;margin-bottom:6px;letter-spacing:3px}
+.lbl{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--sub);display:block;margin-bottom:6px;letter-spacing:2px;font-weight:700;text-transform:uppercase}
+.gp{display:inline-block;transform:skewX(-6deg)}
 </style>
 </head>
 <body>
@@ -65,15 +69,16 @@ button:active{transform:scale(0.95)!important}
    ║  §6  SHARED COMPONENTS — SportTag, Toast                           ║
    ║  §7  AUTH SCREEN — Sign Up / Sign In                               ║
    ║  §8  ONBOARDING — Role, name, grade, sports selection              ║
-   ║  §9  DAILY HUDDLE — Card-stack check-in                            ║
-   ║      §9a  Card 0: Sleep                                            ║
-   ║      §9b  Card 1: Readiness + Stress + Body Map + Pain Slider     ║
-   ║      §9c  Card 2: The Work (multi-session per sport)               ║
-   ║      §9d  Card 3: Fuel (hydration, window, color method)           ║
-   ║      §9e  Card 4: Summary + points breakdown                      ║
-   ║      §9f  Submit logic (Supabase RPC calls)                        ║
+   ║  §9  DAILY HUDDLE — 6-card pre-flight check                        ║
+   ║      §9a  Card 0: Sleep (hours + quality)                          ║
+   ║      §9b  Card 1: Readiness (emoji — one tap)                     ║
+   ║      §9c  Card 2: Body Scan (mental load + body map + pain)       ║
+   ║      §9d  Card 3: The Work (multi-session + proof of grind)       ║
+   ║      §9e  Card 4: Fuel (hydration, window, color method)           ║
+   ║      §9f  Card 5: Summary + readiness score                       ║
    ║  §10 DASHBOARD — Athlete home with hero Huddle CTA                 ║
    ║  §11 LEADERBOARD — Live from Supabase leaderboard view            ║
+   ║  §11b COACH DASHBOARD — Tiered access roster view           ║
    ║  §12 NAV — Bottom tab bar                                          ║
    ║  §13 APP — Auth state machine + route orchestrator                 ║
    ║  §14 MOUNT                                                         ║
@@ -85,8 +90,8 @@ var {
   useEffect,
   useCallback
 } = React;
-var D = "'Space Grotesk',sans-serif",
-  D2 = "'Inter',sans-serif";
+var D = "'Big Shoulders Display',sans-serif",
+  D2 = "'Barlow Condensed',sans-serif";
 
 /* ████████████████████████████████████████████████████████████████████████
    §2  SUPABASE CLIENT
@@ -425,6 +430,187 @@ function AuthScreen({
   }, "SIGN IN"))));
 }
 
+
+/* ████████████████████████████████████████████████████████████████████████
+   §7b  DATA AGREEMENT — Privacy promise on first sign-in
+   ████████████████████████████████████████████████████████████████████████ */
+
+function DataAgreement({
+  onAgree
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      padding: "32px 24px",
+      background: "var(--bg)",
+      position: "relative"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: "absolute",
+      top: "5%",
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: 500,
+      height: 500,
+      borderRadius: "50%",
+      background: "radial-gradient(circle,rgba(0,255,135,0.03),transparent 50%)",
+      pointerEvents: "none"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxWidth: 440,
+      margin: "0 auto",
+      position: "relative",
+      zIndex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 28
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 48,
+      marginBottom: 10
+    }
+  }, "\u25C6"), /*#__PURE__*/React.createElement("h1", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 40,
+      lineHeight: 0.85,
+      letterSpacing: "-0.02em"
+    }
+  }, "THE GOOD ATHLETE"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "3px",
+      fontWeight: 700,
+      marginTop: 8
+    }
+  }, "DATA PRIVACY PROMISE")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 18,
+      color: "var(--g1)",
+      letterSpacing: "-0.02em",
+      marginBottom: 6
+    }
+  }, "BUILT FOR ATHLETES, NOT AGAINST THEM"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 15,
+      color: "var(--sub)",
+      lineHeight: 1.5,
+      fontWeight: 600,
+      margin: 0
+    }
+  }, "The Good Athlete is a daily wellness tool that helps student-athletes track sleep, readiness, training load, and nutrition in under 60 seconds. It gives coaches a traffic-light view of who's ready and who needs attention \u2014 without exposing private details. The check-in is designed to feel like a pre-flight check, not a medical form. Athletes own their data. Coaches see the signal, not the diary.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 18,
+      color: "var(--pr2)",
+      letterSpacing: "-0.02em",
+      marginBottom: 6
+    }
+  }, "YOUR DATA IS MINIMIZED AND PROTECTED"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 15,
+      color: "var(--sub)",
+      lineHeight: 1.5,
+      fontWeight: 600,
+      margin: 0
+    }
+  }, "We collect only what's needed to keep you healthy and performing. No GPS tracking, no social media, no advertising, no data sold to third parties \u2014 ever. Coaches see readiness status and trends, not raw numbers. Stress levels are never shared with coaching staff. All data is encrypted, stored on SOC 2-compliant infrastructure, and can be deleted at any time by request. We follow FERPA guidelines for student data protection.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 28
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 18,
+      color: "var(--g1)",
+      letterSpacing: "-0.02em",
+      marginBottom: 6
+    }
+  }, "REDUCING RISK, NOT CREATING IT"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 15,
+      color: "var(--sub)",
+      lineHeight: 1.5,
+      fontWeight: 600,
+      margin: 0
+    }
+  }, "This tool exists to catch what coaches can't see \u2014 the athlete who played a full football practice, then lifted, then went straight to a baseball game without anyone connecting the dots. Overtraining injuries are preventable when someone is watching the whole picture. The Good Athlete flags multi-sport load conflicts and recovery gaps before they become injuries, giving schools a documented, proactive system for athlete safety.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px 18px",
+      borderRadius: 16,
+      background: "rgba(12,12,18,0.8)",
+      border: "1px solid rgba(124,58,237,0.1)",
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--dim)",
+      lineHeight: 1.6,
+      fontWeight: 600
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 4
+    }
+  }, "\u25C6 Your check-in data belongs to you"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 4
+    }
+  }, "\u25C6 Coaches see status, not private details"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 4
+    }
+  }, "\u25C6 Stress data is never shared with coaches"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 4
+    }
+  }, "\u25C6 No tracking, no ads, no third-party access"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 4
+    }
+  }, "\u25C6 Data can be deleted at any time on request"), /*#__PURE__*/React.createElement("div", null, "\u25C6 FERPA-aligned student data practices"))), /*#__PURE__*/React.createElement("button", {
+    className: "btn-gold",
+    onClick: onAgree
+  }, "I UNDERSTAND AND AGREE"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginTop: 14
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 12,
+      color: "var(--dim)",
+      fontWeight: 600
+    }
+  }, "BY CONTINUING YOU ACCEPT THESE TERMS"))));
+}
+
 /* ████████████████████████████████████████████████████████████████████████
    §8  ONBOARDING — Role, name, grade, sports selection
    ████████████████████████████████████████████████████████████████████████ */
@@ -672,9 +858,14 @@ function Onboarding({
   }, loading ? "SAVING..." : "LET'S GO →"))));
 }
 
+
 /* ████████████████████████████████████████████████████████████████████████
-   §9  DAILY HUDDLE — Card-stack check-in
-   Cards: Sleep → Readiness/Stress/Body → Work → Fuel → Summary
+   §9  DAILY HUDDLE — 5-card pre-flight check (streamlined)
+   Card 0: Sleep + Readiness (merged)
+   Card 1: Body Scan (ALL CLEAR hero + mental load)
+   Card 2: The Work (Quick Log — tap sports, one RPE, one duration)
+   Card 3: Fuel
+   Card 4: Summary + readiness score
    ████████████████████████████████████████████████████████████████████████ */
 
 function Huddle({
@@ -686,197 +877,50 @@ function Huddle({
   var TOTAL = 5;
   var [card, setCard] = useState(0);
   var [saving, setSaving] = useState(false);
+
+  /* §9a Sleep + Readiness (merged) */
   var [sleepHrs, setSleepHrs] = useState(null);
   var [sleepQ, setSleepQ] = useState(null);
   var [readiness, setReadiness] = useState(null);
+
+  /* §9b Body Scan */
   var [stress, setStress] = useState(null);
   var [painZones, setPainZones] = useState([]);
   var [painLevel, setPainLevel] = useState(3);
-  var [sessions, setSessions] = useState([]);
-  var [editSport, setEditSport] = useState(null);
-  var [editType, setEditType] = useState("");
-  var [editRpe, setEditRpe] = useState(6);
-  var [editDur, setEditDur] = useState(null);
-  var [editPhoto, setEditPhoto] = useState(null); /* proof of grind photo/video */
-  var [coachTask, setCoachTask] = useState(false);
+  var [showBodyMap, setShowBodyMap] = useState(false);
+
+  /* §9c Work — Quick Log */
   var [didWork, setDidWork] = useState(null);
+  var [selectedSports, setSelectedSports] = useState([]);
+  var [overallRpe, setOverallRpe] = useState(6);
+  var [totalDur, setTotalDur] = useState(null);
+  var [coachTask, setCoachTask] = useState(false);
+  var [editPhoto, setEditPhoto] = useState(null);
+  var fileRef = React.useRef(null);
+  var [coachTaskText, setCoachTaskText] = useState(null);
+  useEffect(function(){SB.from('coach_tasks').select('task_text').in('sport',profile.sports||[]).eq('active',true).order('updated_at',{ascending:false}).limit(1).then(function(res){if(!res.error&&res.data&&res.data.length>0)setCoachTaskText(res.data[0].task_text)})},[])
+
+  /* §9d Fuel */
   var [hydration, setHydration] = useState(0);
   var [fuelWindow, setFuelWindow] = useState(null);
   var [mealColor, setMealColor] = useState(null);
-  var fileRef = React.useRef(null);
-  function togZone(id) {
-    setPainZones(function (p) {
-      return p.includes(id) ? p.filter(function (x) {
-        return x !== id;
-      }) : [].concat(p, [id]);
-    });
+
+  /* ── Haptic ── */
+  function buzz(ms) {
+    try {
+      navigator.vibrate(ms || 10);
+    } catch (e) {}
   }
-  function addSession() {
-    if (editSport && editType && editDur) {
-      setSessions(function (p) {
-        return [].concat(p, [{
-          sport: editSport,
-          type: editType,
-          rpe: editRpe,
-          dur: parseInt(editDur),
-          proof: !!editPhoto,
-          proofThumb: editPhoto
-        }]);
-      });
-      setEditSport(null);
-      setEditType("");
-      setEditRpe(6);
-      setEditDur(null);
-      setEditPhoto(null);
-      if (fileRef.current) fileRef.current.value = "";
-    }
+  function buzzHeavy() {
+    buzz(25);
   }
-  function canNext() {
-    if (card === 0) return sleepHrs != null && sleepQ != null;
-    if (card === 1) return readiness != null && stress != null;
-    if (card === 2) return didWork != null && (didWork === false || sessions.length > 0 && !editSport);
-    if (card === 3) return mealColor != null;
-    return true;
-  }
-  function calcPts() {
-    var p = 10;
-    if (sleepHrs && ["8", "9", "10+"].includes(sleepHrs)) p += 20;
-    if (coachTask) p += 15;
-    if (mealColor === "green") p += 5;
-    /* +5 per session with proof attached */
-    var proofCount = sessions.filter(function (s) {
-      return s.proof;
-    }).length;
-    p += proofCount * 5;
-    return p;
+  function buzzDouble() {
+    try {
+      navigator.vibrate([15, 50, 15]);
+    } catch (e) {}
   }
 
-  /* §9f-1 Readiness Score + Red Flag calculation
-     Score: 0-100 (higher = better). Three weighted components:
-       Sleep (35 pts):  hours + quality
-       Stress (30 pts): school/life stress inverse
-       Pain (35 pts):   zone count, severity, critical zones
-     Red Flag triggers (any one = true):
-       - Head or neck pain
-       - Self-reported "exhausted"
-       - Readiness score below 30
-       - Stress 5 + pain zones 2+                                       */
-  function calcReadiness() {
-    var score = 0;
-    var redFlag = false;
-    var reasons = [];
-
-    // ── Sleep component (35 pts max) ──
-    var hrsMap = {
-      "<6": 5,
-      "6": 12,
-      "7": 22,
-      "8": 30,
-      "9": 35,
-      "10+": 35
-    };
-    var sleepScore = hrsMap[sleepHrs] || 15;
-    if (sleepQ === "bad") sleepScore = Math.max(0, sleepScore - 12);
-    score += sleepScore;
-
-    // ── Stress component (30 pts max) ──
-    // Inverse: stress 1 = 30pts, stress 5 = 0pts
-    var stressScore = Math.max(0, 30 - (stress - 1) * 7.5);
-    score += stressScore;
-
-    // ── Pain component (35 pts max) ──
-    var CRITICAL = ["head", "neck"];
-    var hasCritical = painZones.some(function (z) {
-      return CRITICAL.includes(z);
-    });
-    var painScore = 35;
-    if (hasCritical) {
-      painScore = 0;
-      redFlag = true;
-      reasons.push("Head/neck pain reported");
-    } else if (painZones.length >= 3) {
-      painScore = 5;
-    } else if (painZones.length >= 1) {
-      // Scale by pain level: mild (1-3) = small hit, severe (7+) = big hit
-      var severityPenalty = Math.min(30, painZones.length * painLevel * 2);
-      painScore = Math.max(5, 35 - severityPenalty);
-    }
-    score += painScore;
-
-    // ── Red flag checks ──
-    if (readiness === "exhausted") {
-      redFlag = true;
-      reasons.push("Self-reported exhausted");
-    }
-    if (score < 30 && !redFlag) {
-      redFlag = true;
-      reasons.push("Readiness score critical (" + Math.round(score) + "/100)");
-    }
-    if (stress >= 5 && painZones.length >= 2 && !redFlag) {
-      redFlag = true;
-      reasons.push("Max stress + multiple pain zones");
-    }
-    return {
-      score: Math.round(Math.min(100, Math.max(0, score))),
-      redFlag: redFlag,
-      reasons: reasons
-    };
-  }
-
-  /* §9f-2 Submit to Supabase */
-  async function finish() {
-    setSaving(true);
-
-    // Calculate readiness score + red flag
-    var rd = calcReadiness();
-
-    // 1. Submit check-in with readiness data
-    var ciRes = await SB.rpc('submit_checkin', {
-      p_sleep_hrs: sleepHrs,
-      p_sleep_quality: sleepQ,
-      p_readiness: readiness,
-      p_stress: stress,
-      p_pain_zones: painZones.length > 0 ? [].concat(painZones, ["level_" + painLevel]) : painZones,
-      p_hydration: hydration,
-      p_fuel_window: fuelWindow || 'na',
-      p_meal_color: mealColor,
-      p_coach_task: coachTask,
-      p_readiness_score: rd.score,
-      p_red_flag: rd.redFlag,
-      p_red_flag_reasons: rd.reasons
-    });
-    if (ciRes.error) {
-      setSaving(false);
-      return toast(ciRes.error.message || "Check-in failed", "err");
-    }
-    var ciData = ciRes.data;
-    if (ciData.error) {
-      setSaving(false);
-      return toast(ciData.error, "err");
-    }
-
-    // 2. Log each work session
-    for (var i = 0; i < sessions.length; i++) {
-      var s = sessions[i];
-      await SB.rpc('log_session', {
-        p_checkin_id: ciData.checkin_id,
-        p_sport: s.sport,
-        p_session_type: s.type,
-        p_rpe: s.rpe,
-        p_duration: s.dur
-      });
-    }
-    setSaving(false);
-    onDone({
-      points: ciData.points,
-      streak: ciData.streak,
-      xp: ciData.xp,
-      sessions: sessions,
-      readiness: rd
-    });
-  }
-
-  /* §4 BODY MAP ZONES — {id, l:label, x/y:position%, w/h:size%} */
+  /* ── Zones ── */
   var ZONES = [{
     id: "head",
     l: "Head",
@@ -1011,6 +1055,183 @@ function Huddle({
     w: 10,
     h: 8
   }];
+  function togZone(id) {
+    buzz(20);
+    setPainZones(function (p) {
+      var hasSore = p.includes("sore:" + id);
+      var hasSharp = p.includes("sharp:" + id);
+      var cleaned = p.filter(function(x){return x !== "sore:" + id && x !== "sharp:" + id});
+      if (!hasSore && !hasSharp) return [].concat(cleaned, ["sore:" + id]);  // off → sore (yellow)
+      if (hasSore) return [].concat(cleaned, ["sharp:" + id]);               // sore → sharp (red)
+      return cleaned;                                                         // sharp → off
+    });
+  }
+  function zoneState(id) {
+    if (painZones.includes("sharp:" + id)) return "sharp";
+    if (painZones.includes("sore:" + id)) return "sore";
+    return "off";
+  }
+  function zoneCount() { return painZones.filter(function(z){return z.startsWith("sore:") || z.startsWith("sharp:")}).length; }
+  function rawZoneId(entry) { return entry.replace("sore:","").replace("sharp:",""); }
+  function togSport(s) {
+    buzz(15);
+    setSelectedSports(function (p) {
+      return p.includes(s) ? p.filter(function (x) {
+        return x !== s;
+      }) : [].concat(p, [s]);
+    });
+  }
+  function canNext() {
+    if (card === 0) return sleepHrs != null && sleepQ != null && readiness != null;
+    if (card === 1) return stress != null;
+    if (card === 2) return didWork != null && (didWork === false || selectedSports.length > 0 && totalDur != null);
+    if (card === 3) return mealColor != null;
+    return true;
+  }
+  function advanceCard() {
+    if (canNext()) {
+      buzzHeavy();
+      setCard(card + 1);
+    }
+  }
+
+  /* Build sessions from quick log */
+  function buildSessions() {
+    if (!didWork || selectedSports.length === 0 || !totalDur) return [];
+    var durPer = Math.round(parseInt(totalDur) / selectedSports.length);
+    return selectedSports.map(function (s) {
+      return {
+        sport: s,
+        type: "General Training",
+        rpe: overallRpe,
+        dur: durPer,
+        proof: !!editPhoto,
+        proofThumb: editPhoto
+      };
+    });
+  }
+
+  /* Points — streak-weighted: habit > performance
+     +10 base, +1/streak day (cap 15), +8 sleep, +5 fuel, +3 rest day
+     Day 15+ training: 10+15+8+5 = 38 max | Rest day: 10+15+8+5+3 = 41 max */
+  function calcPts() {
+    var p = 10;
+    var streakBonus = Math.min(15, Math.max(1, profile.streak + 1));
+    p += streakBonus;
+    if (sleepHrs && ["8", "9", "10+"].includes(sleepHrs)) p += 8;
+    if (mealColor === "green") p += 5;
+    if (didWork === false) p += 3;
+    return p;
+  }
+
+  /* Readiness Score */
+  function calcReadiness() {
+    var score = 0;
+    var redFlag = false;
+    var reasons = [];
+    var hrsMap = {
+      "<6": 5,
+      "6": 12,
+      "7": 22,
+      "8": 30,
+      "9": 35,
+      "10+": 35
+    };
+    var sleepScore = hrsMap[sleepHrs] || 15;
+    if (sleepQ === "bad") sleepScore = Math.max(0, sleepScore - 12);
+    score += sleepScore;
+    var stressScore = Math.max(0, 30 - (stress - 1) * 7.5);
+    score += stressScore;
+    var CRITICAL = ["head", "neck"];
+    var hasCritical = painZones.some(function (z) {
+      var rid = rawZoneId(z);
+      return CRITICAL.includes(rid);
+    });
+    var numZones = zoneCount();
+    var sharpCount = painZones.filter(function(z){return z.startsWith("sharp:")}).length;
+    var painScore = 35;
+    if (hasCritical) {
+      painScore = 0;
+      redFlag = true;
+      reasons.push("Head/neck pain reported");
+    } else if (numZones >= 3) {
+      painScore = 5;
+    } else if (numZones >= 1) {
+      var severityMult = sharpCount > 0 ? painLevel * 3 : painLevel * 2;
+      painScore = Math.max(5, 35 - Math.min(30, numZones * severityMult));
+    }
+    score += painScore;
+    if (readiness === "exhausted") {
+      redFlag = true;
+      reasons.push("Self-reported exhausted");
+    }
+    if (score < 30 && !redFlag) {
+      redFlag = true;
+      reasons.push("Readiness score critical (" + Math.round(score) + "/100)");
+    }
+    if (stress >= 5 && zoneCount() >= 2 && !redFlag) {
+      redFlag = true;
+      reasons.push("Max stress + multiple pain zones");
+    }
+    return {
+      score: Math.round(Math.min(100, Math.max(0, score))),
+      redFlag: redFlag,
+      reasons: reasons
+    };
+  }
+
+  /* Submit */
+  async function finish() {
+    setSaving(true);
+    buzzDouble();
+    var rd = calcReadiness();
+    var sessions = buildSessions();
+    var ciRes = await SB.rpc('submit_checkin', {
+      p_sleep_hrs: sleepHrs,
+      p_sleep_quality: sleepQ,
+      p_readiness: readiness,
+      p_stress: stress,
+      p_pain_zones: painZones.length > 0 ? [].concat(painZones, ["level_" + painLevel]) : painZones,
+      p_hydration: hydration,
+      p_fuel_window: fuelWindow || 'na',
+      p_meal_color: mealColor,
+      p_coach_task: coachTask,
+      p_readiness_score: rd.score,
+      p_red_flag: rd.redFlag,
+      p_red_flag_reasons: rd.reasons,
+      p_rest_day: didWork === false
+    });
+    if (ciRes.error) {
+      setSaving(false);
+      return toast(ciRes.error.message || "Check-in failed", "err");
+    }
+    var ciData = ciRes.data;
+    if (ciData.error) {
+      setSaving(false);
+      return toast(ciData.error, "err");
+    }
+    for (var i = 0; i < sessions.length; i++) {
+      var s = sessions[i];
+      await SB.rpc('log_session', {
+        p_checkin_id: ciData.checkin_id,
+        p_sport: s.sport,
+        p_session_type: s.type,
+        p_rpe: s.rpe,
+        p_duration: s.dur
+      });
+    }
+    setSaving(false);
+    onDone({
+      points: ciData.points,
+      streak: ciData.streak,
+      xp: ciData.xp,
+      sessions: sessions,
+      readiness: rd
+    });
+  }
+
+  /* Progress */
+  var progress = (card + (canNext() ? 0.5 : 0)) / TOTAL * 100;
   return /*#__PURE__*/React.createElement("div", {
     style: {
       minHeight: "100vh",
@@ -1031,7 +1252,12 @@ function Huddle({
     }
   }, /*#__PURE__*/React.createElement("button", {
     onClick: function () {
-      card > 0 ? setCard(card - 1) : onCancel();
+      if (card > 0) {
+        buzz();
+        setCard(card - 1);
+      } else {
+        onCancel();
+      }
     },
     style: {
       background: "none",
@@ -1039,82 +1265,88 @@ function Huddle({
       color: "var(--sub)",
       fontFamily: D2,
       fontSize: 18,
-      letterSpacing: "3px"
+      letterSpacing: "3px",
+      fontWeight: 700
     }
   }, card === 0 ? "✕" : "←"), /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: D2,
       fontSize: 14,
       color: "var(--dim)",
-      letterSpacing: "3px"
+      letterSpacing: "3px",
+      fontWeight: 700
     }
-  }, "DAILY HUDDLE")), /*#__PURE__*/React.createElement("div", {
+  }, "PRE-FLIGHT CHECK")), /*#__PURE__*/React.createElement("div", {
     style: {
-      display: "flex",
-      gap: 4
+      height: 5,
+      background: "rgba(0,255,135,0.06)",
+      borderRadius: 5,
+      overflow: "hidden"
     }
-  }, Array.from({
-    length: TOTAL
-  }, function (_, i) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      style: {
-        flex: 1,
-        height: 4,
-        borderRadius: 4,
-        background: i < card ? "var(--g1)" : i === card ? "var(--g4)" : "rgba(0,255,135,0.08)"
-      }
-    });
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: "100%",
+      width: progress + "%",
+      borderRadius: 5,
+      background: "linear-gradient(90deg,var(--pr),var(--g0),var(--g4),var(--g1))",
+      transition: "width 0.4s cubic-bezier(0.22,1,0.36,1)"
+    }
   }))), card === 0 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c0",
     style: {
       flex: 1,
-      padding: "28px 20px"
+      padding: "24px 20px",
+      overflowY: "auto"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 48,
-      marginBottom: 8
+      marginBottom: 6
     }
   }, "\uD83D\uDE34"), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
-      fontSize: 52,
+      fontSize: 48,
       lineHeight: 0.85
     }
-  }, "SLEEP"), /*#__PURE__*/React.createElement("p", {
+  }, "SLEEP + READINESS"), /*#__PURE__*/React.createElement("p", {
     style: {
       fontFamily: D2,
-      fontSize: 16,
+      fontSize: 14,
       color: "var(--sub)",
       letterSpacing: "2px",
-      margin: "8px 0 24px"
+      margin: "6px 0 20px",
+      fontWeight: 700
     }
-  }, "HOW'D YOU SLEEP?"), /*#__PURE__*/React.createElement("label", {
+  }, "HOW'D YOU SLEEP? HOW DO YOU FEEL?"), /*#__PURE__*/React.createElement("label", {
     className: "lbl"
   }, "HOURS"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
-      gap: 8,
-      marginBottom: 24
+      gap: 6,
+      marginBottom: 18
     }
   }, ["<6", "6", "7", "8", "9", "10+"].map(function (h) {
+    var on = sleepHrs === h;
     return /*#__PURE__*/React.createElement("button", {
       key: h,
       onClick: function () {
+        buzz();
         setSleepHrs(h);
       },
       style: {
         flex: 1,
-        padding: "14px 0",
+        padding: "12px 0",
         borderRadius: 14,
         fontFamily: D,
-        fontSize: 22,
-        background: sleepHrs === h ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
-        color: sleepHrs === h ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (sleepHrs === h ? "rgba(0,255,135,0.35)" : "rgba(0,255,135,0.04)")
+        fontSize: 20,
+        background: on ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
+        color: on ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (on ? "rgba(0,255,135,0.35)" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.2s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: on ? "scale(1.06)" : "scale(1)"
       }
     }, h);
   })), /*#__PURE__*/React.createElement("label", {
@@ -1122,7 +1354,8 @@ function Huddle({
   }, "QUALITY"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
-      gap: 12
+      gap: 10,
+      marginBottom: 20
     }
   }, [{
     id: "good",
@@ -1133,77 +1366,66 @@ function Huddle({
     i: "👎",
     l: "ROUGH"
   }].map(function (q) {
+    var on = sleepQ === q.id;
     return /*#__PURE__*/React.createElement("button", {
       key: q.id,
       onClick: function () {
+        buzz();
         setSleepQ(q.id);
       },
       style: {
         flex: 1,
-        padding: "20px",
-        borderRadius: 16,
+        padding: "16px",
+        borderRadius: 14,
         textAlign: "center",
-        background: sleepQ === q.id ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
-        border: "2px solid " + (sleepQ === q.id ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
+        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
+        border: "2px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.2s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: on ? "scale(1.05)" : "scale(1)"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 40
+        fontSize: on ? 34 : 28,
+        transition: "font-size 0.2s"
       }
     }, q.i), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: D2,
-        fontSize: 16,
-        color: sleepQ === q.id ? "var(--g1)" : "var(--dim)",
+        fontSize: 12,
+        color: on ? "var(--g1)" : "var(--dim)",
         letterSpacing: "2px",
-        marginTop: 6
+        marginTop: 4,
+        fontWeight: 700
       }
     }, q.l));
-  }))), card === 1 && /*#__PURE__*/React.createElement("div", {
-    className: "ci",
-    key: "c1",
-    style: {
-      flex: 1,
-      padding: "24px 20px",
-      overflowY: "auto"
-    }
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "gs",
-    style: {
-      fontFamily: D,
-      fontSize: 44,
-      lineHeight: 0.85
-    }
-  }, "READINESS"), /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontFamily: D2,
-      fontSize: 14,
-      color: "var(--sub)",
-      letterSpacing: "2px",
-      margin: "6px 0 16px"
-    }
-  }, "HOW DO YOU FEEL?"), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "READINESS"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
-      gap: 8,
-      marginBottom: 20
+      gap: 8
     }
   }, [{
     id: "ready",
     i: "😃",
-    l: "Ready"
+    l: "READY",
+    c: "#00FF87"
   }, {
     id: "sluggish",
     i: "😐",
-    l: "Sluggish"
+    l: "SLUGGISH",
+    c: "#FFB300"
   }, {
     id: "exhausted",
     i: "😫",
-    l: "Exhausted"
+    l: "SPENT",
+    c: "#EF5350"
   }].map(function (r) {
+    var on = readiness === r.id;
     return /*#__PURE__*/React.createElement("button", {
       key: r.id,
       onClick: function () {
+        buzz(15);
         setReadiness(r.id);
       },
       style: {
@@ -1211,25 +1433,58 @@ function Huddle({
         padding: "14px 6px",
         borderRadius: 14,
         textAlign: "center",
-        background: readiness === r.id ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
-        border: "2px solid " + (readiness === r.id ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
+        background: on ? r.c + "18" : "rgba(12,12,18,0.8)",
+        border: "2px solid " + (on ? r.c + "45" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.25s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: on ? "scale(1.08)" : "scale(0.95)"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 32
+        fontSize: on ? 38 : 28,
+        transition: "font-size 0.2s cubic-bezier(0.34,1.5,0.64,1)"
       }
     }, r.i), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: D2,
-        fontSize: 13,
-        color: readiness === r.id ? "var(--g1)" : "var(--dim)",
+        fontSize: 11,
+        color: on ? r.c : "var(--dim)",
         letterSpacing: "1px",
-        marginTop: 4
+        marginTop: 2,
+        fontWeight: 700
       }
-    }, r.l.toUpperCase()));
-  })), /*#__PURE__*/React.createElement("label", {
+    }, r.l));
+  }))), React.createElement(DailyTip,{tip:TIPS_SLEEP[TIP_DAY],color:"var(--pr2)",icon:"💡"})), card === 1 && /*#__PURE__*/React.createElement("div", {
+    className: "ci",
+    key: "c1",
+    style: {
+      flex: 1,
+      padding: "24px 20px",
+      overflowY: "auto"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 44,
+      marginBottom: 4
+    }
+  }, "\uD83D\uDD0D"), /*#__PURE__*/React.createElement("h2", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 48,
+      lineHeight: 0.85
+    }
+  }, "BODY SCAN"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      margin: "6px 0 20px",
+      fontWeight: 700
+    }
+  }, "SYSTEMS CHECK"), /*#__PURE__*/React.createElement("label", {
     className: "lbl"
-  }, "SCHOOL / LIFE STRESS"), /*#__PURE__*/React.createElement("div", {
+  }, "MENTAL LOAD"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 6,
@@ -1238,59 +1493,122 @@ function Huddle({
   }, [{
     n: 1,
     i: "😌",
-    l: "Chill"
+    l: "CHILL"
   }, {
     n: 2,
     i: "🙂",
-    l: "Normal"
+    l: "FINE"
   }, {
     n: 3,
     i: "😐",
-    l: "Some"
+    l: "SOME"
   }, {
     n: 4,
     i: "😰",
-    l: "Heavy"
+    l: "HEAVY"
   }, {
     n: 5,
     i: "🤯",
-    l: "Maxed"
+    l: "MAXED"
   }].map(function (s) {
     var on = stress === s.n;
-    var c = s.n <= 2 ? "#4CAF50" : s.n <= 3 ? "#FFB300" : s.n <= 4 ? "#FF8F00" : "#EF5350";
+    var c = s.n <= 2 ? "#00FF87" : s.n <= 3 ? "#FFB300" : s.n <= 4 ? "#FF8F00" : "#EF5350";
     return /*#__PURE__*/React.createElement("button", {
       key: s.n,
       onClick: function () {
+        buzz();
         setStress(s.n);
       },
       style: {
         flex: 1,
-        padding: "10px 4px",
-        borderRadius: 12,
+        padding: "10px 2px",
+        borderRadius: 14,
         textAlign: "center",
         background: on ? c + "20" : "rgba(12,12,18,0.8)",
-        border: "1.5px solid " + (on ? c + "50" : "rgba(0,255,135,0.04)")
+        border: "1.5px solid " + (on ? c + "50" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.25s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: on ? "scale(1.08)" : "scale(0.95)"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 22
+        fontSize: on ? 26 : 18,
+        transition: "font-size 0.2s"
       }
     }, s.i), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: D2,
-        fontSize: 10,
+        fontSize: 9,
         color: on ? c : "var(--dim)",
         letterSpacing: "0.5px",
-        marginTop: 2
+        marginTop: 2,
+        fontWeight: 700
       }
-    }, s.l.toUpperCase()));
-  })), /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "BODY MAP \u2014 TAP WHERE IT HURTS ", /*#__PURE__*/React.createElement("span", {
+    }, s.l));
+  })), !showBodyMap ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      buzz(15);
+    },
     style: {
-      color: "var(--dim)"
+      width: "100%",
+      padding: "28px 20px",
+      borderRadius: 20,
+      border: "2px solid rgba(0,255,135,0.2)",
+      background: "rgba(0,255,135,0.04)",
+      textAlign: "center",
+      marginBottom: 14
     }
-  }, "(OPTIONAL)")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D,
+      fontSize: 32,
+      color: "var(--g1)",
+      letterSpacing: "-0.02em"
+    }
+  }, "ALL CLEAR \u2713"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      letterSpacing: "1px",
+      marginTop: 4,
+      fontWeight: 600
+    }
+  }, "NO PAIN OR SORENESS TODAY")), /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      buzz();
+      setShowBodyMap(true);
+    },
+    style: {
+      width: "100%",
+      padding: "16px",
+      borderRadius: 14,
+      border: "1.5px solid rgba(239,83,80,0.15)",
+      background: "rgba(239,83,80,0.03)",
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--red)",
+      letterSpacing: "1px",
+      fontWeight: 700
+    }
+  }, "\u26A0\uFE0F REPORT PAIN OR SORENESS")) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+    onClick: function () {
+      buzz();
+      setShowBodyMap(false);
+      setPainZones([]);
+    },
+    style: {
+      background: "none",
+      border: "none",
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--dim)",
+      letterSpacing: "1px",
+      fontWeight: 700,
+      marginBottom: 10
+    }
+  }, "\u2190 BACK TO ALL CLEAR"), /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "TAP WHERE IT HURTS"), /*#__PURE__*/React.createElement("div", {
     style: {
       position: "relative",
       width: "100%",
@@ -1364,14 +1682,17 @@ function Huddle({
     y2: "95",
     stroke: "rgba(124,58,237,0.12)",
     strokeWidth: "0.8"
-  })), ZONES.map(function (z) {
-    var on = painZones.includes(z.id);
+  })), /*#__PURE__*/React.createElement("style", null, "@keyframes zonePulse{0%,100%{border-color:rgba(124,58,237,0.08)}50%{border-color:rgba(124,58,237,0.18)}}"), ZONES.map(function (z) {
+    var st = zoneState(z.id);
+    var isSore = st === "sore";
+    var isSharp = st === "sharp";
+    var on = isSore || isSharp;
     return /*#__PURE__*/React.createElement("button", {
       key: z.id,
       onClick: function () {
         togZone(z.id);
       },
-      title: z.l,
+      title: z.l + (isSore ? " (Sore)" : isSharp ? " (Sharp)" : ""),
       style: {
         position: "absolute",
         left: z.x + "%",
@@ -1379,51 +1700,47 @@ function Huddle({
         width: z.w + "%",
         height: z.h + "%",
         borderRadius: 6,
-        background: on ? "rgba(239,83,80,0.35)" : "rgba(0,255,135,0.02)",
-        border: "1px solid " + (on ? "rgba(239,83,80,0.5)" : "rgba(0,255,135,0.05)"),
-        boxShadow: on ? "0 0 10px rgba(239,83,80,0.3)" : "none"
+        background: isSharp ? "rgba(239,83,80,0.4)" : isSore ? "rgba(255,179,0,0.3)" : "rgba(124,58,237,0.02)",
+        border: "1.5px solid " + (isSharp ? "rgba(239,83,80,0.7)" : isSore ? "rgba(255,179,0,0.5)" : "rgba(124,58,237,0.08)"),
+        boxShadow: isSharp ? "0 0 14px rgba(239,83,80,0.4)" : isSore ? "0 0 10px rgba(255,179,0,0.3)" : "none",
+        animation: on ? "none" : "zonePulse 3s ease infinite",
+        transition: "all 0.15s ease"
       }
     });
-  })), /*#__PURE__*/React.createElement("div", {
+  })), zoneCount() > 0 && /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       fontFamily: D2,
       fontSize: 12,
-      color: painZones.length ? "var(--red)" : "var(--dim)",
-      letterSpacing: "1px"
+      letterSpacing: "1px",
+      fontWeight: 700,
+      marginBottom: 8
     }
-  }, painZones.length ? painZones.map(function (z) {
-    var f = ZONES.find(function (x) {
-      return x.id === z;
-    });
-    return f ? f.l : z;
-  }).join(", ").toUpperCase() : "NO PAIN — TAP ABOVE IF SOMETHING HURTS"), painZones.length > 0 && /*#__PURE__*/React.createElement("div", {
+  }, painZones.filter(function(z){return z.startsWith("sore:")||z.startsWith("sharp:")}).map(function (z) {
+    var isSharp = z.startsWith("sharp:");
+    var rid = rawZoneId(z);
+    var f = ZONES.find(function (x) { return x.id === rid; });
+    var label = f ? f.l : rid;
+    return React.createElement("span",{key:z,style:{color:isSharp?"var(--red)":"#FFB300",marginRight:8}}, label.toUpperCase() + (isSharp ? " ▪ SHARP" : " ▪ SORE"));
+  }),
+  React.createElement("div",{style:{fontFamily:D2,fontSize:10,color:"var(--dim)",marginTop:6,fontWeight:600}},"TAP ONCE = SORE (YELLOW) · TAP AGAIN = SHARP (RED) · TAP TO REMOVE")
+  ), zoneCount() > 0 && /*#__PURE__*/React.createElement("div", {
     style: {
-      marginTop: 16,
-      padding: "16px 18px",
-      borderRadius: 16,
+      padding: "14px 16px",
+      borderRadius: 14,
       background: "rgba(239,83,80,0.06)",
       border: "1.5px solid rgba(239,83,80,0.15)"
     }
-  }, /*#__PURE__*/React.createElement("label", {
-    style: {
-      fontFamily: D2,
-      fontSize: 14,
-      color: "var(--red)",
-      letterSpacing: "3px",
-      display: "block",
-      marginBottom: 8
-    }
-  }, "PAIN LEVEL"), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       alignItems: "center",
-      gap: 12
+      gap: 10
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: D,
-      fontSize: 44,
+      fontSize: 36,
       color: painLevel <= 3 ? "#FFB300" : painLevel <= 6 ? "#FF8F00" : painLevel <= 8 ? "#FF6D00" : "#D50000",
       lineHeight: 0.9
     }
@@ -1438,6 +1755,7 @@ function Huddle({
     value: painLevel,
     onChange: function (e) {
       setPainLevel(+e.target.value);
+      buzz(5);
     },
     style: {
       width: "100%",
@@ -1448,39 +1766,30 @@ function Huddle({
     style: {
       display: "flex",
       justifyContent: "space-between",
-      marginTop: 4
+      marginTop: 2
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: D2,
-      fontSize: 11,
+      fontSize: 10,
       color: "#FFB300",
-      letterSpacing: "1px"
+      fontWeight: 700
     }
   }, "MILD"), /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: D2,
-      fontSize: 11,
+      fontSize: 10,
       color: "#FF8F00",
-      letterSpacing: "1px"
+      fontWeight: 700
     }
-  }, "MODERATE"), /*#__PURE__*/React.createElement("span", {
+  }, "MOD"), /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: D2,
-      fontSize: 11,
+      fontSize: 10,
       color: "#D50000",
-      letterSpacing: "1px"
+      fontWeight: 700
     }
-  }, "SEVERE")))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 12,
-      color: "var(--dim)",
-      letterSpacing: "0.5px",
-      marginTop: 8,
-      textAlign: "center"
-    }
-  }, painLevel <= 2 ? "SLIGHT DISCOMFORT — MANAGEABLE" : painLevel <= 4 ? "NOTICEABLE — AFFECTING MOVEMENT A BIT" : painLevel <= 6 ? "MODERATE — HARD TO IGNORE" : painLevel <= 8 ? "SIGNIFICANT — LIMITING ACTIVITY" : "SEVERE — NEEDS ATTENTION NOW"))), card === 2 && /*#__PURE__*/React.createElement("div", {
+  }, "SEVERE")))))))), React.createElement(DailyTip,{tip:TIPS_RECOVER[TIP_DAY],color:"#FFB300",icon:"💡"})), card === 2 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c2",
     style: {
@@ -1488,9 +1797,22 @@ function Huddle({
       padding: "24px 20px",
       overflowY: "auto"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("input", {
+    ref: fileRef,
+    type: "file",
+    accept: "image/*,video/*",
+    capture: "environment",
     style: {
-      fontSize: 44,
+      display: "none"
+    },
+    onChange: function (e) {
+      if (e.target.files && e.target.files[0]) {
+        setEditPhoto(URL.createObjectURL(e.target.files[0]));
+      }
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 40,
       marginBottom: 4
     }
   }, "\u25C6"), /*#__PURE__*/React.createElement("h2", {
@@ -1506,102 +1828,10 @@ function Huddle({
       fontSize: 14,
       color: "var(--sub)",
       letterSpacing: "2px",
-      margin: "6px 0 16px"
+      margin: "6px 0 16px",
+      fontWeight: 700
     }
-  }, "LOG EVERY SESSION"), /*#__PURE__*/React.createElement("input", {
-    ref: fileRef,
-    type: "file",
-    accept: "image/*,video/*",
-    capture: "environment",
-    style: {
-      display: "none"
-    },
-    onChange: function (e) {
-      if (e.target.files && e.target.files[0]) {
-        setEditPhoto(URL.createObjectURL(e.target.files[0]));
-      }
-    }
-  }), sessions.map(function (s, i) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      className: "gc2",
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "12px 14px",
-        marginBottom: 8
-      }
-    }, s.proofThumb && /*#__PURE__*/React.createElement("img", {
-      src: s.proofThumb,
-      style: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
-        objectFit: "cover",
-        border: "2px solid rgba(76,175,80,0.3)",
-        flexShrink: 0
-      }
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 6,
-        alignItems: "center"
-      }
-    }, /*#__PURE__*/React.createElement(ST, {
-      s: s.sport
-    }), s.proof ? /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        padding: "2px 8px",
-        borderRadius: 8,
-        background: "rgba(76,175,80,0.12)",
-        color: "var(--grn)",
-        border: "1px solid rgba(76,175,80,0.2)",
-        letterSpacing: "1px"
-      }
-    }, "\u2713 VERIFIED") : /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        padding: "2px 8px",
-        borderRadius: 8,
-        background: "rgba(0,255,135,0.04)",
-        color: "var(--dim)",
-        border: "1px solid rgba(0,255,135,0.04)",
-        letterSpacing: "1px"
-      }
-    }, "SELF-REPORTED")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 13,
-        color: "var(--sub)",
-        marginTop: 4
-      }
-    }, s.type, " \xB7 RPE ", s.rpe, " \xB7 ", s.dur, "min \xB7 LOAD ", s.rpe * s.dur)), /*#__PURE__*/React.createElement("button", {
-      onClick: function () {
-        setSessions(function (p) {
-          return p.filter(function (_, idx) {
-            return idx !== i;
-          });
-        });
-      },
-      style: {
-        background: "none",
-        border: "1px solid rgba(239,83,80,0.3)",
-        borderRadius: 8,
-        padding: "4px 10px",
-        fontFamily: D2,
-        fontSize: 12,
-        color: "var(--red)"
-      }
-    }, "\u2715"));
-  }), didWork === null && sessions.length === 0 && /*#__PURE__*/React.createElement("div", {
+  }, "WHAT DID YOU DO TODAY?"), didWork === null && /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 12,
@@ -1609,249 +1839,188 @@ function Huddle({
     }
   }, /*#__PURE__*/React.createElement("button", {
     onClick: function () {
+      buzz(15);
       setDidWork(true);
     },
     style: {
       flex: 1,
-      padding: "18px",
-      borderRadius: 16,
+      padding: "22px",
+      borderRadius: 18,
       textAlign: "center",
       background: "rgba(12,12,18,0.8)",
       border: "2px solid rgba(0,255,135,0.04)"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 32
+      fontSize: 36
     }
   }, "\uD83D\uDCAA"), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D,
-      fontSize: 20,
+      fontSize: 22,
       color: "var(--g1)",
       marginTop: 4
     }
   }, "YES")), /*#__PURE__*/React.createElement("button", {
     onClick: function () {
+      buzz(15);
       setDidWork(false);
     },
     style: {
       flex: 1,
-      padding: "18px",
-      borderRadius: 16,
+      padding: "22px",
+      borderRadius: 18,
       textAlign: "center",
       background: "rgba(12,12,18,0.8)",
       border: "2px solid rgba(0,255,135,0.04)"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 32
+      fontSize: 36
     }
   }, "\uD83D\uDECB\uFE0F"), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D,
-      fontSize: 20,
+      fontSize: 22,
       color: "var(--dim)",
       marginTop: 4
     }
-  }, "REST DAY"))), (didWork || sessions.length > 0) && !editSport && /*#__PURE__*/React.createElement("button", {
-    onClick: function () {
-      setEditSport("_pick");
-      setDidWork(true);
-    },
-    style: {
-      width: "100%",
-      padding: "14px",
-      borderRadius: 14,
-      border: "2px dashed rgba(0,255,135,0.15)",
-      background: "transparent",
-      fontFamily: D2,
-      fontSize: 16,
-      color: "var(--g4)",
-      letterSpacing: "2px",
-      marginBottom: 12
-    }
-  }, "+ ADD SESSION"), editSport === "_pick" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("label", {
+  }, "REST DAY"))), didWork && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
     className: "lbl"
-  }, "SPORT"), /*#__PURE__*/React.createElement("div", {
+  }, "SPORTS TODAY ", /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: "var(--dim)"
+    }
+  }, "(TAP ALL THAT APPLY)")), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
-      flexDirection: "column",
-      gap: 8
+      flexWrap: "wrap",
+      gap: 8,
+      marginBottom: 18
     }
   }, (profile.sports || []).map(function (s) {
+    var on = selectedSports.includes(s);
+    var h = ALL_SPORTS.indexOf(s) * 25;
     return /*#__PURE__*/React.createElement("button", {
       key: s,
       onClick: function () {
-        setEditSport(s);
+        togSport(s);
       },
-      className: "gc",
       style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "14px 16px",
-        textAlign: "left"
-      }
-    }, /*#__PURE__*/React.createElement(ST, {
-      s: s
-    }), /*#__PURE__*/React.createElement("span", {
-      style: {
+        padding: "14px 18px",
+        borderRadius: 14,
         fontFamily: D,
-        fontSize: 20,
-        color: "var(--g6)",
-        flex: 1
+        fontSize: 18,
+        letterSpacing: "-0.02em",
+        background: on ? "hsla(" + h + ",45%,40%,0.2)" : "rgba(12,12,18,0.8)",
+        color: on ? "hsla(" + h + ",50%,65%,1)" : "var(--dim)",
+        border: "2px solid " + (on ? "hsla(" + h + ",45%,40%,0.35)" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.2s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: on ? "scale(1.05)" : "scale(1)"
       }
-    }, s.toUpperCase()), /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "var(--dim)"
-      }
-    }, "\u2192"));
-  }), /*#__PURE__*/React.createElement("button", {
-    onClick: function () {
-      setEditSport(null);
-    },
-    style: {
-      background: "none",
-      border: "none",
-      color: "var(--dim)",
-      fontFamily: D2,
-      fontSize: 14
-    }
-  }, "CANCEL"))), editSport && editSport !== "_pick" && /*#__PURE__*/React.createElement("div", {
-    className: "gc",
-    style: {
-      padding: 16,
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "gs",
+    }, on ? "✓ " : "", s.toUpperCase());
+  })), selectedSports.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
+    className: "lbl"
+  }, "OVERALL INTENSITY ", /*#__PURE__*/React.createElement("span", {
     style: {
       fontFamily: D,
-      fontSize: 22
+      fontSize: 28,
+      color: RPE_COLOR[overallRpe] || "var(--g1)"
     }
-  }, editSport.toUpperCase()), /*#__PURE__*/React.createElement("button", {
-    onClick: function () {
-      setEditSport(null);
-      setEditType("");
-      setEditDur(null);
-      setEditPhoto(null);
-    },
+  }, overallRpe), "/10 ", /*#__PURE__*/React.createElement("span", {
     style: {
-      background: "none",
-      border: "none",
-      color: "var(--dim)",
+      color: RPE_COLOR[overallRpe],
       fontFamily: D2,
-      fontSize: 14
+      fontSize: 12,
+      fontWeight: 700
     }
-  }, "\u2715")), /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "TYPE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 6,
-      marginBottom: 14
-    }
-  }, SESSION_TYPES.map(function (t) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: t,
-      onClick: function () {
-        setEditType(t);
-      },
-      style: {
-        padding: "8px 12px",
-        borderRadius: 10,
-        fontFamily: D2,
-        fontSize: 12,
-        letterSpacing: "0.5px",
-        background: editType === t ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
-        color: editType === t ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (editType === t ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
-      }
-    }, t.toUpperCase());
-  })), /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "RPE ", /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: D,
-      fontSize: 32,
-      color: RPE_COLOR[editRpe] || "var(--g1)"
-    }
-  }, editRpe), "/10 ", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: RPE_COLOR[editRpe],
-      fontFamily: D2,
-      fontSize: 13
-    }
-  }, RPE_DESC[editRpe] || "")), /*#__PURE__*/React.createElement("input", {
+  }, RPE_DESC[overallRpe] || "")), /*#__PURE__*/React.createElement("input", {
     type: "range",
     min: "1",
     max: "10",
-    value: editRpe,
+    value: overallRpe,
     onChange: function (e) {
-      setEditRpe(+e.target.value);
+      setOverallRpe(+e.target.value);
+      buzz(5);
     },
     style: {
       width: "100%",
-      accentColor: RPE_COLOR[editRpe] || "var(--g1)",
+      accentColor: RPE_COLOR[overallRpe] || "var(--g1)",
       height: 8,
-      marginBottom: 14
+      marginBottom: 18
     }
   }), /*#__PURE__*/React.createElement("label", {
     className: "lbl"
-  }, "DURATION (MIN)"), /*#__PURE__*/React.createElement("div", {
+  }, "TOTAL TIME TODAY"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 6,
       flexWrap: "wrap",
-      marginBottom: 14
+      marginBottom: 16
     }
-  }, ["15", "30", "45", "60", "90", "120"].map(function (d) {
+  }, [{
+    v: "60",
+    l: "1 HR"
+  }, {
+    v: "90",
+    l: "1.5"
+  }, {
+    v: "120",
+    l: "2 HR"
+  }, {
+    v: "150",
+    l: "2.5"
+  }, {
+    v: "180",
+    l: "3 HR"
+  }, {
+    v: "240",
+    l: "4 HR"
+  }].map(function (d) {
+    var on = totalDur === d.v;
     return /*#__PURE__*/React.createElement("button", {
-      key: d,
+      key: d.v,
       onClick: function () {
-        setEditDur(d);
+        buzz();
+        setTotalDur(d.v);
       },
       style: {
-        padding: "10px 0",
         flex: "1 1 28%",
+        padding: "12px 0",
         borderRadius: 12,
         fontFamily: D,
         fontSize: 20,
-        background: editDur === d ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
-        color: editDur === d ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (editDur === d ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
+        textAlign: "center",
+        background: on ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
+        color: on ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.15s",
+        transform: on ? "scale(1.05)" : "scale(1)"
       }
-    }, d);
-  })), /*#__PURE__*/React.createElement("div", {
+    }, d.l);
+  })), totalDur && /*#__PURE__*/React.createElement("div", {
     style: {
-      padding: "16px",
-      borderRadius: 16,
-      background: editPhoto ? "rgba(76,175,80,0.06)" : "rgba(0,255,135,0.02)",
-      border: "2px solid " + (editPhoto ? "rgba(76,175,80,0.2)" : "rgba(0,255,135,0.08)"),
-      marginBottom: 14
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      textAlign: "center",
+      marginBottom: 16,
+      fontWeight: 700
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, selectedSports.length, " SPORT", selectedSports.length > 1 ? "S" : "", " \xB7 RPE ", overallRpe, " \xB7 ", totalDur, " MIN \xB7 LOAD ", overallRpe * parseInt(totalDur)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       alignItems: "center",
       gap: 10,
-      marginBottom: editPhoto ? 12 : 0
+      padding: "12px 14px",
+      borderRadius: 14,
+      background: editPhoto ? "rgba(76,175,80,0.06)" : "rgba(124,58,237,0.03)",
+      border: "1.5px solid " + (editPhoto ? "rgba(76,175,80,0.2)" : "rgba(124,58,237,0.06)"),
+      marginBottom: 12
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontSize: 28
+      fontSize: 22
     }
   }, editPhoto ? "✅" : "📸"), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1859,68 +2028,30 @@ function Huddle({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontFamily: D,
-      fontSize: 18,
-      color: editPhoto ? "var(--grn)" : "var(--g1)"
-    }
-  }, editPhoto ? "PROOF ATTACHED" : "PROOF OF GRIND"), /*#__PURE__*/React.createElement("div", {
-    style: {
       fontFamily: D2,
-      fontSize: 12,
+      fontSize: 13,
       color: editPhoto ? "var(--grn)" : "var(--dim)",
+      fontWeight: 700,
       letterSpacing: "0.5px"
     }
-  }, editPhoto ? "VERIFIED SESSION · +5 GP BONUS" : "SNAP A PHOTO OR VIDEO · +5 GP")), !editPhoto && /*#__PURE__*/React.createElement("button", {
+  }, editPhoto ? "PROOF ATTACHED" : "PROOF OF GRIND")), !editPhoto ? /*#__PURE__*/React.createElement("button", {
     onClick: function () {
+      buzz();
       if (fileRef.current) fileRef.current.click();
     },
     style: {
-      padding: "10px 18px",
-      borderRadius: 12,
+      padding: "8px 14px",
+      borderRadius: 10,
       border: "none",
       background: "linear-gradient(135deg,var(--g0),var(--g4))",
-      fontFamily: D,
-      fontSize: 16,
-      color: "var(--bg)",
-      letterSpacing: "1px",
-      flexShrink: 0
-    }
-  }, "\uD83D\uDCF7 SNAP")), editPhoto && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("img", {
-    src: editPhoto,
-    style: {
-      width: 64,
-      height: 64,
-      borderRadius: 12,
-      objectFit: "cover",
-      border: "2px solid rgba(76,175,80,0.3)"
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1
-    }
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: function () {
-      if (fileRef.current) fileRef.current.click();
-    },
-    style: {
-      background: "none",
-      border: "1px solid rgba(0,255,135,0.1)",
-      borderRadius: 10,
-      padding: "6px 14px",
       fontFamily: D2,
       fontSize: 12,
-      color: "var(--g4)",
-      letterSpacing: "1px",
-      marginRight: 8
+      color: "var(--bg)",
+      fontWeight: 700
     }
-  }, "RETAKE"), /*#__PURE__*/React.createElement("button", {
+  }, "SNAP") : /*#__PURE__*/React.createElement("button", {
     onClick: function () {
+      buzz();
       setEditPhoto(null);
       if (fileRef.current) fileRef.current.value = "";
     },
@@ -1928,70 +2059,105 @@ function Huddle({
       background: "none",
       border: "1px solid rgba(239,83,80,0.2)",
       borderRadius: 10,
-      padding: "6px 14px",
-      fontFamily: D2,
-      fontSize: 12,
-      color: "var(--red)",
-      letterSpacing: "1px"
-    }
-  }, "REMOVE"))), !editPhoto && /*#__PURE__*/React.createElement("div", {
-    style: {
+      padding: "6px 12px",
       fontFamily: D2,
       fontSize: 11,
-      color: "var(--dim)",
-      letterSpacing: "0.5px",
-      marginTop: 8
+      color: "var(--red)",
+      fontWeight: 700
     }
-  }, "SWEAT ON THE FLOOR \xB7 WEIGHT ON THE BAR \xB7 LAST REP OF THE SET")), /*#__PURE__*/React.createElement("button", {
-    onClick: addSession,
-    disabled: !editType || !editDur,
-    className: "btn-gold",
-    style: {
-      fontSize: 20,
-      padding: 14
-    }
-  }, "LOG SESSION \u2713")), didWork !== null && !editSport && /*#__PURE__*/React.createElement("div", {
+  }, "\u2715"))), /*#__PURE__*/React.createElement("div", {
     onClick: function () {
+      buzz(15);
       setCoachTask(!coachTask);
     },
     style: {
       display: "flex",
       alignItems: "center",
-      gap: 14,
-      padding: "16px 18px",
-      borderRadius: 16,
-      background: coachTask ? "rgba(76,175,80,0.1)" : "rgba(12,12,18,0.8)",
-      border: "2px solid " + (coachTask ? "rgba(76,175,80,0.3)" : "rgba(0,255,135,0.04)"),
-      marginTop: 8,
-      cursor: "pointer"
+      gap: 12,
+      padding: "14px 16px",
+      borderRadius: 14,
+      background: coachTask ? "rgba(0,255,135,0.06)" : "rgba(12,12,18,0.8)",
+      border: "1.5px solid " + (coachTask ? "rgba(0,255,135,0.2)" : "rgba(0,255,135,0.04)"),
+      cursor: "pointer",
+      transition: "all 0.2s"
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      width: 26,
-      height: 26,
-      borderRadius: 8,
-      border: "2px solid " + (coachTask ? "#4CAF50" : "rgba(0,255,135,0.15)"),
+      width: 24,
+      height: 24,
+      borderRadius: 7,
+      border: "2px solid " + (coachTask ? "var(--grn)" : "rgba(0,255,135,0.15)"),
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: coachTask ? "#4CAF50" : "transparent",
+      background: coachTask ? "var(--grn)" : "transparent",
+      fontSize: 12,
+      color: "#fff",
+      transition: "all 0.2s"
+    }
+  }, coachTask ? "✓" : ""), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
       fontSize: 14,
-      color: "#fff"
+      color: coachTask ? "var(--grn)" : "var(--txt)",
+      letterSpacing: "1px",
+      fontWeight: 700
     }
-  }, coachTask ? "✓" : ""), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }, "COACH'S TASK"))), coachTaskText && /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D2,
-      fontSize: 15,
-      color: coachTask ? "#4CAF50" : "var(--txt)",
-      letterSpacing: "1px"
+      fontSize: 12,
+      color: "var(--dim)",
+      fontWeight: 600,
+      marginTop: 4
     }
-  }, "COACH'S DAILY TASK"), /*#__PURE__*/React.createElement("div", {
+  }, coachTaskText.toUpperCase())), didWork === false && /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      padding: "40px 20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      textAlign: "center",
+      marginBottom: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 56,
+      marginBottom: 12
+    }
+  }, "\uD83E\uDDD8"), /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 32
+    }
+  }, "RECOVERY DAY"), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D2,
-      fontSize: 11,
-      color: "var(--dim)"
+      fontSize: 14,
+      color: "var(--g1)",
+      marginTop: 8,
+      fontWeight: 700,
+      letterSpacing: "2px"
     }
-  }, "+15 GP")))), card === 3 && /*#__PURE__*/React.createElement("div", {
+  }, "+3 GP RECOVERY BONUS")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "16px 18px",
+      borderRadius: 14,
+      background: "rgba(0,255,135,0.04)",
+      border: "1.5px solid rgba(0,255,135,0.1)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      lineHeight: 1.6,
+      fontWeight: 600,
+      textAlign: "center"
+    }
+  }, "ELITE ATHLETES SCHEDULE REST. YOUR BODY BUILDS MUSCLE DURING RECOVERY, NOT DURING THE WORKOUT. THIS IS PART OF THE PLAN.")))), card === 3 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c3",
     style: {
@@ -2001,14 +2167,14 @@ function Huddle({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontSize: 44,
+      fontSize: 40,
       marginBottom: 4
     }
   }, "\uD83C\uDF7D\uFE0F"), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
-      fontSize: 52,
+      fontSize: 48,
       lineHeight: 0.85
     }
   }, "FUEL"), /*#__PURE__*/React.createElement("p", {
@@ -2017,7 +2183,8 @@ function Huddle({
       fontSize: 14,
       color: "var(--sub)",
       letterSpacing: "2px",
-      margin: "6px 0 20px"
+      margin: "6px 0 18px",
+      fontWeight: 700
     }
   }, "HOW DID YOU FUEL?"), /*#__PURE__*/React.createElement("label", {
     className: "lbl"
@@ -2032,32 +2199,36 @@ function Huddle({
     return /*#__PURE__*/React.createElement("button", {
       key: b,
       onClick: function () {
+        buzz(8);
         setHydration(b);
       },
       style: {
-        fontSize: b <= hydration ? 26 : 22,
+        fontSize: b <= hydration ? 26 : 20,
         filter: b <= hydration ? "none" : "grayscale(1) opacity(0.2)",
         background: "none",
         border: "none",
-        padding: 2
+        padding: 2,
+        transition: "all 0.15s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: b <= hydration ? "scale(1.1)" : "scale(0.9)"
       }
     }, "\uD83D\uDCA7");
   })), /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       fontFamily: D2,
-      fontSize: 14,
+      fontSize: 13,
       color: hydration >= 6 ? "var(--grn)" : "var(--dim)",
       letterSpacing: "1px",
-      marginBottom: 20
+      marginBottom: 18,
+      fontWeight: 700
     }
   }, hydration, " BOTTLE", hydration !== 1 ? "S" : ""), /*#__PURE__*/React.createElement("label", {
     className: "lbl"
-  }, "EAT WITHIN 45 MIN OF WORKOUT?"), /*#__PURE__*/React.createElement("div", {
+  }, "EAT WITHIN 45 MIN OF TRAINING?"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
-      gap: 10,
-      marginBottom: 20
+      gap: 8,
+      marginBottom: 18
     }
   }, [{
     id: "yes",
@@ -2069,82 +2240,85 @@ function Huddle({
     id: "na",
     l: "N/A"
   }].map(function (o) {
+    var on = fuelWindow === o.id;
     return /*#__PURE__*/React.createElement("button", {
       key: o.id,
       onClick: function () {
+        buzz();
         setFuelWindow(o.id);
       },
       style: {
         flex: 1,
-        padding: "14px",
-        borderRadius: 14,
+        padding: "12px",
+        borderRadius: 12,
         fontFamily: D,
-        fontSize: 22,
-        background: fuelWindow === o.id ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
-        color: fuelWindow === o.id ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (fuelWindow === o.id ? "rgba(0,255,135,0.25)" : "rgba(0,255,135,0.04)")
+        fontSize: 20,
+        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
+        color: on ? "var(--g1)" : "var(--dim)",
+        border: "2px solid " + (on ? "rgba(0,255,135,0.25)" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.2s",
+        transform: on ? "scale(1.05)" : "scale(1)"
       }
     }, o.l);
   })), /*#__PURE__*/React.createElement("label", {
     className: "lbl"
-  }, "MEALS WERE MOSTLY..."), /*#__PURE__*/React.createElement("div", {
+  }, "MEALS TODAY"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
-      flexDirection: "column",
-      gap: 10
+      gap: 8
     }
   }, [{
     id: "green",
     i: "🟢",
-    l: "Whole foods, veggies, protein",
+    l: "CLEAN",
     c: "#4CAF50"
   }, {
     id: "yellow",
     i: "🟡",
-    l: "Processed but okay",
+    l: "OK",
     c: "#FFB300"
   }, {
     id: "red",
     i: "🔴",
-    l: "Fast food / junk / sugar",
+    l: "JUNK",
     c: "#EF5350"
   }].map(function (m) {
+    var on = mealColor === m.id;
     return /*#__PURE__*/React.createElement("button", {
       key: m.id,
       onClick: function () {
+        buzz(15);
         setMealColor(m.id);
       },
       style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        padding: "16px 18px",
-        background: mealColor === m.id ? m.c + "18" : "rgba(12,12,18,0.8)",
-        border: "2px solid " + (mealColor === m.id ? m.c + "50" : "rgba(0,255,135,0.04)"),
-        borderRadius: 16
+        flex: 1,
+        padding: "16px 8px",
+        borderRadius: 14,
+        textAlign: "center",
+        background: on ? m.c + "18" : "rgba(12,12,18,0.8)",
+        border: "2px solid " + (on ? m.c + "50" : "rgba(0,255,135,0.04)"),
+        transition: "all 0.2s cubic-bezier(0.34,1.5,0.64,1)",
+        transform: on ? "scale(1.05)" : "scale(1)"
       }
-    }, /*#__PURE__*/React.createElement("span", {
+    }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 22
+        fontSize: on ? 28 : 22,
+        transition: "font-size 0.2s"
       }
-    }, m.i), /*#__PURE__*/React.createElement("span", {
+    }, m.i), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: D2,
-        fontSize: 15,
-        color: mealColor === m.id ? m.c : "var(--dim)",
-        letterSpacing: "0.5px",
-        textAlign: "left"
+        fontSize: 11,
+        color: on ? m.c : "var(--dim)",
+        letterSpacing: "1px",
+        marginTop: 2,
+        fontWeight: 700
       }
-    }, m.l.toUpperCase()), mealColor === m.id && /*#__PURE__*/React.createElement("span", {
-      style: {
-        marginLeft: "auto",
-        color: m.c,
-        fontSize: 18
-      }
-    }, "\u2713"));
-  }))), card === 4 && function () {
+    }, m.l));
+  }))), React.createElement(DailyTip,{tip:TIPS_FUEL[TIP_DAY],color:"var(--g1)",icon:"💡"})), card === 4 && function () {
     var rd = calcReadiness();
     var scoreColor = rd.score >= 70 ? "var(--grn)" : rd.score >= 40 ? "var(--g4)" : "var(--red)";
+    var sessions = buildSessions();
     return /*#__PURE__*/React.createElement("div", {
       className: "ci",
       key: "c4",
@@ -2156,92 +2330,88 @@ function Huddle({
     }, /*#__PURE__*/React.createElement("div", {
       style: {
         textAlign: "center",
-        marginBottom: 16
+        marginBottom: 14
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontSize: 56,
-        marginBottom: 12
+        fontSize: 48,
+        marginBottom: 8
       },
       className: "pi"
-    }, SCHOOL.LOGO), /*#__PURE__*/React.createElement("h2", {
+    }, "\u25C6"), /*#__PURE__*/React.createElement("h2", {
       className: "gs",
       style: {
         fontFamily: D,
-        fontSize: 48,
+        fontSize: 44,
         lineHeight: 0.85,
-        marginBottom: 16
+        marginBottom: 12
       }
     }, "HUDDLE COMPLETE")), /*#__PURE__*/React.createElement("div", {
       className: "gc2",
       style: {
-        padding: 20,
-        width: "100%",
+        padding: 18,
         maxWidth: 320,
         margin: "0 auto",
-        marginBottom: 16
+        marginBottom: 14
       }
     }, /*#__PURE__*/React.createElement("div", {
       className: "gs",
       style: {
         fontFamily: D,
-        fontSize: 56,
+        fontSize: 48,
         lineHeight: 0.9,
-        marginBottom: 12,
+        marginBottom: 10,
         textAlign: "center"
       }
-    }, "+", calcPts(), " GP"), function () {
-      var proofCount = sessions.filter(function (s) {
-        return s.proof;
-      }).length;
-      return [{
-        l: "Daily Streak",
-        p: 10,
-        on: true
-      }, {
-        l: "8+ Hours Sleep",
-        p: 20,
-        on: ["8", "9", "10+"].includes(sleepHrs)
-      }, {
-        l: "Coach's Task",
-        p: 15,
-        on: coachTask
-      }, {
-        l: "Green Nutrition",
-        p: 5,
-        on: mealColor === "green"
-      }, {
-        l: "Proof of Grind (×" + proofCount + ")",
-        p: proofCount * 5,
-        on: proofCount > 0
-      }].map(function (r) {
-        return /*#__PURE__*/React.createElement("div", {
-          key: r.l,
-          style: {
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "5px 0",
-            borderBottom: "1px solid rgba(0,255,135,0.04)"
-          }
-        }, /*#__PURE__*/React.createElement("span", {
-          style: {
-            fontFamily: D2,
-            fontSize: 13,
-            color: r.on ? "var(--txt)" : "var(--dim)",
-            letterSpacing: "0.5px"
-          }
-        }, r.l.toUpperCase()), /*#__PURE__*/React.createElement("span", {
-          style: {
-            fontFamily: D,
-            fontSize: 18,
-            color: r.on ? "var(--g1)" : "var(--dim)"
-          }
-        }, r.on ? "+" + r.p : "—"));
-      });
-    }()), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "gp"
+    }, "+", calcPts(), " GP")), function(){var sb=Math.min(15,Math.max(1,profile.streak+1));return [{
+      l: "Check-In",
+      p: 10,
+      on: true
+    }, {
+      l: "Streak Bonus (Day " + (profile.streak+1) + ")",
+      p: sb,
+      on: true
+    }, {
+      l: "8+ Hours Sleep",
+      p: 8,
+      on: ["8", "9", "10+"].includes(sleepHrs)
+    }, {
+      l: "Green Fuel",
+      p: 5,
+      on: mealColor === "green"
+    }, {
+      l: "Recovery Day",
+      p: 3,
+      on: didWork === false
+    }]}().map(function (r) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: r.l,
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "4px 0",
+          borderBottom: "1px solid rgba(0,255,135,0.04)"
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: D2,
+          fontSize: 12,
+          color: r.on ? "var(--txt)" : "var(--dim)",
+          fontWeight: 700
+        }
+      }, r.l.toUpperCase()), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: D,
+          fontSize: 16,
+          color: r.on ? "var(--g1)" : "var(--dim)"
+        }
+      }, r.on ? "+" + r.p : "—"));
+    })), /*#__PURE__*/React.createElement("div", {
       className: "gc",
       style: {
-        padding: "16px 20px",
+        padding: "14px 18px",
         maxWidth: 320,
         margin: "0 auto",
         border: rd.redFlag ? "2px solid rgba(239,83,80,0.3)" : "1px solid rgba(0,255,135,0.08)"
@@ -2251,86 +2421,76 @@ function Huddle({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 8
+        marginBottom: 6
       }
     }, /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D2,
-        fontSize: 14,
+        fontSize: 13,
         color: "var(--sub)",
-        letterSpacing: "2px"
+        letterSpacing: "2px",
+        fontWeight: 700
       }
-    }, "READINESS SCORE"), /*#__PURE__*/React.createElement("span", {
+    }, "READINESS"), /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D,
-        fontSize: 36,
+        fontSize: 32,
         color: scoreColor,
         lineHeight: 0.9
       }
     }, rd.score, /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D2,
-        fontSize: 14,
+        fontSize: 13,
         color: "var(--dim)"
       }
     }, "/100"))), /*#__PURE__*/React.createElement("div", {
       style: {
-        height: 8,
-        background: "rgba(124,58,237,0.06)",
-        borderRadius: 8,
+        height: 6,
+        background: "rgba(0,255,135,0.06)",
+        borderRadius: 6,
         overflow: "hidden",
-        marginBottom: rd.redFlag ? 12 : 0
+        marginBottom: rd.redFlag ? 10 : 0
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
         height: "100%",
         width: rd.score + "%",
         background: scoreColor,
-        borderRadius: 8,
+        borderRadius: 6,
         transition: "width 0.8s ease"
       }
     })), rd.redFlag && /*#__PURE__*/React.createElement("div", {
       style: {
-        padding: "10px 14px",
-        borderRadius: 12,
+        padding: "8px 12px",
+        borderRadius: 10,
         background: "rgba(239,83,80,0.08)",
         border: "1px solid rgba(239,83,80,0.15)"
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: D,
-        fontSize: 16,
-        color: "var(--red)",
-        marginBottom: 4
+        fontSize: 14,
+        color: "var(--red)"
       }
     }, "\uD83D\uDEA9 RED FLAG"), rd.reasons.map(function (r, i) {
       return /*#__PURE__*/React.createElement("div", {
         key: i,
         style: {
           fontFamily: D2,
-          fontSize: 13,
+          fontSize: 12,
           color: "var(--red)",
-          letterSpacing: "0.5px"
+          fontWeight: 700
         }
       }, "\xB7 ", r.toUpperCase());
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 11,
-        color: "var(--dim)",
-        letterSpacing: "0.5px",
-        marginTop: 6
-      }
-    }, "YOUR COACHING STAFF WILL BE NOTIFIED"))));
+    }))));
   }(), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "16px 20px 28px"
     }
   }, card < 4 ? /*#__PURE__*/React.createElement("button", {
     className: "btn-gold",
-    onClick: function () {
-      if (canNext()) setCard(card + 1);
-    },
+    onClick: advanceCard,
     disabled: !canNext()
   }, "NEXT \u2192") : /*#__PURE__*/React.createElement("button", {
     className: "btn-gold",
@@ -2338,6 +2498,78 @@ function Huddle({
     disabled: saving
   }, saving ? "SAVING..." : "LOCK IT IN 🔒")));
 }
+
+/* ████████████████████████████████████████████████████████████████████████
+   §9g  INSIGHT ENGINE — Data-driven athlete notifications
+   ████████████████████████████████████████████████████████████████████████ */
+
+function InsightCard(props) {
+  var todayCheckin = props.todayCheckin, recentCheckins = props.recentCheckins, todaySessions = props.todaySessions, streak = props.streak;
+  if (!todayCheckin) return null;
+  var insight = null;
+  var recent = recentCheckins || [];
+  var recentCount = recent.length;
+  var painDays = recent.filter(function(c){return c.pain_zones&&c.pain_zones.some(function(z){return !z.startsWith("level_")})}).length;
+  var sleepMap = {"<6":5,"6":6,"7":7,"8":8,"9":9,"10+":10};
+  var avgSleep = recentCount>1?recent.reduce(function(sum,c){return sum+(sleepMap[c.sleep_hrs]||7)},0)/recentCount:null;
+  var avgStress = recentCount>1?recent.reduce(function(sum,c){return sum+(c.stress||3)},0)/recentCount:null;
+  var redMeals = recent.filter(function(c){return c.meal_color==="red"}).length;
+  var totalLoad = todaySessions.reduce(function(sum,s){return sum+(s.training_load||s.rpe*s.duration)},0);
+  var stressUp = avgStress&&todayCheckin.stress>avgStress+0.8;
+  if(todaySessions.length>=3&&totalLoad>1200){insight={icon:"\u26A1",color:"#FFB300",title:"BIG TRAINING DAY \u2014 "+todaySessions.length+" SESSIONS LOGGED",body:"You put in the work. Make tonight count \u2014 sleep, hydrate, fuel up. The gains happen in recovery, not in the gym."};}
+  if(!insight&&streak>=7&&todaySessions.length>0&&recentCount>=6){insight={icon:"\uD83E\uDDD8",color:"var(--pr2)",title:"YOU\u2019VE BEEN GRINDING \u2014 HAVE YOU TAKEN A DAY OFF?",body:"You\u2019re on a "+streak+"-day streak. That\u2019s elite. But rest days aren\u2019t quitting \u2014 they\u2019re how your body absorbs the work. Schedule one. You\u2019ll still earn GP."};}
+  if(!insight&&todayCheckin.readiness_score){var readinessArr=recent.filter(function(c){return c.readiness_score});if(readinessArr.length>2){var avgR=readinessArr.reduce(function(s,c){return s+c.readiness_score},0)/readinessArr.length;if(todayCheckin.readiness_score<avgR-15){insight={icon:"\uD83D\uDCCA",color:"var(--pr2)",title:"YOUR READINESS DROPPED TODAY \u2014 THAT\u2019S DATA, NOT FAILURE",body:"Consider telling Coach you need a modified warm-up or lower intensity. The best athletes adjust. They don\u2019t just push through every day."};}}}
+  if(!insight&&redMeals>=3&&stressUp){insight={icon:"\uD83C\uDF7D\uFE0F",color:"#FFB300",title:"WHEN STRESS GOES UP, NUTRITION SLIPS FIRST",body:"You\u2019ve had a few rough fuel days \u2014 that\u2019s normal under pressure. One green meal tomorrow resets the pattern. Start with breakfast."};}
+  if(!insight&&painDays>=3&&avgSleep&&avgSleep>=7){insight={icon:"\uD83D\uDCAA",color:"var(--g1)",title:"YOUR BODY IS DOING THE WORK",body:painDays+" days of soreness, but you\u2019ve hit your sleep targets. That\u2019s how recovery happens. The soreness fades \u2014 the discipline doesn\u2019t."};}
+  if(!insight&&(streak===7||streak===14||streak===21||streak===30||streak===60)){insight={icon:"\uD83D\uDD25",color:"var(--g1)",title:streak+" DAYS. NO GAPS. NO EXCUSES.",body:"That\u2019s not luck \u2014 that\u2019s identity. You\u2019re not someone who tries to check in. You\u2019re someone who shows up. Every day."};}
+  if(!insight)return null;
+  return React.createElement("div",{style:{padding:"0 20px",marginBottom:16}},React.createElement("div",{style:{padding:"18px 20px",borderRadius:18,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid "+insight.color+"25"}},React.createElement("div",{style:{display:"flex",alignItems:"flex-start",gap:12}},React.createElement("span",{style:{fontSize:28,flexShrink:0}},insight.icon),React.createElement("div",null,React.createElement("div",{style:{fontFamily:D,fontSize:18,color:insight.color,letterSpacing:"-0.02em",lineHeight:1.1,marginBottom:6}},insight.title),React.createElement("div",{style:{fontFamily:D2,fontSize:14,color:"var(--sub)",lineHeight:1.4,fontWeight:600}},insight.body)))));
+}
+
+/* ████████████████████████████████████████████████████████████████████████
+   §9h  DAILY TIPS — Rotate by day of week on Huddle cards
+   ████████████████████████████████████████████████████████████████████████ */
+
+var TIPS_SLEEP = [
+  "Set an alarm to GO TO BED, not just wake up. You need 8-9 hours.",
+  "Screens off 30 min before bed. Blue light kills melatonin and delays sleep.",
+  "Same bedtime every night — even weekends. Your body clock doesn't know it's Saturday.",
+  "Cool, dark room. 65-68°F. Your body sleeps deeper when it's cold.",
+  "No caffeine after 2 PM. That pre-workout at 4 is stealing tonight's recovery.",
+  "Naps work. 20 minutes between 1-3 PM. Longer than 30 and you'll feel worse.",
+  "If you can't fall asleep in 15 minutes, get up and do something boring. Don't scroll."
+];
+var TIPS_FUEL = [
+  "Eat within 45 minutes of training. Your muscles are sponges — feed them while they're open.",
+  "Protein at every meal. Palm-sized portion. Chicken, eggs, Greek yogurt, whatever works.",
+  "Drink half your body weight in ounces daily. 160 lbs = 80 oz minimum.",
+  "Stop skipping breakfast. Your brain and muscles have been fasting for 8 hours.",
+  "One color per plate. If everything is brown, add something green.",
+  "Chocolate milk is one of the best post-workout drinks. Cheap, effective, and it tastes good.",
+  "Eat a real meal before a game. Not a candy bar. Rice, chicken, veggies — 2-3 hours before."
+];
+var TIPS_RECOVER = [
+  "Foam roll for 5 minutes after every session. Hit tight spots, not just sore ones.",
+  "One full rest day per week. Your body builds muscle during rest, not during the workout.",
+  "Light movement on off days beats sitting all day. Walk, stretch, swim — move blood through tissue.",
+  "Ice for the first 48 hours after a tweak. After that, heat and movement recover faster.",
+  "Sleep is the #1 recovery tool. Better than ice baths, compression boots, and supplements combined.",
+  "Stretch what's tight, strengthen what's weak. Most pain comes from imbalance, not overuse.",
+  "Your body adapts to stress — but only if you give it time. Back-to-back max days break you down."
+];
+var TIP_DAY = new Date().getDay(); // 0=Sun, 1=Mon ... 6=Sat
+
+function DailyTip(props) {
+  var tip = props.tip, color = props.color, icon = props.icon;
+  return React.createElement("div", {style:{marginTop:20,padding:"14px 16px",borderRadius:14,background:"rgba(12,12,18,0.8)",borderLeft:"3px solid "+color,display:"flex",alignItems:"flex-start",gap:10}},
+    React.createElement("span", {style:{fontSize:18,flexShrink:0}}, icon),
+    React.createElement("div", null,
+      React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:color,letterSpacing:"2px",fontWeight:700,marginBottom:3}}, "TIP OF THE DAY"),
+      React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",lineHeight:1.5,fontWeight:600}}, tip)
+    )
+  );
+}
+
 
 /* ████████████████████████████████████████████████████████████████████████
    §10  DASHBOARD — Athlete home with hero Huddle CTA
@@ -2355,11 +2587,11 @@ function Dashboard({
     pr = gP(profile.xp);
   var first = profile.first_name || profile.name.split(" ")[0] || "";
   var hr = new Date().getHours();
+  var [recentCheckins, setRecentCheckins] = useState([]);
+  useEffect(function(){if(profile&&profile.id){SB.from('checkins').select('*').eq('athlete_id',profile.id).order('date',{ascending:false}).limit(7).then(function(res){if(!res.error&&res.data)setRecentCheckins(res.data)})}},[]);
   var greet = hr < 12 ? "GOOD MORNING" : hr < 17 ? "GOOD AFTERNOON" : "GOOD EVENING";
 
-  /* ── Conflict detection from today's sessions ── */
-  var LOAD_CAUTION = 600,
-    LOAD_DANGER = 900;
+  /* ── Load detection — thresholds scale by session count ── */
   var totalLoad = todaySessions.reduce(function (sum, s) {
     return sum + (s.training_load || s.rpe * s.duration);
   }, 0);
@@ -2368,6 +2600,9 @@ function Dashboard({
     sportSet[s.sport] = true;
   });
   var distinctSports = Object.keys(sportSet);
+  var sessionCount = Math.max(1, todaySessions.length);
+  var LOAD_CAUTION = 450 * sessionCount;
+  var LOAD_DANGER = 750 * sessionCount;
   var hasConflict = distinctSports.length >= 2;
   var loadLevel = totalLoad >= LOAD_DANGER ? "danger" : totalLoad >= LOAD_CAUTION ? "caution" : "ok";
   return /*#__PURE__*/React.createElement("div", {
@@ -2746,7 +2981,7 @@ function Dashboard({
       borderRadius: 10,
       background: loadLevel === "danger" ? "rgba(239,83,80,0.06)" : "rgba(255,179,0,0.04)"
     }
-  }, loadLevel === "danger" ? "⚠️ TOTAL LOAD IS IN THE DANGER ZONE. CONSIDER REDUCING INTENSITY TOMORROW." : "⚡ MULTI-SPORT DAY LOGGED. YOUR COACHES CAN SEE YOUR COMBINED LOAD."))), /*#__PURE__*/React.createElement("div", {
+  }, loadLevel === "danger" ? "⚠️ HIGH LOAD RELATIVE TO YOUR SESSIONS TODAY. LISTEN TO YOUR BODY TOMORROW." : "⚡ " + distinctSports.length + " SPORTS, " + todaySessions.length + " SESSIONS LOGGED. YOUR COACHES CAN SEE YOUR COMBINED LOAD."))), todayCheckin && /*#__PURE__*/React.createElement(InsightCard, {todayCheckin: todayCheckin, recentCheckins: recentCheckins, todaySessions: todaySessions, streak: profile.streak}), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "0 20px"
     }
@@ -2811,7 +3046,9 @@ function Dashboard({
       fontSize: 42,
       lineHeight: 0.85
     }
-  }, profile.xp), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "gp"
+  }, profile.xp)), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D2,
       fontSize: 13,
@@ -2867,7 +3104,9 @@ function Dashboard({
       lineHeight: 0.9,
       marginTop: 4
     }
-  }, profile.streak), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "gp"
+  }, profile.streak)), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D2,
       fontSize: 11,
@@ -2925,11 +3164,15 @@ function Dashboard({
       key: s,
       s: s
     });
-  })))));
+  })))),
+
+  /* Help tips now show on Huddle cards instead */
+  React.createElement("div",{style:{height:20}})
+  )));
 }
 
 /* ████████████████████████████████████████████████████████████████████████
-   §11  LEADERBOARD — Live from Supabase leaderboard view
+   §11  LEADERBOARD — Consistency score, no health data
    ████████████████████████████████████████████████████████████████████████ */
 
 function Leaderboard({
@@ -2937,23 +3180,21 @@ function Leaderboard({
 }) {
   var [data, setData] = useState([]);
   var [loading, setLoading] = useState(true);
-  var LOAD_CAUTION = 600,
-    LOAD_DANGER = 900;
   useEffect(function () {
-    // Query the today_athlete_load view for leaderboard + conflict data
-    SB.from('today_athlete_load').select('*').limit(50).then(function (res) {
+    SB.from('consistency_scores').select('*').limit(50).then(function (res) {
       if (res.error) {
-        // Fallback to basic leaderboard if view doesn't exist yet
+        // Fallback if view doesn't exist yet
         SB.from('leaderboard').select('*').limit(50).then(function (r2) {
-          if (!r2.error) setData(r2.data || []);
+          if (!r2.error) setData((r2.data || []).map(function (a) {
+            return Object.assign({}, a, {
+              consistency_score: 0,
+              athlete_id: a.id
+            });
+          }));
           setLoading(false);
         });
       } else {
-        // Sort by XP descending
-        var sorted = (res.data || []).sort(function (a, b) {
-          return (b.xp || 0) - (a.xp || 0);
-        });
-        setData(sorted);
+        setData(res.data || []);
         setLoading(false);
       }
     });
@@ -2970,14 +3211,6 @@ function Leaderboard({
       fontSize: 24
     }
   }, "LOADING..."));
-
-  // Count conflicts for summary
-  var conflictCount = data.filter(function (a) {
-    return (a.sports_today || 0) >= 2;
-  }).length;
-  var dangerCount = data.filter(function (a) {
-    return (a.today_load || 0) >= LOAD_DANGER;
-  }).length;
   return /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "20px 20px 110px"
@@ -2993,74 +3226,21 @@ function Leaderboard({
   }, SCHOOL.LOGO, " LEADERBOARD"), /*#__PURE__*/React.createElement("p", {
     style: {
       fontFamily: D2,
-      fontSize: 16,
+      fontSize: 14,
+      color: "var(--dim)",
+      margin: "0 0 6px",
+      letterSpacing: "3px",
+      fontWeight: 700
+    }
+  }, "ALL ", SCHOOL.SHORT_NAME), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 11,
       color: "var(--dim)",
       margin: "0 0 16px",
-      letterSpacing: "4px"
+      fontWeight: 600
     }
-  }, "ALL ", SCHOOL.SHORT_NAME), (conflictCount > 0 || dangerCount > 0) && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 8,
-      marginBottom: 16
-    }
-  }, conflictCount > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      padding: "10px 14px",
-      borderRadius: 14,
-      background: "rgba(255,179,0,0.06)",
-      border: "1.5px solid rgba(255,179,0,0.2)",
-      display: "flex",
-      alignItems: "center",
-      gap: 8
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 16
-    }
-  }, "\u26A1"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D,
-      fontSize: 20,
-      color: "#FFB300"
-    }
-  }, conflictCount), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 10,
-      color: "var(--dim)",
-      letterSpacing: "1px"
-    }
-  }, "MULTI-SPORT"))), dangerCount > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      padding: "10px 14px",
-      borderRadius: 14,
-      background: "rgba(239,83,80,0.06)",
-      border: "1.5px solid rgba(239,83,80,0.2)",
-      display: "flex",
-      alignItems: "center",
-      gap: 8
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 16
-    }
-  }, "\uD83D\uDEA8"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D,
-      fontSize: 20,
-      color: "var(--red)"
-    }
-  }, dangerCount), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 10,
-      color: "var(--dim)",
-      letterSpacing: "1px"
-    }
-  }, "HIGH LOAD")))), data.length === 0 && /*#__PURE__*/React.createElement("div", {
+  }, "RANKED BY CONSISTENCY \u2014 NOT PERFORMANCE, NOT HEALTH"), data.length === 0 && /*#__PURE__*/React.createElement("div", {
     className: "gc",
     style: {
       padding: 20,
@@ -3069,28 +3249,48 @@ function Leaderboard({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D2,
-      fontSize: 16,
+      fontSize: 14,
       color: "var(--dim)",
-      letterSpacing: "2px"
+      letterSpacing: "2px",
+      fontWeight: 700
     }
   }, "NO ATHLETES YET \u2014 BE THE FIRST!")), data.map(function (a, i) {
-    var isMe = a.id === myId || a.athlete_id === myId;
+    var isMe = a.athlete_id === myId;
     var lv = gL(a.xp || 0);
-    var load = a.today_load || 0;
-    var sportsToday = a.sports_today || 0;
-    var hasConflict = sportsToday >= 2;
-    var loadLvl = load >= LOAD_DANGER ? "danger" : load >= LOAD_CAUTION ? "caution" : "ok";
-    var hasFlag = a.red_flag;
+    var cs = a.consistency_score || 0;
+    var csColor = cs >= 80 ? "var(--g1)" : cs >= 50 ? "#FFB300" : cs >= 25 ? "var(--pr2)" : "var(--dim)";
+
+    /* Badge array */
+    var badges = [];
+    if (a.badge_all_in) badges.push({
+      i: "🔥",
+      l: "ALL-IN"
+    });
+    if (a.badge_iron) badges.push({
+      i: "🦾",
+      l: "IRON"
+    });
+    if (a.badge_unbreakable) badges.push({
+      i: "🔗",
+      l: "UNBREAKABLE"
+    });
+    if (a.badge_centurion) badges.push({
+      i: "💯",
+      l: "CENTURION"
+    });
+    if (a.badge_first_light && !a.badge_iron) badges.push({
+      i: "🌅",
+      l: "FIRST LIGHT"
+    });
     return /*#__PURE__*/React.createElement("div", {
-      key: a.id || a.athlete_id,
+      key: a.athlete_id || a.id,
       className: isMe ? "gc2" : "gc",
       style: {
         display: "flex",
         alignItems: "center",
         gap: 12,
         padding: "14px 16px",
-        marginBottom: 10,
-        border: hasFlag ? "2px solid rgba(239,83,80,0.2)" : hasConflict ? "1.5px solid rgba(255,179,0,0.15)" : undefined
+        marginBottom: 10
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
@@ -3100,8 +3300,8 @@ function Leaderboard({
     }, /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D,
-        fontSize: i < 3 ? 22 : 20,
-        color: i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "var(--dim)"
+        fontSize: i < 3 ? 22 : 18,
+        color: i === 0 ? "var(--g1)" : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "var(--dim)"
       }
     }, i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1)), /*#__PURE__*/React.createElement("div", {
       style: {
@@ -3122,23 +3322,21 @@ function Leaderboard({
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",
-        letterSpacing: "1px"
+        letterSpacing: "1px",
+        fontWeight: 700
       }
     }, (a.name || "").toUpperCase()), isMe && /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D2,
-        fontSize: 11,
+        fontSize: 10,
         padding: "2px 8px",
         borderRadius: 8,
         background: "rgba(0,255,135,0.1)",
         color: "var(--g1)",
-        letterSpacing: "2px"
+        letterSpacing: "2px",
+        fontWeight: 700
       }
-    }, "YOU"), hasFlag && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 12
-      }
-    }, "\uD83D\uDEA9")), /*#__PURE__*/React.createElement("div", {
+    }, "YOU")), /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         alignItems: "center",
@@ -3149,8 +3347,9 @@ function Leaderboard({
     }, /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D2,
-        fontSize: 12,
-        color: "var(--dim)"
+        fontSize: 11,
+        color: "var(--dim)",
+        fontWeight: 700
       }
     }, lv.i, " LVL ", lv.l), (a.sports || []).slice(0, 2).map(function (s) {
       return /*#__PURE__*/React.createElement(ST, {
@@ -3161,38 +3360,32 @@ function Leaderboard({
       style: {
         fontFamily: D2,
         fontSize: 11,
-        color: "var(--ember)"
+        color: "var(--ember)",
+        fontWeight: 700
       }
-    }, "\uD83D\uDD25", a.streak, "d")), (hasConflict || load > 0) && /*#__PURE__*/React.createElement("div", {
+    }, "\uD83D\uDD25", a.streak, "d")), badges.length > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         gap: 4,
         marginTop: 4,
         flexWrap: "wrap"
       }
-    }, hasConflict && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        padding: "2px 8px",
-        borderRadius: 8,
-        background: "rgba(255,179,0,0.1)",
-        color: "#FFB300",
-        border: "1px solid rgba(255,179,0,0.15)",
-        letterSpacing: "1px"
-      }
-    }, "\u26A1 ", sportsToday, " SPORTS"), load > 0 && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        padding: "2px 8px",
-        borderRadius: 8,
-        background: loadLvl === "danger" ? "rgba(239,83,80,0.1)" : loadLvl === "caution" ? "rgba(255,179,0,0.08)" : "rgba(124,58,237,0.06)",
-        color: loadLvl === "danger" ? "var(--red)" : loadLvl === "caution" ? "#FFB300" : "var(--g4)",
-        border: "1px solid " + (loadLvl === "danger" ? "rgba(239,83,80,0.15)" : "rgba(0,255,135,0.08)"),
-        letterSpacing: "1px"
-      }
-    }, "LOAD ", load))), /*#__PURE__*/React.createElement("div", {
+    }, badges.map(function (b) {
+      return /*#__PURE__*/React.createElement("span", {
+        key: b.l,
+        style: {
+          fontFamily: D2,
+          fontSize: 9,
+          padding: "2px 6px",
+          borderRadius: 6,
+          background: "rgba(124,58,237,0.08)",
+          color: "var(--pr2)",
+          border: "1px solid rgba(124,58,237,0.12)",
+          letterSpacing: "0.5px",
+          fontWeight: 700
+        }
+      }, b.i, " ", b.l);
+    }))), /*#__PURE__*/React.createElement("div", {
       style: {
         textAlign: "right"
       }
@@ -3203,14 +3396,626 @@ function Leaderboard({
         fontSize: 28,
         lineHeight: 1
       }
-    }, a.xp || 0), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "gp"
+    }, cs)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: "var(--dim)",
+        letterSpacing: "2px",
+        fontWeight: 700
+      }
+    }, "SCORE")));
+  }));
+}
+
+
+/* ████████████████████████████████████████████████████████████████████████
+   §11b  COACH DASHBOARD — Tiered access roster with traffic lights
+   ████████████████████████████████████████████████████████████████████████ */
+
+function CoachDashboard({
+  profile
+}) {
+  var [data, setData] = useState([]);
+  var [loading, setLoading] = useState(true);
+  var [filter, setFilter] = useState("all");
+  var [taskText, setTaskText] = useState("");
+  var [taskSaved, setTaskSaved] = useState(false);
+  var [editingTask, setEditingTask] = useState(false);
+  var [teamSummary, setTeamSummary] = useState([]);
+
+  useEffect(function(){
+    var sport = (profile.sports||[])[0]||"";
+    if(sport){SB.from('coach_tasks').select('task_text').eq('sport',sport).eq('active',true).order('updated_at',{ascending:false}).limit(1).then(function(r){if(!r.error&&r.data&&r.data[0])setTaskText(r.data[0].task_text)})}
+    if(profile.role==="ad"){SB.from('ad_team_summary').select('*').then(function(r){if(!r.error&&r.data)setTeamSummary(r.data)})}
+  },[]);
+
+  function saveTask(){
+    var sport=(profile.sports||[])[0];
+    if(!sport||!taskText.trim())return;
+    SB.rpc('set_coach_task',{p_sport:sport,p_task:taskText.trim()}).then(function(r){
+      if(!r.error){setTaskSaved(true);setEditingTask(false);setTimeout(function(){setTaskSaved(false)},2000)}
+    });
+  }
+
+  useEffect(function () {
+    SB.from('coach_athlete_status').select('*').then(function (res) {
+      if (res.error) {
+        // Fallback: view might not exist yet
+        console.log('coach_athlete_status view not found, using fallback');
+        setData([]);
+        setLoading(false);
+        return;
+      }
+      // Filter by coach's sport if coach role
+      var rows = res.data || [];
+      if (profile.role === 'coach' && profile.sports && profile.sports.length > 0) {
+        rows = rows.filter(function (a) {
+          return (a.sports || []).some(function (s) {
+            return profile.sports.includes(s);
+          });
+        });
+      }
+      setData(rows);
+      setLoading(false);
+    });
+  }, []);
+  if (loading) return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: 40,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 24
+    }
+  }, "LOADING ROSTER..."));
+
+  // Counts
+  var total = data.length;
+  var checkedIn = data.filter(function (a) {
+    return a.checked_in;
+  }).length;
+  var redFlags = data.filter(function (a) {
+    return a.red_flag;
+  }).length;
+  var greens = data.filter(function (a) {
+    return a.status === "green";
+  }).length;
+  var yellows = data.filter(function (a) {
+    return a.status === "yellow";
+  }).length;
+  var reds = data.filter(function (a) {
+    return a.status === "red";
+  }).length;
+  var noCheckin = data.filter(function (a) {
+    return !a.checked_in;
+  }).length;
+
+  // Filter
+  var filtered = data;
+  if (filter === "red") filtered = data.filter(function (a) {
+    return a.status === "red" || a.red_flag;
+  });
+  if (filter === "yellow") filtered = data.filter(function (a) {
+    return a.status === "yellow";
+  });
+  if (filter === "green") filtered = data.filter(function (a) {
+    return a.status === "green";
+  });
+  if (filter === "nocheck") filtered = data.filter(function (a) {
+    return !a.checked_in;
+  });
+
+  // Status color/icon map
+  function statusLight(s) {
+    if (s === "green") return {
+      color: "#00FF87",
+      icon: "🟢",
+      label: "READY"
+    };
+    if (s === "yellow") return {
+      color: "#FFB300",
+      icon: "🟡",
+      label: "MONITOR"
+    };
+    if (s === "red") return {
+      color: "#EF5350",
+      icon: "🔴",
+      label: "CONCERN"
+    };
+    return {
+      color: "var(--dim)",
+      icon: "⚫",
+      label: "NO CHECK-IN"
+    };
+  }
+  function trendArrow(t) {
+    if (t === "up") return {
+      arrow: "↑",
+      color: "#00FF87",
+      label: "ABOVE BASELINE"
+    };
+    if (t === "down") return {
+      arrow: "↓",
+      color: "#EF5350",
+      label: "BELOW BASELINE"
+    };
+    if (t === "steady") return {
+      arrow: "→",
+      color: "var(--sub)",
+      label: "STEADY"
+    };
+    if (t === "new") return {
+      arrow: "·",
+      color: "var(--dim)",
+      label: "NEW"
+    };
+    return {
+      arrow: "—",
+      color: "var(--dim)",
+      label: ""
+    };
+  }
+  function flagLabel(cat) {
+    if (cat === "physical_head_neck") return "HEAD/NECK — PULL FROM CONTACT";
+    if (cat === "wellness_exhausted") return "EXHAUSTED — MODIFY INTENSITY";
+    if (cat === "wellness_critical") return "CRITICAL — CHECK IN WITH ATHLETE";
+    if (cat === "wellness_general") return "WELLNESS ALERT — MONITOR";
+    return "FLAG";
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: "20px 20px 110px"
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "gs",
+    style: {
+      fontFamily: D,
+      fontSize: 44,
+      lineHeight: 0.85,
+      marginBottom: 4
+    }
+  }, "ROSTER"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      marginBottom: 16,
+      fontWeight: 700
+    }
+  }, profile.role === "ad" ? "ALL ATHLETES" : (profile.sports || []).join(" · ").toUpperCase()),
+
+  /* AD Team Summary — anonymized, no individual IDs */
+  profile.role === "ad" && teamSummary.length > 0 && React.createElement("div", {style:{marginBottom:16}},
+
+    /* Ready to Train headline */
+    function(){
+      var totalAthletes = teamSummary.reduce(function(s,r){return s+Number(r.total_athletes||0)},0);
+      var totalCheckedIn = teamSummary.reduce(function(s,r){return s+Number(r.checked_in_today||0)},0);
+      var totalGreen = teamSummary.reduce(function(s,r){return s+Number(r.green_count||0)},0);
+      var totalYellow = teamSummary.reduce(function(s,r){return s+Number(r.yellow_count||0)},0);
+      var totalRed = teamSummary.reduce(function(s,r){return s+Number(r.red_count||0)},0);
+      var totalFlags = teamSummary.reduce(function(s,r){return s+Number(r.red_flag_count||0)},0);
+      var readyPct = totalCheckedIn > 0 ? Math.round(totalGreen / totalCheckedIn * 100) : 0;
+      var readyColor = readyPct >= 75 ? "var(--g1)" : readyPct >= 50 ? "#FFB300" : "var(--red)";
+      return React.createElement("div", null,
+
+        /* Big percentage */
+        React.createElement("div", {style:{padding:"20px",borderRadius:18,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid rgba(0,255,135,0.08)",marginBottom:12,textAlign:"center"}},
+          React.createElement("div", {style:{fontFamily:D,fontSize:64,color:readyColor,lineHeight:0.9}}, readyPct + "%"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"3px",fontWeight:700,marginTop:6}}, "READY TO TRAIN"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",fontWeight:600,marginTop:4}}, totalGreen + " GREEN · " + totalYellow + " YELLOW · " + totalRed + " RED · " + (totalCheckedIn > 0 ? totalCheckedIn : 0) + " OF " + totalAthletes + " CHECKED IN"),
+          totalFlags > 0 && React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--red)",fontWeight:700,marginTop:8}}, "🚩 " + totalFlags + " RED FLAG" + (totalFlags > 1 ? "S" : "") + " TODAY")
+        ),
+
+        /* Per-sport breakdown */
+        teamSummary.map(function(s){
+          var sportReady = Number(s.checked_in_today||0) > 0 ? Math.round(Number(s.green_count||0) / Number(s.checked_in_today) * 100) : 0;
+          var sc = sportReady >= 75 ? "var(--g1)" : sportReady >= 50 ? "#FFB300" : "var(--red)";
+          return React.createElement("div", {key:s.sport,style:{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:"rgba(12,12,18,0.8)",border:"1px solid rgba(124,58,237,0.06)",marginBottom:6}},
+            React.createElement("div", {style:{fontFamily:D,fontSize:24,color:sc,width:48,textAlign:"center"}}, sportReady + "%"),
+            React.createElement("div", {style:{flex:1}},
+              React.createElement("div", {style:{fontFamily:D,fontSize:16,color:"var(--txt)",letterSpacing:"-0.02em"}}, s.sport.toUpperCase()),
+              React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600}},
+                Number(s.checked_in_today||0) + "/" + Number(s.total_athletes||0) + " CHECKED IN · AVG SLEEP " + (s.avg_sleep_hrs||"—") + "H · AVG LOAD " + (s.avg_load||"0"))
+            ),
+            Number(s.red_flag_count||0) > 0 && React.createElement("span", {style:{fontFamily:D2,fontSize:12,color:"var(--red)",fontWeight:700}}, "🚩" + s.red_flag_count),
+            Number(s.multi_sport_conflicts||0) > 0 && React.createElement("span", {style:{fontFamily:D2,fontSize:12,color:"#FFB300",fontWeight:700}}, "⚡" + s.multi_sport_conflicts)
+          );
+        })
+      );
+    }()
+  ),
+
+  /* Coach Task Setter */
+  React.createElement("div", {style:{padding:"12px 16px",borderRadius:14,background:"rgba(12,12,18,0.8)",border:"1.5px solid rgba(124,58,237,0.08)",marginBottom:16}},
+    !editingTask ? React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10}},
+      React.createElement("span", {style:{fontFamily:D2,fontSize:13,color:taskText?"var(--g1)":"var(--dim)",fontWeight:700,letterSpacing:"1px",flex:1}}, taskText ? "◆ " + taskText.toUpperCase() : "NO DAILY TASK SET"),
+      React.createElement("button", {onClick:function(){setEditingTask(true)},style:{padding:"6px 14px",borderRadius:10,border:"1px solid rgba(0,255,135,0.15)",background:"none",fontFamily:D2,fontSize:12,color:"var(--g4)",fontWeight:700,letterSpacing:"1px"}}, taskText ? "EDIT" : "SET TASK"),
+      taskSaved && React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:"var(--grn)",fontWeight:700}}, "✓ SAVED")
+    ) : React.createElement("div", null,
+      React.createElement("label", {className:"lbl"}, "TODAY'S TASK FOR ATHLETES"),
+      React.createElement("input", {className:"inp",value:taskText,onChange:function(e){setTaskText(e.target.value)},placeholder:"e.g. 50 free throws before you leave",style:{marginBottom:10,fontSize:14}}),
+      React.createElement("div", {style:{display:"flex",gap:8}},
+        React.createElement("button", {onClick:saveTask,disabled:!taskText.trim(),style:{flex:1,padding:"10px",borderRadius:10,border:"none",background:"linear-gradient(135deg,var(--g0),var(--g4))",fontFamily:D2,fontSize:13,color:"var(--bg)",fontWeight:700,letterSpacing:"1px"}}, "SAVE TASK"),
+        React.createElement("button", {onClick:function(){setEditingTask(false)},style:{padding:"10px 16px",borderRadius:10,border:"1px solid rgba(0,255,135,0.1)",background:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",fontWeight:700}}, "CANCEL")
+      )
+    )
+  ),
+
+  /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: 6,
+      marginBottom: 16,
+      overflowX: "auto"
+    }
+  }, [{
+    id: "all",
+    n: total,
+    l: "ALL",
+    c: "var(--g1)"
+  }, {
+    id: "red",
+    n: reds + redFlags,
+    l: "RED",
+    c: "#EF5350"
+  }, {
+    id: "yellow",
+    n: yellows,
+    l: "YELLOW",
+    c: "#FFB300"
+  }, {
+    id: "green",
+    n: greens,
+    l: "GREEN",
+    c: "#00FF87"
+  }, {
+    id: "nocheck",
+    n: noCheckin,
+    l: "MISSING",
+    c: "var(--dim)"
+  }].map(function (f) {
+    var on = filter === f.id;
+    return /*#__PURE__*/React.createElement("button", {
+      key: f.id,
+      onClick: function () {
+        setFilter(f.id);
+      },
+      style: {
+        padding: "10px 14px",
+        borderRadius: 14,
+        fontFamily: D2,
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: "1px",
+        whiteSpace: "nowrap",
+        background: on ? f.c + "18" : "rgba(12,12,18,0.8)",
+        border: "1.5px solid " + (on ? f.c + "40" : "rgba(124,58,237,0.06)"),
+        color: on ? f.c : "var(--dim)"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 24,
+        color: f.c,
+        lineHeight: 0.9
+      }
+    }, f.n), f.l);
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 20,
+      padding: "12px 16px",
+      borderRadius: 14,
+      background: "rgba(12,12,18,0.8)",
+      border: "1px solid rgba(124,58,237,0.06)"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 6
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D2,
+      fontSize: 13,
+      color: "var(--sub)",
+      letterSpacing: "2px",
+      fontWeight: 700
+    }
+  }, "CHECK-IN RATE"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: D,
+      fontSize: 20,
+      color: "var(--g1)"
+    }
+  }, checkedIn, "/", total)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 6,
+      background: "rgba(0,255,135,0.06)",
+      borderRadius: 6,
+      overflow: "hidden"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: "100%",
+      width: (total ? checkedIn / total * 100 : 0) + "%",
+      background: "linear-gradient(90deg,var(--pr),var(--g1))",
+      borderRadius: 6,
+      transition: "width 0.5s ease"
+    }
+  }))), filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
+    className: "gc",
+    style: {
+      padding: 24,
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 14,
+      color: "var(--dim)",
+      letterSpacing: "2px",
+      fontWeight: 700
+    }
+  }, "NO ATHLETES MATCH FILTER")), filtered.map(function (a) {
+    var sl = statusLight(a.status);
+    var st = trendArrow(a.sleep_trend);
+    var stressTr = trendArrow(a.stress_trend);
+    return /*#__PURE__*/React.createElement("div", {
+      key: a.athlete_id,
+      className: "gc",
+      style: {
+        padding: "16px 18px",
+        marginBottom: 10,
+        borderLeft: "4px solid " + sl.color,
+        borderRadius: "4px 18px 18px 4px",
+        border: a.red_flag ? "2px solid rgba(239,83,80,0.3)" : "1px solid rgba(124,58,237,0.06)",
+        borderLeftWidth: 4,
+        borderLeftColor: sl.color
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 8
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 18
+      }
+    }, sl.icon), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 22,
+        color: "var(--txt)",
+        letterSpacing: "-0.02em"
+      }
+    }, (a.name || "").toUpperCase()), /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        marginTop: 2
+      }
+    }, /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D2,
         fontSize: 11,
         color: "var(--dim)",
-        letterSpacing: "2px"
+        fontWeight: 700
       }
-    }, "XP")));
+    }, "GR ", a.grade), (a.sports || []).slice(0, 2).map(function (s) {
+      return /*#__PURE__*/React.createElement(ST, {
+        key: s,
+        s: s
+      });
+    }))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        textAlign: "right"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 16,
+        color: sl.color,
+        letterSpacing: "-0.02em"
+      }
+    }, sl.label), a.streak > 0 && /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 11,
+        color: "var(--ember)",
+        fontWeight: 700
+      }
+    }, "\uD83D\uDD25 ", a.streak, "d"))), a.checked_in && /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        gap: 8,
+        marginBottom: a.red_flag || a.has_pain ? 8 : 0
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        padding: "8px 10px",
+        borderRadius: 10,
+        background: "rgba(12,12,18,0.6)",
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: "var(--dim)",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "SLEEP"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 20,
+        color: st.color,
+        lineHeight: 1,
+        marginTop: 2
+      }
+    }, st.arrow)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        padding: "8px 10px",
+        borderRadius: 10,
+        background: "rgba(12,12,18,0.6)",
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: "var(--dim)",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "STRESS"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 20,
+        color: stressTr.color,
+        lineHeight: 1,
+        marginTop: 2
+      }
+    }, stressTr.arrow)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        padding: "8px 10px",
+        borderRadius: 10,
+        background: "rgba(12,12,18,0.6)",
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: "var(--dim)",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "LOAD"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 20,
+        color: a.today_load >= 750*Math.max(1,a.sports_today||1) ? "var(--red)" : a.today_load >= 450*Math.max(1,a.sports_today||1) ? "#FFB300" : "var(--g1)",
+        lineHeight: 1,
+        marginTop: 2
+      }
+    }, a.today_load || "—")), a.sports_today >= 2 && /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        padding: "8px 10px",
+        borderRadius: 10,
+        background: "rgba(255,179,0,0.06)",
+        textAlign: "center",
+        border: "1px solid rgba(255,179,0,0.15)"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: "#FFB300",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "MULTI"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 20,
+        color: "#FFB300",
+        lineHeight: 1,
+        marginTop: 2
+      }
+    }, "\u26A1", a.sports_today)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: 1,
+        padding: "8px 10px",
+        borderRadius: 10,
+        background: "rgba(12,12,18,0.6)",
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 10,
+        color: "var(--dim)",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "TASK"), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 20,
+        color: a.did_coach_task ? "var(--grn)" : "var(--dim)",
+        lineHeight: 1,
+        marginTop: 2
+      }
+    }, a.did_coach_task ? "✓" : "—"))), !a.checked_in && /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "8px 12px",
+        borderRadius: 10,
+        background: "rgba(124,58,237,0.04)",
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 12,
+        color: "var(--dim)",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "HASN'T CHECKED IN TODAY")), a.has_pain && a.pain_locations && a.pain_locations.length > 0 && /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "8px 12px",
+        borderRadius: 10,
+        background: "rgba(239,83,80,0.04)",
+        border: "1px solid rgba(239,83,80,0.1)",
+        marginTop: 6
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: D2,
+        fontSize: 12,
+        color: "var(--red)",
+        letterSpacing: "1px",
+        fontWeight: 700
+      }
+    }, "\u26A0\uFE0F PAIN: ", a.pain_locations.map(function (z) {
+      return z.replace(/_/g, " ");
+    }).join(", ").toUpperCase())), a.red_flag && /*#__PURE__*/React.createElement("div", {
+      style: {
+        padding: "10px 14px",
+        borderRadius: 12,
+        background: "rgba(239,83,80,0.08)",
+        border: "1.5px solid rgba(239,83,80,0.2)",
+        marginTop: 6
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D,
+        fontSize: 15,
+        color: "var(--red)",
+        letterSpacing: "-0.02em"
+      }
+    }, "\uD83D\uDEA9 ", flagLabel(a.flag_category))));
   }));
 }
 
@@ -3297,7 +4102,9 @@ function ProfilePage({
       fontFamily: D,
       fontSize: 28
     }
-  }, profile.xp), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "gp"
+  }, profile.xp)), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D2,
       fontSize: 10,
@@ -3603,7 +4410,8 @@ function LevelUp({
 
 function Nav({
   page,
-  onNav
+  onNav,
+  role
 }) {
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -3618,19 +4426,12 @@ function Nav({
       borderTop: "1px solid rgba(124,58,237,0.06)",
       zIndex: 100
     }
-  }, [{
-    id: "home",
-    i: "◆",
-    l: "HOME"
-  }, {
-    id: "board",
-    i: SCHOOL.LOGO,
-    l: "BOARD"
-  }, {
-    id: "profile",
-    i: "👤",
-    l: "PROFILE"
-  }].map(function (it) {
+  }, (function(){
+    var tabs = [{id:"home",i:"◆",l:"HOME"},{id:"board",i:SCHOOL.LOGO,l:"BOARD"}];
+    if(role==="coach"||role==="ad") tabs.push({id:"roster",i:"▲",l:"ROSTER"});
+    tabs.push({id:"profile",i:"👤",l:"PROFILE"});
+    return tabs;
+  })().map(function (it) {
     return /*#__PURE__*/React.createElement("button", {
       key: it.id,
       onClick: function () {
@@ -3760,6 +4561,9 @@ function App() {
     toast: toast
   }));
 
+  // First sign-in → Data Agreement
+  if (user && !localStorage.getItem('tga_agreed')) return React.createElement(React.Fragment, null, React.createElement(Toast, {msg: toastMsg, type: toastType}), React.createElement(DataAgreement, {onAgree: function(){localStorage.setItem('tga_agreed','1');loadProfile(user.id)}}));
+
   // Logged in but profile incomplete → Onboarding
   if (profile && (!profile.name || !profile.first_name || profile.name === '')) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
     msg: toastMsg,
@@ -3878,7 +4682,9 @@ function App() {
     onSignOut: signOut
   }), page === "board" && /*#__PURE__*/React.createElement(Leaderboard, {
     myId: user.id
-  }), page === "profile" && /*#__PURE__*/React.createElement(ProfilePage, {
+  }), page === "roster" && (profile.role === "coach" || profile.role === "ad") && /*#__PURE__*/React.createElement(CoachDashboard, {
+      profile: profile
+    }), page === "profile" && /*#__PURE__*/React.createElement(ProfilePage, {
     profile: profile,
     onSignOut: signOut,
     onUpdateSports: function (s) {
