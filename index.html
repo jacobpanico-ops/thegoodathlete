@@ -57,32 +57,39 @@ button:active{transform:scale(0.95)!important}
 <script>
 
 /* ╔══════════════════════════════════════════════════════════════════════╗
-   ║  APACHE 360 — Student-Athlete Wellness Tracker                     ║
-   ║  Fairview Apaches · Central Local Schools · Ohio                   ║
-   ║  v1.0 · April 2026                                                ║
+   ║  THE GOOD ATHLETE — Student-Athlete Wellness & Readiness Tracker   ║
+   ║  v1.0 · April 2026                                                 ║
    ╠══════════════════════════════════════════════════════════════════════╣
    ║                                                                     ║
-   ║  §1  TABLE OF CONTENTS (you are here)                              ║
-   ║  §2  SUPABASE CLIENT                                               ║
-   ║  §3  CONSTANTS — Sports, Sessions, RPE, Levels                     ║
-   ║  §4  BODY MAP ZONES                                                ║
-   ║  §5  UTILITY FUNCTIONS — Level calc, date helpers                  ║
-   ║  §6  SHARED COMPONENTS — SportTag, Toast                           ║
-   ║  §7  AUTH SCREEN — Sign Up / Sign In                               ║
-   ║  §8  ONBOARDING — Role, name, grade, sports selection              ║
-   ║  §9  DAILY HUDDLE — 6-card pre-flight check                        ║
-   ║      §9a  Card 0: Sleep (hours + quality)                          ║
-   ║      §9b  Card 1: Readiness (emoji — one tap)                     ║
-   ║      §9c  Card 2: Body Scan (mental load + body map + pain)       ║
-   ║      §9d  Card 3: The Work (multi-session + proof of grind)       ║
-   ║      §9e  Card 4: Fuel (hydration, window, color method)           ║
-   ║      §9f  Card 5: Summary + readiness score                       ║
-   ║  §10 DASHBOARD — Athlete home with hero Huddle CTA                 ║
-   ║  §11 LEADERBOARD — Live from Supabase leaderboard view            ║
-   ║  §11b COACH DASHBOARD — Tiered access roster view           ║
-   ║  §12 NAV — Bottom tab bar                                          ║
-   ║  §13 APP — Auth state machine + route orchestrator                 ║
-   ║  §14 MOUNT                                                         ║
+   ║  §1   TABLE OF CONTENTS (you are here)                             ║
+   ║  §2   SUPABASE CLIENT                                              ║
+   ║  §3   CONSTANTS — School config, sports, sessions, RPE, levels    ║
+   ║  §5   UTILITY FUNCTIONS — Level calc, date helpers                 ║
+   ║  §6   SHARED COMPONENTS — SportTag, Toast                          ║
+   ║  §7   AUTH SCREEN — Sign Up / Sign In                              ║
+   ║  §7b  DATA AGREEMENT — Privacy promise on first sign-in            ║
+   ║  §8   ONBOARDING — Role, name, grade, sports selection             ║
+   ║  §9   DAILY HUDDLE — 5-card pre-flight check (streamlined)         ║
+   ║       §9a  Sleep + Readiness (merged)                              ║
+   ║       §9b  Body Scan (mental load + body map + pain)               ║
+   ║       §9c  The Work (multi-sport RPE + duration + coach task)      ║
+   ║       §9d  Fuel (hydration, window, color method)                  ║
+   ║       §9g  Insight Engine — data-driven athlete notifications      ║
+   ║       §9h  Daily Tips — rotate by day of week                      ║
+   ║  §10  DASHBOARD — Athlete home with hero Huddle CTA                ║
+   ║  §11  LEADERBOARD — Consistency score, no health data              ║
+   ║  §11b COACH DASHBOARD — Tiered access roster with traffic lights   ║
+   ║  §12  NAV — Bottom tab bar                                         ║
+   ║  §12a PROFILE PAGE — Settings, edit sports, sign out               ║
+   ║  §12b LEVEL UP CELEBRATION — Full-screen overlay on XP threshold   ║
+   ║  §13  APP — Auth state machine + route orchestrator                ║
+   ║  §14  MOUNT                                                        ║
+   ║                                                                     ║
+   ╠══════════════════════════════════════════════════════════════════════╣
+   ║  GREP HINTS (inline banners inside §9 Huddle):                     ║
+   ║    "CARD 0" … "CARD 4"        → jump to each card's render block   ║
+   ║    "HUDDLE HELPERS"           → points + readiness calc            ║
+   ║    "HUDDLE — Submit"          → finish() save handler              ║
    ║                                                                     ║
    ╚══════════════════════════════════════════════════════════════════════╝ */
 
@@ -899,7 +906,16 @@ function Huddle({
   var [editPhoto, setEditPhoto] = useState(null);
   var fileRef = React.useRef(null);
   var [coachTaskText, setCoachTaskText] = useState(null);
-  useEffect(function(){SB.from('coach_tasks').select('task_text').in('sport',profile.sports||[]).eq('active',true).order('updated_at',{ascending:false}).limit(1).then(function(res){if(!res.error&&res.data&&res.data.length>0)setCoachTaskText(res.data[0].task_text)})},[])
+  var [coachTaskId, setCoachTaskId] = useState(null);
+  useEffect(function(){
+    if(!profile.sports || profile.sports.length === 0) return;
+    SB.from('coach_tasks').select('id, task_text').in('sport',profile.sports).eq('active',true).order('updated_at',{ascending:false}).limit(1).then(function(res){
+      if(!res.error && res.data && res.data.length > 0) {
+        setCoachTaskId(res.data[0].id);
+        setCoachTaskText(res.data[0].task_text);
+      }
+    })
+  },[])
 
   /* §9d Fuel */
   var [hydration, setHydration] = useState(0);
@@ -1112,6 +1128,10 @@ function Huddle({
     });
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     HUDDLE HELPERS — Points + readiness calc
+     ═══════════════════════════════════════════════════════════════════════ */
+
   /* Points — streak-weighted: habit > performance
      +10 base, +1/streak day (cap 15), +8 sleep, +5 fuel, +3 rest day
      Day 15+ training: 10+15+8+5 = 38 max | Rest day: 10+15+8+5+3 = 41 max */
@@ -1156,7 +1176,16 @@ function Huddle({
       redFlag = true;
       reasons.push("Head/neck pain reported");
     } else if (numZones >= 3) {
-      painScore = 5;
+      /* 3+ zones: differentiate sore (fatigue) from sharp (injury signal) */
+      if (sharpCount >= 3) {
+        painScore = 0;
+        redFlag = true;
+        reasons.push("3+ sharp pain zones reported");
+      } else if (sharpCount >= 1) {
+        painScore = 5;  // mix of sharp + sore
+      } else {
+        painScore = 12; // all sore — significant fatigue, not injury
+      }
     } else if (numZones >= 1) {
       var severityMult = sharpCount > 0 ? painLevel * 3 : painLevel * 2;
       painScore = Math.max(5, 35 - Math.min(30, numZones * severityMult));
@@ -1181,54 +1210,123 @@ function Huddle({
     };
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     HUDDLE — Submit handler (finish)
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  var submitInFlight = React.useRef(false);
+
+  /* Upload the Proof of Grind photo to private storage. Runs once per Huddle
+     (same photo attached to every sport logged that day). Returns the storage
+     path on success, null on any failure — submit flow continues either way. */
+  async function uploadProofPhoto(objectUrl, athleteId) {
+    if (!objectUrl || !athleteId) return null;
+    try {
+      var blob = await fetch(objectUrl).then(function(r){return r.blob();});
+      var ext = (blob.type && blob.type.split('/')[1]) || 'bin';
+      if (ext === 'jpeg') ext = 'jpg';
+      var rand = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : (Date.now() + '-' + Math.random().toString(36).slice(2,9));
+      var path = athleteId + '/' + today() + '/' + rand + '.' + ext;
+      var up = await SB.storage.from('proof-of-grind').upload(path, blob, {
+        contentType: blob.type || 'application/octet-stream'
+      });
+      if (up && up.error) return null;
+      return path;
+    } catch (e) { return null; }
+  }
+
   /* Submit */
   async function finish() {
+    if (submitInFlight.current) return;  // race guard — blocks re-entry faster than setState
+    submitInFlight.current = true;
     setSaving(true);
-    buzzDouble();
-    var rd = calcReadiness();
-    var sessions = buildSessions();
-    var ciRes = await SB.rpc('submit_checkin', {
-      p_sleep_hrs: sleepHrs,
-      p_sleep_quality: sleepQ,
-      p_readiness: readiness,
-      p_stress: stress,
-      p_pain_zones: painZones.length > 0 ? [].concat(painZones, ["level_" + painLevel]) : painZones,
-      p_hydration: hydration,
-      p_fuel_window: fuelWindow || 'na',
-      p_meal_color: mealColor,
-      p_coach_task: coachTask,
-      p_readiness_score: rd.score,
-      p_red_flag: rd.redFlag,
-      p_red_flag_reasons: rd.reasons,
-      p_rest_day: didWork === false
-    });
-    if (ciRes.error) {
-      setSaving(false);
-      return toast(ciRes.error.message || "Check-in failed", "err");
-    }
-    var ciData = ciRes.data;
-    if (ciData.error) {
-      setSaving(false);
-      return toast(ciData.error, "err");
-    }
-    for (var i = 0; i < sessions.length; i++) {
-      var s = sessions[i];
-      await SB.rpc('log_session', {
-        p_checkin_id: ciData.checkin_id,
-        p_sport: s.sport,
-        p_session_type: s.type,
-        p_rpe: s.rpe,
-        p_duration: s.dur
+    try {
+      buzzDouble();
+      var rd = calcReadiness();
+      var sessions = buildSessions();
+
+      /* Upload proof photo ONCE — shared across all sessions from this Huddle */
+      var proofPath = null;
+      if (editPhoto && profile && profile.id) {
+        proofPath = await uploadProofPhoto(editPhoto, profile.id);
+      }
+
+      var ciRes = await SB.rpc('submit_checkin', {
+        p_sleep_hrs: sleepHrs,
+        p_sleep_quality: sleepQ,
+        p_readiness: readiness,
+        p_stress: stress,
+        p_pain_zones: painZones.length > 0 ? [].concat(painZones, ["level_" + painLevel]) : painZones,
+        p_hydration: hydration,
+        p_fuel_window: fuelWindow || 'na',
+        p_meal_color: mealColor,
+        p_coach_task: coachTask,
+        p_readiness_score: rd.score,
+        p_red_flag: rd.redFlag,
+        p_red_flag_reasons: rd.reasons,
+        p_rest_day: didWork === false
       });
+      if (ciRes.error) {
+        return toast(ciRes.error.message || "Check-in failed", "err");
+      }
+      var ciData = ciRes.data;
+      if (ciData.error) {
+        return toast(ciData.error, "err");
+      }
+
+      /* Log all sessions in ONE round-trip via the batch RPC. If the batch RPC
+         isn't deployed yet, fall back to parallel single-session calls (still
+         faster than the old sequential loop — no photo_url on fallback path). */
+      if (sessions.length > 0) {
+        var batchPayload = sessions.map(function(s){
+          return {
+            sport: s.sport,
+            type: s.type,
+            rpe: s.rpe,
+            dur: s.dur,
+            photo_url: proofPath || ''
+          };
+        });
+        var batchRes = await SB.rpc('log_sessions_batch', {
+          p_checkin_id: ciData.checkin_id,
+          p_sessions: batchPayload
+        });
+        if (batchRes && batchRes.error) {
+          /* Fallback: batch RPC missing — fire individual calls in parallel */
+          await Promise.all(sessions.map(function(s){
+            return SB.rpc('log_session', {
+              p_checkin_id: ciData.checkin_id,
+              p_sport: s.sport,
+              p_session_type: s.type,
+              p_rpe: s.rpe,
+              p_duration: s.dur
+            });
+          }));
+        }
+      }
+
+      /* Record which coach task this checkin responded to (for coach-side
+         accountability reports). Silent no-op if RPC isn't deployed yet. */
+      if (coachTaskId && ciData.checkin_id) {
+        await SB.rpc('link_coach_task', {
+          p_checkin_id: ciData.checkin_id,
+          p_task_id: coachTaskId
+        });
+      }
+
+      onDone({
+        points: ciData.points,
+        streak: ciData.streak,
+        xp: ciData.xp,
+        sessions: sessions,
+        readiness: rd
+      });
+    } finally {
+      submitInFlight.current = false;
+      setSaving(false);
     }
-    setSaving(false);
-    onDone({
-      points: ciData.points,
-      streak: ciData.streak,
-      xp: ciData.xp,
-      sessions: sessions,
-      readiness: rd
-    });
   }
 
   /* Progress */
@@ -1292,7 +1390,9 @@ function Huddle({
       background: "linear-gradient(90deg,var(--pr),var(--g0),var(--g4),var(--g1))",
       transition: "width 0.4s cubic-bezier(0.22,1,0.36,1)"
     }
-  }))), card === 0 && /*#__PURE__*/React.createElement("div", {
+  }))),
+  /* ═══ CARD 0 — Sleep + Readiness (render) ═══ */
+  card === 0 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c0",
     style: {
@@ -1454,7 +1554,9 @@ function Huddle({
         fontWeight: 700
       }
     }, r.l));
-  }))), React.createElement(DailyTip,{tip:TIPS_SLEEP[TIP_DAY],color:"var(--pr2)",icon:"💡"})), card === 1 && /*#__PURE__*/React.createElement("div", {
+  }))), React.createElement(DailyTip,{tip:TIPS_SLEEP[TIP_DAY],color:"var(--pr2)",icon:"💡"})),
+  /* ═══ CARD 1 — Body Scan (render) ═══ */
+  card === 1 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c1",
     style: {
@@ -1790,7 +1892,9 @@ function Huddle({
       color: "#D50000",
       fontWeight: 700
     }
-  }, "SEVERE")))))), React.createElement(DailyTip,{tip:TIPS_RECOVER[TIP_DAY],color:"#FFB300",icon:"💡"})), card === 2 && /*#__PURE__*/React.createElement("div", {
+  }, "SEVERE")))))), React.createElement(DailyTip,{tip:TIPS_RECOVER[TIP_DAY],color:"#FFB300",icon:"💡"})),
+  /* ═══ CARD 2 — The Work (render) ═══ */
+  card === 2 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c2",
     style: {
@@ -2158,7 +2262,9 @@ function Huddle({
       fontWeight: 600,
       textAlign: "center"
     }
-  }, "ELITE ATHLETES SCHEDULE REST. YOUR BODY BUILDS MUSCLE DURING RECOVERY, NOT DURING THE WORKOUT. THIS IS PART OF THE PLAN."))), card === 3 && /*#__PURE__*/React.createElement("div", {
+  }, "ELITE ATHLETES SCHEDULE REST. YOUR BODY BUILDS MUSCLE DURING RECOVERY, NOT DURING THE WORKOUT. THIS IS PART OF THE PLAN.")), React.createElement(DailyTip,{tip:TIPS_TRAINING[TIP_DAY],color:"var(--ember)",icon:"💡"})),
+  /* ═══ CARD 3 — Fuel (render) ═══ */
+  card === 3 && /*#__PURE__*/React.createElement("div", {
     className: "ci",
     key: "c3",
     style: {
@@ -2316,7 +2422,9 @@ function Huddle({
         fontWeight: 700
       }
     }, m.l));
-  }), React.createElement(DailyTip,{tip:TIPS_FUEL[TIP_DAY],color:"var(--g1)",icon:"💡"})), card === 4 && function () {
+  }), React.createElement(DailyTip,{tip:TIPS_FUEL[TIP_DAY],color:"var(--g1)",icon:"💡"})),
+  /* ═══ CARD 4 — Summary (render) ═══ */
+  card === 4 && function () {
     var rd = calcReadiness();
     var scoreColor = rd.score >= 70 ? "var(--grn)" : rd.score >= 40 ? "var(--g4)" : "var(--red)";
     var sessions = buildSessions();
@@ -2538,7 +2646,14 @@ var TIPS_SLEEP = [
   "Cool, dark room. 65-68°F. Your body sleeps deeper when it's cold.",
   "No caffeine after 2 PM. That pre-workout at 4 is stealing tonight's recovery.",
   "Naps work. 20 minutes between 1-3 PM. Longer than 30 and you'll feel worse.",
-  "If you can't fall asleep in 15 minutes, get up and do something boring. Don't scroll."
+  "Can't fall asleep in 15 minutes? Get up and do something boring. Don't scroll.",
+  "Heavy meals within 2 hours of bed tank sleep quality. Eat dinner earlier, not later.",
+  "Morning sunlight within an hour of waking. 10 minutes anchors your sleep cycle tonight.",
+  "Your last thought before bed sets the tone. Replay one thing that went well today.",
+  "Don't drift more than 1 hour off your weekday sleep on weekends. Monday will punish you.",
+  "Game-night adrenaline keeps you up. Warm-to-cool shower, lights low, phone off by 10.",
+  "You can't bank sleep on weekends to cover a bad week. The body keeps the receipts.",
+  "Consistent sleep times beat long sleep times. 7 hours at the same hour beats 9 hours scattered."
 ];
 var TIPS_FUEL = [
   "Eat within 45 minutes of training. Your muscles are sponges — feed them while they're open.",
@@ -2546,8 +2661,15 @@ var TIPS_FUEL = [
   "Drink half your body weight in ounces daily. 160 lbs = 80 oz minimum.",
   "Stop skipping breakfast. Your brain and muscles have been fasting for 8 hours.",
   "One color per plate. If everything is brown, add something green.",
-  "Chocolate milk is one of the best post-workout drinks. Cheap, effective, and it tastes good.",
-  "Eat a real meal before a game. Not a candy bar. Rice, chicken, veggies — 2-3 hours before."
+  "Chocolate milk is one of the best post-workout drinks. Cheap, effective, tastes good.",
+  "Eat a real meal before a game. Not a candy bar. Rice, chicken, veggies — 2-3 hours before.",
+  "Pale yellow urine = hydrated. Dark yellow = behind. Cheapest performance test there is.",
+  "Carbs aren't the enemy — empty carbs are. Rice, oats, potatoes, fruit fuel the work.",
+  "Fast food before a game steals speed. Heavy grease sits in your gut while you're trying to move.",
+  "Electrolytes matter when you sweat through your shirt. Water alone won't cut August two-a-days.",
+  "Never try new foods on game day. Stick with what you know digests well.",
+  "Late-game cramp? Usually sodium, not potassium. Bananas help recovery, not leg lock-ups.",
+  "Snack between class and practice. Almonds, apple, granola bar. Empty tank = garbage session."
 ];
 var TIPS_RECOVER = [
   "Foam roll for 5 minutes after every session. Hit tight spots, not just sore ones.",
@@ -2556,9 +2678,37 @@ var TIPS_RECOVER = [
   "Ice for the first 48 hours after a tweak. After that, heat and movement recover faster.",
   "Sleep is the #1 recovery tool. Better than ice baths, compression boots, and supplements combined.",
   "Stretch what's tight, strengthen what's weak. Most pain comes from imbalance, not overuse.",
-  "Your body adapts to stress — but only if you give it time. Back-to-back max days break you down."
+  "Your body adapts to stress — but only if you give it time. Back-to-back max days break you down.",
+  "Soreness at 24-48 hours is normal. Soreness that gets worse after day 3 is a warning — speak up.",
+  "Breathwork is recovery. Four in, six out, five minutes. Dials down the stress hormones wearing you down.",
+  "Massage gun goes ON the muscle — not on joints, bones, or your spine. Two minutes per area.",
+  "Dehydration feels like fatigue. Before you assume you're overtrained, check your last 24 hours of water.",
+  "Contrast showers work when ice baths aren't available. 60 seconds hot, 30 cold, three rounds.",
+  "Recovery isn't passive. Eat, hydrate, sleep, move, breathe. Athletes who do all five come back faster.",
+  "A sharp pain is a stop sign. A dull ache is a yellow light. Learn the difference and respect both."
 ];
-var TIP_DAY = new Date().getDay(); // 0=Sun, 1=Mon ... 6=Sat
+var TIPS_TRAINING = [
+  "Technique first, weight second. A clean rep you can repeat beats a sloppy PR every time.",
+  "Warm up like you mean it. Ten minutes of prep prevents ten weeks on the sideline.",
+  "If you can do 20 reps at your 'max,' it's not your max. Push the load before you push the volume.",
+  "Film yourself. What you think you're doing and what's actually happening are rarely the same.",
+  "The last two reps of a set build the muscle. The first ten just wake it up.",
+  "Speed is a skill. If every workout is slow grinding, you're training to be slow.",
+  "Off-season is where champions are made. Everyone works in-season. The gap opens when no one's watching.",
+  "Log your lifts. Guessing what you did last week is how athletes stall for months.",
+  "Weak ankles, hips, and core are the silent killers of athletic performance. Train them anyway.",
+  "Practice how you play. Half-speed reps build half-speed habits.",
+  "Don't skip the cool-down. Five minutes of easy movement clears out what the next session has to fight.",
+  "More isn't always better. A great 45-minute session beats a mediocre 90-minute one.",
+  "Recovery from training matters as much as training. Grinding without rest is how you plateau.",
+  "Your mindset walks in with you. Show up thinking 'I'm tired' and the bar will prove you right."
+];
+/* 14-day rolling index — advances once per local day, cycles every 2 weeks.
+   Breaks the weekly pattern so athletes don't see the same tip every Monday. */
+var TIP_DAY = (function(){
+  var d = new Date();
+  return Math.floor((d.getTime() - d.getTimezoneOffset()*60000) / 86400000) % 14;
+})();
 
 function DailyTip(props) {
   var tip = props.tip, color = props.color, icon = props.icon;
@@ -3182,14 +3332,15 @@ function Leaderboard({
   var [data, setData] = useState([]);
   var [loading, setLoading] = useState(true);
   useEffect(function () {
-    SB.from('consistency_scores').select('*').limit(50).then(function (res) {
+    SB.from('consistency_scores').select('*').order('consistency_score', {ascending: false}).limit(50).then(function (res) {
       if (res.error) {
-        // Fallback if view doesn't exist yet
-        SB.from('leaderboard').select('*').limit(50).then(function (r2) {
+        // Fallback: view not deployed yet — use base leaderboard ranked by GP.
+        // Rows get _fallback:true so render shows GP instead of a fake "0 SCORE".
+        SB.from('leaderboard').select('*').order('xp', {ascending: false}).limit(50).then(function (r2) {
           if (!r2.error) setData((r2.data || []).map(function (a) {
             return Object.assign({}, a, {
-              consistency_score: 0,
-              athlete_id: a.id
+              athlete_id: a.id,
+              _fallback: true
             });
           }));
           setLoading(false);
@@ -3257,9 +3408,15 @@ function Leaderboard({
     }
   }, "NO ATHLETES YET \u2014 BE THE FIRST!")), data.map(function (a, i) {
     var isMe = a.athlete_id === myId;
-    var lv = gL(a.xp || 0);
-    var cs = a.consistency_score || 0;
-    var csColor = cs >= 80 ? "var(--g1)" : cs >= 50 ? "#FFB300" : cs >= 25 ? "var(--pr2)" : "var(--dim)";
+    /* Prefer gp (Good Points) from the view; fall back to xp for rows coming
+       from the legacy leaderboard view that doesn't expose the alias yet. */
+    var points = a.gp != null ? a.gp : (a.xp || 0);
+    var lv = gL(points);
+    /* Fallback mode: consistency_scores view not deployed — show GP instead
+       of a misleading "0 SCORE" for every athlete. */
+    var isFallback = a._fallback === true;
+    var displayValue = isFallback ? points : (a.consistency_score || 0);
+    var displayLabel = isFallback ? "GP" : "SCORE";
 
     /* Badge array */
     var badges = [];
@@ -3399,7 +3556,7 @@ function Leaderboard({
       }
     }, /*#__PURE__*/React.createElement("span", {
       className: "gp"
-    }, cs)), /*#__PURE__*/React.createElement("div", {
+    }, displayValue)), /*#__PURE__*/React.createElement("div", {
       style: {
         fontFamily: D2,
         fontSize: 10,
@@ -3407,7 +3564,7 @@ function Leaderboard({
         letterSpacing: "2px",
         fontWeight: 700
       }
-    }, "SCORE")));
+    }, displayLabel)));
   }));
 }
 
@@ -3445,7 +3602,6 @@ function CoachDashboard({
     SB.from('coach_athlete_status').select('*').then(function (res) {
       if (res.error) {
         // Fallback: view might not exist yet
-        console.log('coach_athlete_status view not found, using fallback');
         setData([]);
         setLoading(false);
         return;
@@ -4563,7 +4719,19 @@ function App() {
   }));
 
   // First sign-in → Data Agreement
-  if (user && !localStorage.getItem('tga_agreed')) return React.createElement(React.Fragment, null, React.createElement(Toast, {msg: toastMsg, type: toastType}), React.createElement(DataAgreement, {onAgree: function(){localStorage.setItem('tga_agreed','1');loadProfile(user.id)}}));
+  // Primary: profile.data_agreement_accepted_at (FERPA audit trail in DB)
+  // Legacy: localStorage cache (pre-migration fallback + flicker prevention)
+  var hasAgreed = (profile && profile.data_agreement_accepted_at) || localStorage.getItem('tga_agreed');
+  if (user && !hasAgreed) return React.createElement(React.Fragment, null,
+    React.createElement(Toast, {msg: toastMsg, type: toastType}),
+    React.createElement(DataAgreement, {
+      onAgree: async function(){
+        localStorage.setItem('tga_agreed','1');           // immediate — prevents flicker
+        await SB.rpc('accept_data_agreement');             // records server-side; silent if RPC missing
+        loadProfile(user.id);
+      }
+    })
+  );
 
   // Logged in but profile incomplete → Onboarding
   if (profile && (!profile.name || !profile.first_name || profile.name === '')) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
@@ -4698,7 +4866,8 @@ function App() {
     }
   }), /*#__PURE__*/React.createElement(Nav, {
     page: page,
-    onNav: setPage
+    onNav: setPage,
+    role: profile && profile.role
   }));
 }
 
@@ -4706,7 +4875,41 @@ function App() {
    §14  MOUNT
    ████████████████████████████████████████████████████████████████████████ */
 
-ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+/* ErrorBoundary — catches any render-time JS error and shows a recovery
+   screen instead of a blank white page. Users can reload without losing auth. */
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, message: "" };
+  }
+  static getDerivedStateFromError(err) {
+    return { hasError: true, message: (err && err.message) || "Unknown error" };
+  }
+  componentDidCatch(err, info) {
+    /* Surface in console for dev; no remote logging wired yet. */
+    try { console.error("ErrorBoundary caught:", err, info); } catch(e){}
+  }
+  render() {
+    if (this.state.hasError) {
+      return React.createElement("div", {
+        style: {minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,textAlign:"center",background:"var(--bg)",color:"var(--txt)"}
+      },
+        React.createElement("div", {style:{fontSize:64,marginBottom:20}}, "⚠"),
+        React.createElement("div", {style:{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:32,letterSpacing:"-0.02em",textTransform:"uppercase",marginBottom:12,color:"var(--g1)"}}, "Something broke"),
+        React.createElement("div", {style:{fontFamily:"'Barlow Condensed',sans-serif",fontSize:15,color:"var(--sub)",maxWidth:320,lineHeight:1.5,marginBottom:24,fontWeight:600}}, "The app hit an error and needs to reload. Your data is safe — nothing was lost."),
+        React.createElement("button", {
+          className: "btn-gold",
+          style: {maxWidth:260},
+          onClick: function(){ window.location.reload(); }
+        }, "RELOAD APP"),
+        React.createElement("div", {style:{fontFamily:"monospace",fontSize:11,color:"var(--dim)",marginTop:24,maxWidth:320,wordBreak:"break-word"}}, this.state.message)
+      );
+    }
+    return this.props.children;
+  }
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(App, null)));
 
 </script>
 </body>
