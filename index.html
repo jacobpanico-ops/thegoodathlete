@@ -12,19 +12,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://tjwtzbnyflyoicnrfyzc.supabase.co">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/thin/style.css">
 <style>
-:root{--bg:#08080C;--g1:#00FF87;--g4:#00CC6A;--g6:#66FFAA;--g7:#99FFCC;--g0:#009950;--pr:#7C3AED;--pr2:#A855F7;--ember:#FF6D00;--grn:#00FF87;--red:#EF5350;--txt:#F0F0F4;--dim:#4A4A5A;--sub:#8A8A9A}
+:root{--bg:#08080C;--g1:#00FF87;--g4:#00CC6A;--g6:#66FFAA;--g7:#99FFCC;--g0:#009950;--pr:#7C3AED;--pr2:#B97BFF;--ember:#FF6D00;--grn:#00FF87;--red:#FF6B6B;--txt:#F5F5F8;--dim:#858599;--sub:#BDBDCC;--glass-edge:rgba(255,255,255,0.08);--glass-edge-strong:rgba(255,255,255,0.14)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body,#root{height:100%;overflow-x:hidden;overscroll-behavior:none}
+html,body,#root{min-height:100%;overflow-x:hidden;overscroll-behavior:none}
 body{background:var(--bg);color:var(--txt);font-family:'Barlow Condensed',sans-serif;font-weight:600;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(124,58,237,0.04),transparent 50%),radial-gradient(ellipse at 70% 100%,rgba(0,255,135,0.02),transparent 50%);pointer-events:none}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(124,58,237,0.06),transparent 50%),radial-gradient(ellipse at 70% 100%,rgba(0,255,135,0.03),transparent 50%);pointer-events:none}
+/* Heading tracking — tight editorial feel on all display text */
+h1,h2,h3,h4{letter-spacing:-0.02em}
 /* Lime shimmer text */
 .gs{background:linear-gradient(90deg,var(--g0),var(--g4),var(--g1),var(--g6),#fff,var(--g6),var(--g1),var(--pr),var(--g0));background-size:400% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3s linear infinite;letter-spacing:-0.02em;text-transform:uppercase}
 @keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
-/* Cards — cool dark */
-.gc{background:linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98));border:1px solid rgba(124,58,237,0.06);border-radius:18px}
-.gc2{background:linear-gradient(160deg,rgba(28,24,40,0.6),rgba(12,10,20,0.85));border:1px solid rgba(0,255,135,0.12);border-radius:18px}
-.xb{height:12px;background:rgba(0,100,55,0.15);border-radius:12px;overflow:hidden;border:1px solid rgba(0,255,135,0.08)}
+/* Cards — glassmorphism on dark */
+.gc{background:linear-gradient(160deg,rgba(20,20,28,0.55),rgba(10,10,16,0.72));border:0.5px solid var(--glass-edge);border-radius:16px;backdrop-filter:blur(10px) saturate(130%);-webkit-backdrop-filter:blur(10px) saturate(130%)}
+.gc2{background:linear-gradient(160deg,rgba(32,26,48,0.5),rgba(14,12,22,0.7));border:0.5px solid var(--glass-edge-strong);border-radius:16px;backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%)}
+.xb{height:12px;background:rgba(0,100,55,0.15);border-radius:12px;overflow:hidden;border:0.5px solid rgba(0,255,135,0.1)}
 .xf{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--pr),var(--g0),var(--g4),var(--g1),var(--g6));background-size:200% 100%;transition:width 1s ease;position:relative}
 .gd{height:2px;background:linear-gradient(90deg,transparent,var(--pr),var(--g1),var(--pr),transparent);margin:18px 0;opacity:0.4}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -34,23 +37,57 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .fi{display:inline-block;animation:fp .6s ease-in-out infinite alternate}
 @keyframes fp{0%{transform:scale(1)}100%{transform:scale(1.2);filter:brightness(1.5) drop-shadow(0 0 8px #FF6D00)}}
 input,select,textarea{font-family:'Barlow Condensed',sans-serif;font-weight:600}
-input::placeholder{color:#2a2a38}
+input::placeholder{color:#5A5A6A}
 input:focus,select:focus{border-color:var(--g1)!important;box-shadow:0 0 0 3px rgba(0,255,135,0.1);outline:none}
-button{font-family:'Barlow Condensed',sans-serif;cursor:pointer;font-weight:600}
+button{font-family:'Barlow Condensed',sans-serif;cursor:pointer;font-weight:600;transition:transform 200ms ease-in-out,background 200ms ease-in-out,border-color 200ms ease-in-out,box-shadow 200ms ease-in-out,color 200ms ease-in-out}
+@media (hover:hover){button:hover{transform:scale(1.05)}}
 button:active{transform:scale(0.95)!important}
 ::-webkit-scrollbar{width:0}select option{background:#0a0800;color:var(--txt)}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease}
-.toast-ok{background:linear-gradient(135deg,var(--g0),var(--g1));color:var(--bg)}
-.toast-err{background:linear-gradient(135deg,#8B0000,var(--red));color:#fff}
-.btn-gold{padding:18px;border-radius:14px;border:none;font-family:'Big Shoulders Display',sans-serif;font-size:24px;letter-spacing:-0.02em;text-transform:uppercase;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(0,255,135,0.2);width:100%}
-.btn-gold:disabled{background:#0a0a10;color:#2a2a38;box-shadow:none;opacity:0.5}
-.inp{width:100%;padding:14px 16px;border-radius:14px;background:rgba(12,12,18,0.8);border:2px solid rgba(124,58,237,0.06);color:var(--txt);font-size:16px;font-weight:600;outline:none;box-sizing:border-box}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:300;padding:12px 24px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:16px;letter-spacing:2px;animation:fadeUp 0.3s ease;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:0.5px solid var(--glass-edge-strong)}
+.toast-ok{background:linear-gradient(135deg,rgba(0,153,80,0.92),rgba(0,255,135,0.92));color:var(--bg)}
+.toast-err{background:linear-gradient(135deg,rgba(139,0,0,0.92),rgba(255,107,107,0.92));color:#fff}
+.btn-gold{padding:16px;border-radius:12px;border:none;font-family:'Big Shoulders Display',sans-serif;font-size:24px;letter-spacing:-0.02em;text-transform:uppercase;background:linear-gradient(135deg,var(--g0),var(--g4),var(--g1));color:var(--bg);box-shadow:0 4px 30px rgba(0,255,135,0.2);width:100%}
+.btn-gold:disabled{background:#0a0a10;color:#5A5A6A;box-shadow:none;opacity:0.5}
+.inp{width:100%;padding:14px 16px;border-radius:12px;background:rgba(12,12,18,0.8);border:0.5px solid var(--glass-edge);color:var(--txt);font-size:16px;font-weight:600;outline:none;box-sizing:border-box;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .lbl{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:var(--sub);display:block;margin-bottom:6px;letter-spacing:2px;font-weight:700;text-transform:uppercase}
 .gp{display:inline-block;transform:skewX(-6deg)}
+/* Phosphor icon base — thin weight, inline-block so font-size controls icon size */
+i[class^="ph-"],i[class*=" ph-"]{display:inline-flex;align-items:center;justify-content:center;line-height:1;vertical-align:middle;transition:transform 200ms ease-in-out,color 200ms ease-in-out}
+@media (hover:hover){i[class^="ph-"]:hover,i[class*=" ph-"]:hover{transform:scale(1.05)}}
 </style>
 </head>
 <body>
 <div id="root"></div>
+<div id="tga-err-overlay" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#8B0000;color:#fff;font-family:monospace;font-size:12px;padding:10px 14px;line-height:1.4;max-height:45vh;overflow:auto;border-top:2px solid #EF5350;white-space:pre-wrap;word-break:break-word"></div>
+<script>
+/* ── On-screen error overlay — mobile-safe diagnostic when console is unreachable.
+   Shows any uncaught JS error or unhandled promise rejection as a red banner at
+   bottom of screen. Tap to dismiss. Remove once mobile debug console is set up. */
+(function(){
+  var el = document.getElementById('tga-err-overlay');
+  function show(msg){
+    try { el.textContent = String(msg).slice(0, 2000); el.style.display = 'block'; } catch(e){}
+  }
+  el.addEventListener('click', function(){ el.style.display='none'; });
+  window.addEventListener('error', function(e){
+    show('ERROR: ' + (e.message||'') + '\n' + (e.filename||'') + ':' + (e.lineno||'') + ':' + (e.colno||'') + '\n(tap to dismiss)');
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    var r = e.reason;
+    var m = (r && (r.message || r.error_description || r.toString())) || 'unknown rejection';
+    show('PROMISE: ' + m + '\n(tap to dismiss)');
+  });
+})();
+/* ── Kill any stale service worker from a prior deploy. PWAs cache aggressively,
+   and a SW from the old "Apache 360" build could be serving stale index.html. */
+(function(){
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(r){ r.unregister(); });
+    }).catch(function(){});
+  }
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -480,12 +517,15 @@ function DataAgreement({
       textAlign: "center",
       marginBottom: 28
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-shield-check",
     style: {
-      fontSize: 48,
-      marginBottom: 10
+      fontSize: 64,
+      marginBottom: 10,
+      color: "var(--g1)",
+      filter: "drop-shadow(0 0 16px rgba(0,255,135,0.3))"
     }
-  }, "\u25C6"), /*#__PURE__*/React.createElement("h1", {
+  }), /*#__PURE__*/React.createElement("h1", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -1400,12 +1440,15 @@ function Huddle({
       padding: "24px 20px",
       overflowY: "auto"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-moon",
     style: {
-      fontSize: 48,
-      marginBottom: 6
+      fontSize: 56,
+      marginBottom: 6,
+      color: "var(--pr2)",
+      filter: "drop-shadow(0 0 12px rgba(185,123,255,0.3))"
     }
-  }, "\uD83D\uDE34"), /*#__PURE__*/React.createElement("h2", {
+  }), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -1440,7 +1483,7 @@ function Huddle({
       style: {
         flex: 1,
         padding: "12px 0",
-        borderRadius: 14,
+        borderRadius: 12,
         fontFamily: D,
         fontSize: 20,
         background: on ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
@@ -1477,7 +1520,7 @@ function Huddle({
       style: {
         flex: 1,
         padding: "16px",
-        borderRadius: 14,
+        borderRadius: 12,
         textAlign: "center",
         background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
         border: "2px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)"),
@@ -1532,7 +1575,7 @@ function Huddle({
       style: {
         flex: 1,
         padding: "14px 6px",
-        borderRadius: 14,
+        borderRadius: 12,
         textAlign: "center",
         background: on ? r.c + "18" : "rgba(12,12,18,0.8)",
         border: "2px solid " + (on ? r.c + "45" : "rgba(0,255,135,0.04)"),
@@ -1564,12 +1607,15 @@ function Huddle({
       padding: "24px 20px",
       overflowY: "auto"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-heartbeat",
     style: {
-      fontSize: 44,
-      marginBottom: 4
+      fontSize: 52,
+      marginBottom: 4,
+      color: "var(--pr2)",
+      filter: "drop-shadow(0 0 12px rgba(185,123,255,0.3))"
     }
-  }, "\uD83D\uDD0D"), /*#__PURE__*/React.createElement("h2", {
+  }), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -1625,7 +1671,7 @@ function Huddle({
       style: {
         flex: 1,
         padding: "10px 2px",
-        borderRadius: 14,
+        borderRadius: 12,
         textAlign: "center",
         background: on ? c + "20" : "rgba(12,12,18,0.8)",
         border: "1.5px solid " + (on ? c + "50" : "rgba(0,255,135,0.04)"),
@@ -1654,7 +1700,7 @@ function Huddle({
     style: {
       width: "100%",
       padding: "28px 20px",
-      borderRadius: 20,
+      borderRadius: 16,
       border: "2px solid rgba(0,255,135,0.2)",
       background: "rgba(0,255,135,0.04)",
       textAlign: "center",
@@ -1684,7 +1730,7 @@ function Huddle({
     style: {
       width: "100%",
       padding: "16px",
-      borderRadius: 14,
+      borderRadius: 12,
       border: "1.5px solid rgba(239,83,80,0.15)",
       background: "rgba(239,83,80,0.03)",
       fontFamily: D2,
@@ -1830,7 +1876,7 @@ function Huddle({
   ), zoneCount() > 0 && /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "14px 16px",
-      borderRadius: 14,
+      borderRadius: 12,
       background: "rgba(239,83,80,0.06)",
       border: "1.5px solid rgba(239,83,80,0.15)"
     }
@@ -1915,12 +1961,15 @@ function Huddle({
         setEditPhoto(URL.createObjectURL(e.target.files[0]));
       }
     }
-  }), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-flame",
     style: {
-      fontSize: 40,
-      marginBottom: 4
+      fontSize: 52,
+      marginBottom: 4,
+      color: "var(--ember)",
+      filter: "drop-shadow(0 0 12px rgba(255,109,0,0.3))"
     }
-  }, "\u25C6"), /*#__PURE__*/React.createElement("h2", {
+  }), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -1950,16 +1999,18 @@ function Huddle({
     style: {
       flex: 1,
       padding: "22px",
-      borderRadius: 18,
+      borderRadius: 16,
       textAlign: "center",
       background: "rgba(12,12,18,0.8)",
       border: "2px solid rgba(0,255,135,0.04)"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-barbell",
     style: {
-      fontSize: 36
+      fontSize: 40,
+      color: "var(--g1)"
     }
-  }, "\uD83D\uDCAA"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D,
       fontSize: 22,
@@ -1974,16 +2025,18 @@ function Huddle({
     style: {
       flex: 1,
       padding: "22px",
-      borderRadius: 18,
+      borderRadius: 16,
       textAlign: "center",
       background: "rgba(12,12,18,0.8)",
       border: "2px solid rgba(0,255,135,0.04)"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-bed",
     style: {
-      fontSize: 36
+      fontSize: 40,
+      color: "var(--dim)"
     }
-  }, "\uD83D\uDECB\uFE0F"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: D,
       fontSize: 22,
@@ -2013,7 +2066,7 @@ function Huddle({
       },
       style: {
         padding: "14px 18px",
-        borderRadius: 14,
+        borderRadius: 12,
         fontFamily: D,
         fontSize: 18,
         letterSpacing: "-0.02em",
@@ -2118,16 +2171,19 @@ function Huddle({
       alignItems: "center",
       gap: 10,
       padding: "12px 14px",
-      borderRadius: 14,
+      borderRadius: 12,
       background: editPhoto ? "rgba(76,175,80,0.06)" : "rgba(124,58,237,0.03)",
       border: "1.5px solid " + (editPhoto ? "rgba(76,175,80,0.2)" : "rgba(124,58,237,0.06)"),
       marginBottom: 12
     }
-  }, /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin " + (editPhoto ? "ph-check-circle" : "ph-camera"),
     style: {
-      fontSize: 22
+      fontSize: 26,
+      color: editPhoto ? "var(--grn)" : "var(--pr2)",
+      flexShrink: 0
     }
-  }, editPhoto ? "✅" : "📸"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1
     }
@@ -2146,7 +2202,7 @@ function Huddle({
     },
     style: {
       padding: "8px 14px",
-      borderRadius: 10,
+      borderRadius: 12,
       border: "none",
       background: "linear-gradient(135deg,var(--g0),var(--g4))",
       fontFamily: D2,
@@ -2163,7 +2219,7 @@ function Huddle({
     style: {
       background: "none",
       border: "1px solid rgba(239,83,80,0.2)",
-      borderRadius: 10,
+      borderRadius: 12,
       padding: "6px 12px",
       fontFamily: D2,
       fontSize: 11,
@@ -2180,7 +2236,7 @@ function Huddle({
       alignItems: "center",
       gap: 12,
       padding: "14px 16px",
-      borderRadius: 14,
+      borderRadius: 12,
       background: coachTask ? "rgba(0,255,135,0.06)" : "rgba(12,12,18,0.8)",
       border: "1.5px solid " + (coachTask ? "rgba(0,255,135,0.2)" : "rgba(0,255,135,0.04)"),
       cursor: "pointer",
@@ -2226,12 +2282,15 @@ function Huddle({
       textAlign: "center",
       marginBottom: 16
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-person-simple-tai-chi",
     style: {
-      fontSize: 56,
-      marginBottom: 12
+      fontSize: 64,
+      marginBottom: 12,
+      color: "var(--pr2)",
+      filter: "drop-shadow(0 0 12px rgba(185,123,255,0.3))"
     }
-  }, "\uD83E\uDDD8"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -2249,7 +2308,7 @@ function Huddle({
   }, "+3 GP RECOVERY BONUS")), /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "16px 18px",
-      borderRadius: 14,
+      borderRadius: 12,
       background: "rgba(0,255,135,0.04)",
       border: "1.5px solid rgba(0,255,135,0.1)"
     }
@@ -2272,12 +2331,15 @@ function Huddle({
       padding: "24px 20px",
       overflowY: "auto"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-fork-knife",
     style: {
-      fontSize: 40,
-      marginBottom: 4
+      fontSize: 52,
+      marginBottom: 4,
+      color: "var(--g1)",
+      filter: "drop-shadow(0 0 12px rgba(0,255,135,0.25))"
     }
-  }, "\uD83C\uDF7D\uFE0F"), /*#__PURE__*/React.createElement("h2", {
+  }), /*#__PURE__*/React.createElement("h2", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -2400,7 +2462,7 @@ function Huddle({
       style: {
         flex: 1,
         padding: "16px 8px",
-        borderRadius: 14,
+        borderRadius: 12,
         textAlign: "center",
         background: on ? m.c + "18" : "rgba(12,12,18,0.8)",
         border: "2px solid " + (on ? m.c + "50" : "rgba(0,255,135,0.04)"),
@@ -2441,13 +2503,15 @@ function Huddle({
         textAlign: "center",
         marginBottom: 14
       }
-    }, /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "ph-thin ph-check-circle pi",
       style: {
-        fontSize: 48,
-        marginBottom: 8
-      },
-      className: "pi"
-    }, "\u25C6"), /*#__PURE__*/React.createElement("h2", {
+        fontSize: 64,
+        marginBottom: 8,
+        color: "var(--g1)",
+        filter: "drop-shadow(0 0 16px rgba(0,255,135,0.4))"
+      }
+    }), /*#__PURE__*/React.createElement("h2", {
       className: "gs",
       style: {
         fontFamily: D,
@@ -2572,7 +2636,7 @@ function Huddle({
     })), rd.redFlag && /*#__PURE__*/React.createElement("div", {
       style: {
         padding: "8px 12px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(239,83,80,0.08)",
         border: "1px solid rgba(239,83,80,0.15)"
       }
@@ -2604,8 +2668,12 @@ function Huddle({
   }, "NEXT \u2192") : /*#__PURE__*/React.createElement("button", {
     className: "btn-gold",
     onClick: finish,
-    disabled: saving
-  }, saving ? "SAVING..." : "LOCK IT IN 🔒")));
+    disabled: saving,
+    style: {display:"flex",alignItems:"center",justifyContent:"center",gap:10}
+  }, saving ? "SAVING..." : React.createElement(React.Fragment, null,
+    "LOCK IT IN",
+    React.createElement("i", {className:"ph-thin ph-lock-simple", style:{fontSize:22,color:"var(--bg)"}})
+  ))));
 }
 
 /* ████████████████████████████████████████████████████████████████████████
@@ -2632,7 +2700,7 @@ function InsightCard(props) {
   if(!insight&&painDays>=3&&avgSleep&&avgSleep>=7){insight={icon:"\uD83D\uDCAA",color:"var(--g1)",title:"YOUR BODY IS DOING THE WORK",body:painDays+" days of soreness, but you\u2019ve hit your sleep targets. That\u2019s how recovery happens. The soreness fades \u2014 the discipline doesn\u2019t."};}
   if(!insight&&(streak===7||streak===14||streak===21||streak===30||streak===60)){insight={icon:"\uD83D\uDD25",color:"var(--g1)",title:streak+" DAYS. NO GAPS. NO EXCUSES.",body:"That\u2019s not luck \u2014 that\u2019s identity. You\u2019re not someone who tries to check in. You\u2019re someone who shows up. Every day."};}
   if(!insight)return null;
-  return React.createElement("div",{style:{padding:"0 20px",marginBottom:16}},React.createElement("div",{style:{padding:"18px 20px",borderRadius:18,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid "+insight.color+"25"}},React.createElement("div",{style:{display:"flex",alignItems:"flex-start",gap:12}},React.createElement("span",{style:{fontSize:28,flexShrink:0}},insight.icon),React.createElement("div",null,React.createElement("div",{style:{fontFamily:D,fontSize:18,color:insight.color,letterSpacing:"-0.02em",lineHeight:1.1,marginBottom:6}},insight.title),React.createElement("div",{style:{fontFamily:D2,fontSize:14,color:"var(--sub)",lineHeight:1.4,fontWeight:600}},insight.body)))));
+  return React.createElement("div",{style:{padding:"0 20px",marginBottom:16}},React.createElement("div",{style:{padding:"18px 20px",borderRadius: 16,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid "+insight.color+"25"}},React.createElement("div",{style:{display:"flex",alignItems:"flex-start",gap:12}},React.createElement("span",{style:{fontSize:28,flexShrink:0}},insight.icon),React.createElement("div",null,React.createElement("div",{style:{fontFamily:D,fontSize:18,color:insight.color,letterSpacing:"-0.02em",lineHeight:1.1,marginBottom:6}},insight.title),React.createElement("div",{style:{fontFamily:D2,fontSize:14,color:"var(--sub)",lineHeight:1.4,fontWeight:600}},insight.body)))));
 }
 
 /* ████████████████████████████████████████████████████████████████████████
@@ -2711,9 +2779,9 @@ var TIP_DAY = (function(){
 })();
 
 function DailyTip(props) {
-  var tip = props.tip, color = props.color, icon = props.icon;
-  return React.createElement("div", {style:{marginTop:20,padding:"14px 16px",borderRadius:14,background:"rgba(12,12,18,0.8)",borderLeft:"3px solid "+color,display:"flex",alignItems:"flex-start",gap:10}},
-    React.createElement("span", {style:{fontSize:18,flexShrink:0}}, icon),
+  var tip = props.tip, color = props.color;
+  return React.createElement("div", {style:{marginTop:20,padding:"14px 16px",borderRadius: 12,background:"rgba(12,12,18,0.55)",borderLeft:"2px solid "+color,border:"0.5px solid var(--glass-edge)",borderLeftWidth:"2px",borderLeftColor:color,backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",display:"flex",alignItems:"flex-start",gap:12}},
+    React.createElement("i", {className:"ph-thin ph-lightbulb",style:{fontSize:22,color:color,flexShrink:0,lineHeight:1}}),
     React.createElement("div", null,
       React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:color,letterSpacing:"2px",fontWeight:700,marginBottom:3}}, "TIP OF THE DAY"),
       React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",lineHeight:1.5,fontWeight:600}}, tip)
@@ -2787,7 +2855,7 @@ function Dashboard({
     style: {
       width: "100%",
       padding: "0",
-      borderRadius: 24,
+      borderRadius: 16,
       border: "3px solid rgba(0,255,135,0.25)",
       background: "linear-gradient(160deg,rgba(20,16,30,0.5),rgba(8,8,14,0.95))",
       textAlign: "center",
@@ -2824,12 +2892,15 @@ function Dashboard({
       zIndex: 1,
       padding: "32px 24px 28px"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-barbell",
     style: {
-      fontSize: 64,
-      marginBottom: 12
+      fontSize: 72,
+      marginBottom: 12,
+      color: "var(--g1)",
+      filter: "drop-shadow(0 0 16px rgba(0,255,135,0.35))"
     }
-  }, "\u2694\uFE0F"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -2913,7 +2984,7 @@ function Dashboard({
     style: {
       width: 48,
       height: 48,
-      borderRadius: 14,
+      borderRadius: 12,
       background: "rgba(76,175,80,0.1)",
       border: "1.5px solid rgba(76,175,80,0.2)",
       display: "flex",
@@ -2984,7 +3055,7 @@ function Dashboard({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "16px 18px",
-      borderRadius: 18,
+      borderRadius: 16,
       background: loadLevel === "danger" ? "rgba(239,83,80,0.08)" : hasConflict ? "rgba(255,179,0,0.06)" : "rgba(0,255,135,0.04)",
       border: "2px solid " + (loadLevel === "danger" ? "rgba(239,83,80,0.25)" : hasConflict ? "rgba(255,179,0,0.2)" : "rgba(0,255,135,0.1)")
     }
@@ -2995,11 +3066,14 @@ function Dashboard({
       gap: 10,
       marginBottom: 10
     }
-  }, /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin " + (loadLevel === "danger" ? "ph-warning-octagon" : hasConflict ? "ph-lightning" : "ph-chart-bar"),
     style: {
-      fontSize: 22
+      fontSize: 28,
+      color: loadLevel === "danger" ? "var(--red)" : hasConflict ? "#FFB300" : "var(--g1)",
+      flexShrink: 0
     }
-  }, loadLevel === "danger" ? "🚨" : hasConflict ? "⚡" : "📊"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1
     }
@@ -3129,7 +3203,7 @@ function Dashboard({
       letterSpacing: "0.5px",
       marginTop: 8,
       padding: "8px 12px",
-      borderRadius: 10,
+      borderRadius: 12,
       background: loadLevel === "danger" ? "rgba(239,83,80,0.06)" : "rgba(255,179,0,0.04)"
     }
   }, loadLevel === "danger" ? "⚠️ HIGH LOAD RELATIVE TO YOUR SESSIONS TODAY. LISTEN TO YOUR BODY TOMORROW." : "⚡ " + distinctSports.length + " SPORTS, " + todaySessions.length + " SESSIONS LOGGED. YOUR COACHES CAN SEE YOUR COMBINED LOAD."))), todayCheckin && /*#__PURE__*/React.createElement(InsightCard, {todayCheckin: todayCheckin, recentCheckins: recentCheckins, todaySessions: todaySessions, streak: profile.streak}), /*#__PURE__*/React.createElement("div", {
@@ -3139,7 +3213,7 @@ function Dashboard({
   }, /*#__PURE__*/React.createElement("div", {
     style: {
       position: "relative",
-      borderRadius: 20,
+      borderRadius: 16,
       padding: 22,
       marginBottom: 16,
       overflow: "hidden"
@@ -3148,7 +3222,7 @@ function Dashboard({
     style: {
       position: "absolute",
       inset: -3,
-      borderRadius: 23,
+      borderRadius: 16,
       background: "conic-gradient(from 0deg,#7C3AED,#A855F7,#00FF87,#66FFAA,#fff,#66FFAA,#00FF87,#A855F7,#7C3AED)",
       animation: "spin 3s linear infinite",
       zIndex: 0
@@ -3157,7 +3231,7 @@ function Dashboard({
     style: {
       position: "absolute",
       inset: 2,
-      borderRadius: 18,
+      borderRadius: 16,
       background: "linear-gradient(160deg,#12101C,#08080E)",
       zIndex: 0
     }
@@ -3242,12 +3316,13 @@ function Dashboard({
       padding: "16px 12px",
       textAlign: "center"
     }
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "fi",
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-flame fi",
     style: {
-      fontSize: 24
+      fontSize: 32,
+      color: "var(--ember)"
     }
-  }, "\uD83D\uDD25"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -3271,11 +3346,13 @@ function Dashboard({
       padding: "16px 12px",
       textAlign: "center"
     }
-  }, /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "ph-thin ph-trend-up",
     style: {
-      fontSize: 24
+      fontSize: 32,
+      color: "var(--g1)"
     }
-  }, "\u25B2"), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -3764,7 +3841,7 @@ function CoachDashboard({
       return React.createElement("div", null,
 
         /* Big percentage */
-        React.createElement("div", {style:{padding:"20px",borderRadius:18,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid rgba(0,255,135,0.08)",marginBottom:12,textAlign:"center"}},
+        React.createElement("div", {style:{padding:"20px",borderRadius: 16,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid rgba(0,255,135,0.08)",marginBottom:12,textAlign:"center"}},
           React.createElement("div", {style:{fontFamily:D,fontSize:64,color:readyColor,lineHeight:0.9}}, readyPct + "%"),
           React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"3px",fontWeight:700,marginTop:6}}, "READY TO TRAIN"),
           React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",fontWeight:600,marginTop:4}}, totalGreen + " GREEN · " + totalYellow + " YELLOW · " + totalRed + " RED · " + (totalCheckedIn > 0 ? totalCheckedIn : 0) + " OF " + totalAthletes + " CHECKED IN"),
@@ -3791,17 +3868,17 @@ function CoachDashboard({
   ),
 
   /* Coach Task Setter */
-  React.createElement("div", {style:{padding:"12px 16px",borderRadius:14,background:"rgba(12,12,18,0.8)",border:"1.5px solid rgba(124,58,237,0.08)",marginBottom:16}},
+  React.createElement("div", {style:{padding:"12px 16px",borderRadius: 12,background:"rgba(12,12,18,0.8)",border:"1.5px solid rgba(124,58,237,0.08)",marginBottom:16}},
     !editingTask ? React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10}},
       React.createElement("span", {style:{fontFamily:D2,fontSize:13,color:taskText?"var(--g1)":"var(--dim)",fontWeight:700,letterSpacing:"1px",flex:1}}, taskText ? "◆ " + taskText.toUpperCase() : "NO DAILY TASK SET"),
-      React.createElement("button", {onClick:function(){setEditingTask(true)},style:{padding:"6px 14px",borderRadius:10,border:"1px solid rgba(0,255,135,0.15)",background:"none",fontFamily:D2,fontSize:12,color:"var(--g4)",fontWeight:700,letterSpacing:"1px"}}, taskText ? "EDIT" : "SET TASK"),
+      React.createElement("button", {onClick:function(){setEditingTask(true)},style:{padding:"6px 14px",borderRadius: 12,border:"1px solid rgba(0,255,135,0.15)",background:"none",fontFamily:D2,fontSize:12,color:"var(--g4)",fontWeight:700,letterSpacing:"1px"}}, taskText ? "EDIT" : "SET TASK"),
       taskSaved && React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:"var(--grn)",fontWeight:700}}, "✓ SAVED")
     ) : React.createElement("div", null,
       React.createElement("label", {className:"lbl"}, "TODAY'S TASK FOR ATHLETES"),
       React.createElement("input", {className:"inp",value:taskText,onChange:function(e){setTaskText(e.target.value)},placeholder:"e.g. 50 free throws before you leave",style:{marginBottom:10,fontSize:14}}),
       React.createElement("div", {style:{display:"flex",gap:8}},
-        React.createElement("button", {onClick:saveTask,disabled:!taskText.trim(),style:{flex:1,padding:"10px",borderRadius:10,border:"none",background:"linear-gradient(135deg,var(--g0),var(--g4))",fontFamily:D2,fontSize:13,color:"var(--bg)",fontWeight:700,letterSpacing:"1px"}}, "SAVE TASK"),
-        React.createElement("button", {onClick:function(){setEditingTask(false)},style:{padding:"10px 16px",borderRadius:10,border:"1px solid rgba(0,255,135,0.1)",background:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",fontWeight:700}}, "CANCEL")
+        React.createElement("button", {onClick:saveTask,disabled:!taskText.trim(),style:{flex:1,padding:"10px",borderRadius: 12,border:"none",background:"linear-gradient(135deg,var(--g0),var(--g4))",fontFamily:D2,fontSize:13,color:"var(--bg)",fontWeight:700,letterSpacing:"1px"}}, "SAVE TASK"),
+        React.createElement("button", {onClick:function(){setEditingTask(false)},style:{padding:"10px 16px",borderRadius: 12,border:"1px solid rgba(0,255,135,0.1)",background:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",fontWeight:700}}, "CANCEL")
       )
     )
   ),
@@ -3847,7 +3924,7 @@ function CoachDashboard({
       },
       style: {
         padding: "10px 14px",
-        borderRadius: 14,
+        borderRadius: 12,
         fontFamily: D2,
         fontSize: 12,
         fontWeight: 700,
@@ -3869,7 +3946,7 @@ function CoachDashboard({
     style: {
       marginBottom: 20,
       padding: "12px 16px",
-      borderRadius: 14,
+      borderRadius: 12,
       background: "rgba(12,12,18,0.8)",
       border: "1px solid rgba(124,58,237,0.06)"
     }
@@ -4007,7 +4084,7 @@ function CoachDashboard({
       style: {
         flex: 1,
         padding: "8px 10px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(12,12,18,0.6)",
         textAlign: "center"
       }
@@ -4031,7 +4108,7 @@ function CoachDashboard({
       style: {
         flex: 1,
         padding: "8px 10px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(12,12,18,0.6)",
         textAlign: "center"
       }
@@ -4055,7 +4132,7 @@ function CoachDashboard({
       style: {
         flex: 1,
         padding: "8px 10px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(12,12,18,0.6)",
         textAlign: "center"
       }
@@ -4079,7 +4156,7 @@ function CoachDashboard({
       style: {
         flex: 1,
         padding: "8px 10px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(255,179,0,0.06)",
         textAlign: "center",
         border: "1px solid rgba(255,179,0,0.15)"
@@ -4104,7 +4181,7 @@ function CoachDashboard({
       style: {
         flex: 1,
         padding: "8px 10px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(12,12,18,0.6)",
         textAlign: "center"
       }
@@ -4127,7 +4204,7 @@ function CoachDashboard({
     }, a.did_coach_task ? "✓" : "—"))), !a.checked_in && /*#__PURE__*/React.createElement("div", {
       style: {
         padding: "8px 12px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(124,58,237,0.04)",
         textAlign: "center"
       }
@@ -4142,7 +4219,7 @@ function CoachDashboard({
     }, "HASN'T CHECKED IN TODAY")), a.has_pain && a.pain_locations && a.pain_locations.length > 0 && /*#__PURE__*/React.createElement("div", {
       style: {
         padding: "8px 12px",
-        borderRadius: 10,
+        borderRadius: 12,
         background: "rgba(239,83,80,0.04)",
         border: "1px solid rgba(239,83,80,0.1)",
         marginTop: 6
@@ -4336,7 +4413,7 @@ function ProfilePage({
     style: {
       background: "none",
       border: "1px solid rgba(0,255,135,0.1)",
-      borderRadius: 10,
+      borderRadius: 12,
       padding: "4px 14px",
       fontFamily: D2,
       fontSize: 12,
@@ -4428,7 +4505,7 @@ function ProfilePage({
     style: {
       width: "100%",
       padding: "16px",
-      borderRadius: 14,
+      borderRadius: 12,
       border: "2px solid rgba(239,83,80,0.2)",
       background: "rgba(239,83,80,0.04)",
       fontFamily: D,
@@ -4578,17 +4655,20 @@ function Nav({
       right: 0,
       display: "flex",
       justifyContent: "center",
-      padding: "8px 0 16px",
-      background: "linear-gradient(180deg,transparent,rgba(2,2,1,0.98) 30%,var(--bg))",
-      borderTop: "1px solid rgba(124,58,237,0.06)",
+      padding: "10px 0 18px",
+      background: "linear-gradient(180deg,rgba(8,8,12,0.4),rgba(8,8,12,0.85) 60%,rgba(8,8,12,0.95))",
+      borderTop: "0.5px solid var(--glass-edge)",
+      backdropFilter: "blur(10px) saturate(140%)",
+      WebkitBackdropFilter: "blur(10px) saturate(140%)",
       zIndex: 100
     }
   }, (function(){
-    var tabs = [{id:"home",i:"◆",l:"HOME"},{id:"board",i:SCHOOL.LOGO,l:"BOARD"}];
-    if(role==="coach"||role==="ad") tabs.push({id:"roster",i:"▲",l:"ROSTER"});
-    tabs.push({id:"profile",i:"👤",l:"PROFILE"});
+    var tabs = [{id:"home",icon:"ph-house",l:"HOME"},{id:"board",icon:"ph-trophy",l:"BOARD"}];
+    if(role==="coach"||role==="ad") tabs.push({id:"roster",icon:"ph-users-three",l:"ROSTER"});
+    tabs.push({id:"profile",icon:"ph-user-circle",l:"PROFILE"});
     return tabs;
   })().map(function (it) {
+    var active = page === it.id;
     return /*#__PURE__*/React.createElement("button", {
       key: it.id,
       onClick: function () {
@@ -4605,17 +4685,20 @@ function Nav({
         gap: 4,
         padding: "6px 0"
       }
-    }, /*#__PURE__*/React.createElement("span", {
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "ph-thin " + it.icon,
       style: {
-        fontSize: 26,
-        filter: page === it.id ? "drop-shadow(0 0 8px rgba(0,255,135,0.4))" : "grayscale(1) opacity(0.25)"
+        fontSize: 28,
+        color: active ? "var(--g1)" : "var(--dim)",
+        filter: active ? "drop-shadow(0 0 8px rgba(0,255,135,0.4))" : "none"
       }
-    }, it.i), /*#__PURE__*/React.createElement("span", {
+    }), /*#__PURE__*/React.createElement("span", {
       style: {
         fontFamily: D2,
-        fontSize: 13,
+        fontSize: 12,
         letterSpacing: "3px",
-        color: page === it.id ? "var(--g1)" : "var(--dim)"
+        fontWeight: 700,
+        color: active ? "var(--g1)" : "var(--dim)"
       }
     }, it.l));
   }));
@@ -4772,16 +4855,16 @@ function App() {
       setInHuddle(false);
     },
     onDone: function (data) {
-      var oldLevel = gL(profile.xp);
-      var newLevel = gL(data.xp);
+      var oldLevel = gL(profile.xp || 0);
+      var newLevel = gL((data && data.xp) || 0);
       setInHuddle(false);
       setProfile(Object.assign({}, profile, {
-        xp: data.xp,
-        streak: data.streak,
-        longest_streak: Math.max(profile.longest_streak, data.streak)
+        xp: (data && data.xp) || profile.xp || 0,
+        streak: (data && data.streak) || profile.streak || 0,
+        longest_streak: Math.max(profile.longest_streak || 0, (data && data.streak) || 0)
       }));
       loadProfile(user.id);
-      toast("+" + data.points + " GP EARNED!", "ok");
+      toast("+" + ((data && data.points) || 0) + " GP EARNED!", "ok");
       /* Check for level-up */
       if (newLevel.l > oldLevel.l) {
         setLevelUp(newLevel);
@@ -4894,7 +4977,7 @@ class ErrorBoundary extends React.Component {
       return React.createElement("div", {
         style: {minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,textAlign:"center",background:"var(--bg)",color:"var(--txt)"}
       },
-        React.createElement("div", {style:{fontSize:64,marginBottom:20}}, "⚠"),
+        React.createElement("i", {className:"ph-thin ph-warning",style:{fontSize:80,marginBottom:20,color:"var(--red)",filter:"drop-shadow(0 0 16px rgba(255,107,107,0.35))"}}),
         React.createElement("div", {style:{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:32,letterSpacing:"-0.02em",textTransform:"uppercase",marginBottom:12,color:"var(--g1)"}}, "Something broke"),
         React.createElement("div", {style:{fontFamily:"'Barlow Condensed',sans-serif",fontSize:15,color:"var(--sub)",maxWidth:320,lineHeight:1.5,marginBottom:24,fontWeight:600}}, "The app hit an error and needs to reload. Your data is safe — nothing was lost."),
         React.createElement("button", {
