@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://tjwtzbnyflyoicnrfyzc.supabase.co">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/thin/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/thin/style.css" media="print" onload="this.media='all'">
 <style>
 :root{--bg:#08080C;--g1:#00FF87;--g4:#00CC6A;--g6:#66FFAA;--g7:#99FFCC;--g0:#009950;--pr:#7C3AED;--pr2:#B97BFF;--ember:#FF6D00;--grn:#00FF87;--red:#FF6B6B;--txt:#F5F5F8;--dim:#858599;--sub:#BDBDCC;--glass-edge:rgba(255,255,255,0.08);--glass-edge-strong:rgba(255,255,255,0.14)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -58,6 +58,8 @@ i[class^="ph-"],i[class*=" ph-"]{display:inline-flex;align-items:center;justify-
 </head>
 <body>
 <div id="root"></div>
+<!-- DIAGNOSTIC: bright banner before any JS. If you see this, HTML loaded. React will replace #root and hide it. -->
+<div id="tga-preload-diag" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#FF6D00;color:#000;font-family:monospace;font-size:14px;font-weight:700;text-align:center;padding:10px">PAGE LOADED — WAITING FOR REACT...</div>
 <div id="tga-err-overlay" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#8B0000;color:#fff;font-family:monospace;font-size:12px;padding:10px 14px;line-height:1.4;max-height:45vh;overflow:auto;border-top:2px solid #EF5350;white-space:pre-wrap;word-break:break-word"></div>
 <script>
 /* ── On-screen error overlay — mobile-safe diagnostic when console is unreachable.
@@ -5007,6 +5009,8 @@ class ErrorBoundary extends React.Component {
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(App, null)));
+/* Hide preload diagnostic once React takes over */
+try { document.getElementById("tga-preload-diag").style.display = "none"; } catch(e){}
 
 </script>
 </body>
