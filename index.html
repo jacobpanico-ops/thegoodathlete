@@ -924,6 +924,15 @@ function Huddle({
   onCancel,
   toast
 }) {
+  /* ██ TEMPORARY DIAGNOSTIC — remove after confirming Huddle mounts ██ */
+  return React.createElement("div", {
+    style: {position:"fixed",inset:0,background:"#FF0000",color:"#fff",fontSize:48,fontFamily:"monospace",fontWeight:900,display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center",zIndex:99999,padding:40}
+  }, "HUDDLE IS ALIVE — TAP TO GO BACK", React.createElement("br"), React.createElement("button", {
+    onClick: onCancel,
+    style: {marginTop:30,padding:"20px 40px",fontSize:28,background:"#fff",color:"#000",border:"none",borderRadius:12,fontWeight:900}
+  }, "GO BACK"));
+  /* ██ END DIAGNOSTIC ██ */
+
   var TOTAL = 5;
   var [card, setCard] = useState(0);
   var [saving, setSaving] = useState(false);
@@ -4945,6 +4954,7 @@ function App() {
     todayCheckin: todayCheckin,
     todaySessions: todaySessions,
     onHuddle: function () {
+      document.title = "HUDDLE CLICKED";
       setInHuddle(true);
     },
     onSignOut: signOut
