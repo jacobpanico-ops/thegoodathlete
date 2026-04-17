@@ -58,9 +58,6 @@ i[class^="ph-"],i[class*=" ph-"]{display:inline-flex;align-items:center;justify-
 </head>
 <body>
 <div id="root"></div>
-<div id="tga-version" style="position:fixed;bottom:80px;right:10px;z-index:99999;background:#FF00FF;color:#fff;font-family:monospace;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;pointer-events:none">BUILD-V7</div>
-<!-- DIAGNOSTIC: bright banner before any JS. If you see this, HTML loaded. React will replace #root and hide it. -->
-<div id="tga-preload-diag" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#FF6D00;color:#000;font-family:monospace;font-size:14px;font-weight:700;text-align:center;padding:10px">PAGE LOADED — WAITING FOR REACT...</div>
 <div id="tga-err-overlay" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#8B0000;color:#fff;font-family:monospace;font-size:12px;padding:10px 14px;line-height:1.4;max-height:45vh;overflow:auto;border-top:2px solid #EF5350;white-space:pre-wrap;word-break:break-word"></div>
 <script>
 /* ── On-screen error overlay — mobile-safe diagnostic when console is unreachable.
@@ -4851,20 +4848,32 @@ function App() {
   }, "LOADING..."));
 
   // In huddle
-  if (inHuddle) return React.createElement("div", {
-    style: {position:"fixed",inset:0,background:"#FF00FF",color:"#fff",fontSize:28,fontFamily:"monospace",fontWeight:900,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",zIndex:99999,padding:40}
-  },
-    "APP SAYS: inHuddle=true",
-    React.createElement("br"),
-    "profile.sports=" + JSON.stringify(profile && profile.sports),
-    React.createElement("br"),
-    "profile.name=" + (profile && profile.name),
-    React.createElement("br"),
-    React.createElement("button", {
-      onClick: function(){ setInHuddle(false); },
-      style: {marginTop:30,padding:"20px 40px",fontSize:24,background:"#fff",color:"#000",border:"none",borderRadius:12,fontWeight:900}
-    }, "GO BACK")
-  );
+  if (inHuddle) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
+    msg: toastMsg,
+    type: toastType
+  }), /*#__PURE__*/React.createElement(Huddle, {
+    profile: profile,
+    toast: toast,
+    onCancel: function () {
+      setInHuddle(false);
+    },
+    onDone: function (data) {
+      var oldLevel = gL(profile.xp || 0);
+      var newLevel = gL((data && data.xp) || 0);
+      setInHuddle(false);
+      setProfile(Object.assign({}, profile, {
+        xp: (data && data.xp) || profile.xp || 0,
+        streak: (data && data.streak) || profile.streak || 0,
+        longest_streak: Math.max(profile.longest_streak || 0, (data && data.streak) || 0)
+      }));
+      loadProfile(user.id);
+      toast("+" + ((data && data.points) || 0) + " GP EARNED!", "ok");
+      /* Check for level-up */
+      if (newLevel.l > oldLevel.l) {
+        setLevelUp(newLevel);
+      }
+    }
+  }));
 
   /* Level-up celebration overlay */
   if (levelUp) return /*#__PURE__*/React.createElement(LevelUp, {
@@ -4923,8 +4932,6 @@ function App() {
     todayCheckin: todayCheckin,
     todaySessions: todaySessions,
     onHuddle: function () {
-      document.body.style.background = "#FF00FF";
-      document.getElementById("tga-version").textContent = "HUDDLE TAPPED";
       setInHuddle(true);
     },
     onSignOut: signOut
@@ -4989,8 +4996,6 @@ class ErrorBoundary extends React.Component {
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(App, null)));
-/* Hide preload diagnostic once React takes over */
-try { document.getElementById("tga-preload-diag").style.display = "none"; } catch(e){}
 
 </script>
 </body>
