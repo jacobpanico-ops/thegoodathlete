@@ -1429,11 +1429,55 @@ function Huddle({
   ),
 
   /* ═══ CARDS 1-4 placeholder ═══ */
-  card >= 1 && React.createElement("div", {style:{padding:"24px 20px"}},
-    React.createElement("div", {style:{fontFamily:D,fontSize:32,marginBottom:12,color:"var(--txt)"}},
-      card===1 ? "CARD 1: BODY SCAN" : card===2 ? "CARD 2: THE WORK" : card===3 ? "CARD 3: FUEL" : "CARD 4: SUMMARY"
+  card === 1 && React.createElement("div", {className:"ci",key:"c1",style:{padding:"24px 20px",overflowY:"auto"}},
+    React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "BODY SCAN"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW IS YOUR BODY TODAY?"),
+
+    React.createElement("label", {className:"lbl"}, "MENTAL LOAD"),
+    React.createElement("div", {style:{display:"flex",gap:6,marginBottom:20}},
+      [{id:1,i:"\uD83D\uDE0C",l:"LOW",c:"#00FF87"},{id:2,i:"\uD83D\uDE42",l:"MILD",c:"#66FFAA"},{id:3,i:"\uD83D\uDE10",l:"MODERATE",c:"#FFB300"},{id:4,i:"\uD83D\uDE30",l:"HIGH",c:"#FF6D00"},{id:5,i:"\uD83E\uDD2F",l:"MAXED",c:"#EF5350"}].map(function(st){
+        var on = stress === st.id;
+        return React.createElement("button", {key:st.id,onClick:function(){buzz(15);setStress(st.id);},style:{flex:1,padding:"10px 2px",borderRadius:12,textAlign:"center",background:on?st.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?st.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.08)":"scale(1)"}},
+          React.createElement("div", {style:{fontSize:on?28:22,transition:"font-size 0.2s"}}, st.i),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:9,color:on?st.c:"var(--dim)",letterSpacing:"1px",marginTop:2,fontWeight:700}}, st.l)
+        );
+      })
     ),
-    React.createElement("div", {style:{fontFamily:D2,fontSize:16,color:"var(--sub)"}}, "BUILD-V11 — CARD 0 LIVE, REST PLACEHOLDER")
+
+    !showBodyMap ? React.createElement("div", {style:{textAlign:"center",marginBottom:16}},
+      React.createElement("div", {style:{padding:"20px",borderRadius:16,background:"rgba(0,255,135,0.06)",border:"2px solid rgba(0,255,135,0.15)",marginBottom:12}},
+        React.createElement("div", {style:{fontFamily:D,fontSize:28,color:"var(--g1)",marginBottom:4}}, "ALL CLEAR"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:600}}, "NO PAIN OR SORENESS")
+      ),
+      React.createElement("button", {onClick:function(){buzz();setShowBodyMap(true);},style:{background:"none",border:"none",fontFamily:D2,fontSize:14,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,padding:"8px 16px"}}, "REPORT PAIN OR SORENESS")
+    ) : React.createElement("div", null,
+      React.createElement("label", {className:"lbl"}, "TAP AREAS THAT HURT"),
+      React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}},
+        ZONES.map(function(z){
+          var st = zoneState(z.id);
+          var bg = st==="sharp" ? "rgba(239,83,80,0.2)" : st==="sore" ? "rgba(255,179,0,0.15)" : "rgba(12,12,18,0.8)";
+          var bc = st==="sharp" ? "rgba(239,83,80,0.5)" : st==="sore" ? "rgba(255,179,0,0.4)" : "rgba(0,255,135,0.04)";
+          var tc = st==="sharp" ? "var(--red)" : st==="sore" ? "#FFB300" : "var(--dim)";
+          return React.createElement("button", {key:z.id,onClick:function(){togZone(z.id);},style:{padding:"8px 12px",borderRadius:12,background:bg,border:"2px solid "+bc,fontFamily:D2,fontSize:12,color:tc,fontWeight:700,letterSpacing:"1px"}}, z.l.toUpperCase());
+        })
+      ),
+      zoneCount() > 0 && React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",marginBottom:12,fontWeight:600}},
+        painZones.filter(function(z){return z.startsWith("sore:")||z.startsWith("sharp:")}).map(function(z){
+          var rid = rawZoneId(z);
+          var isSharp = z.startsWith("sharp:");
+          var label = ZONES.find(function(zn){return zn.id===rid});
+          return React.createElement("span", {key:z,style:{color:isSharp?"var(--red)":"#FFB300",marginRight:8}}, (label?label.l:"").toUpperCase() + (isSharp ? " \u25AA SHARP" : " \u25AA SORE"));
+        })
+      ),
+      React.createElement("button", {onClick:function(){setShowBodyMap(false);setPainZones([]);},style:{background:"none",border:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,padding:"8px 0"}}, "CLEAR ALL")
+    )
+  ),
+
+  card >= 2 && React.createElement("div", {style:{padding:"24px 20px"}},
+    React.createElement("div", {style:{fontFamily:D,fontSize:32,marginBottom:12,color:"var(--txt)"}},
+      card===2 ? "CARD 2: THE WORK" : card===3 ? "CARD 3: FUEL" : "CARD 4: SUMMARY"
+    ),
+    React.createElement("div", {style:{fontFamily:D2,fontSize:16,color:"var(--sub)"}}, "BUILD-V12 — CARDS 0-1 LIVE")
   ),
 
   /* ── Bottom button ── */
