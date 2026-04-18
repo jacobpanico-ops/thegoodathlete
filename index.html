@@ -1473,12 +1473,79 @@ function Huddle({
     )
   ),
 
-  card >= 2 && React.createElement("div", {style:{padding:"24px 20px"}},
-    React.createElement("div", {style:{fontFamily:D,fontSize:32,marginBottom:12,color:"var(--txt)"}},
-      card===2 ? "CARD 2: THE WORK" : card===3 ? "CARD 3: FUEL" : "CARD 4: SUMMARY"
+  card >= 2 && card <= 4 && (card === 2 ? React.createElement("div", {className:"ci",key:"c2",style:{padding:"24px 20px",overflowY:"auto"}},
+    React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
+    React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 16px",fontWeight:700}}, "WHAT DID YOU DO TODAY?"),
+
+    didWork === null && React.createElement("div", {style:{display:"flex",gap:12,marginBottom:16}},
+      React.createElement("button", {onClick:function(){buzz(15);setDidWork(true);},style:{flex:1,padding:22,borderRadius:16,textAlign:"center",background:"rgba(12,12,18,0.8)",border:"2px solid rgba(0,255,135,0.04)"}},
+        React.createElement("div", {style:{fontSize:36}}, "\uD83D\uDCAA"),
+        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--g1)",marginTop:4}}, "YES")
+      ),
+      React.createElement("button", {onClick:function(){buzz(15);setDidWork(false);},style:{flex:1,padding:22,borderRadius:16,textAlign:"center",background:"rgba(12,12,18,0.8)",border:"2px solid rgba(0,255,135,0.04)"}},
+        React.createElement("div", {style:{fontSize:36}}, "\uD83D\uDECB\uFE0F"),
+        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--dim)",marginTop:4}}, "REST DAY")
+      )
     ),
-    React.createElement("div", {style:{fontFamily:D2,fontSize:16,color:"var(--sub)"}}, "BUILD-V12 — CARDS 0-1 LIVE")
-  ),
+
+    didWork === false && React.createElement("div", {style:{textAlign:"center",marginBottom:16}},
+      React.createElement("div", {style:{padding:"28px",borderRadius:16,background:"rgba(124,58,237,0.06)",border:"2px solid rgba(124,58,237,0.15)"}},
+        React.createElement("div", {style:{fontFamily:D,fontSize:28,color:"var(--pr2)",marginBottom:8}}, "RECOVERY DAY"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:600,lineHeight:1.5}}, "ELITE ATHLETES SCHEDULE REST. YOUR BODY BUILDS MUSCLE DURING RECOVERY, NOT DURING THE WORKOUT. THIS IS PART OF THE PLAN.")
+      )
+    ),
+
+    didWork && React.createElement(React.Fragment, null,
+      React.createElement("label", {className:"lbl"}, "SPORTS TODAY ", React.createElement("span", {style:{color:"var(--dim)"}}, "(TAP ALL THAT APPLY)")),
+      React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:18}},
+        (profile.sports || []).map(function(s){
+          var on = selectedSports.includes(s);
+          return React.createElement("button", {key:s,onClick:function(){togSport(s);},style:{padding:"10px 16px",borderRadius:12,fontFamily:D2,fontSize:14,fontWeight:700,letterSpacing:"1px",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, on ? "\u2713 " : "", s.toUpperCase());
+        })
+      ),
+
+      React.createElement("label", {className:"lbl"}, "EFFORT (RPE)"),
+      React.createElement("div", {style:{marginBottom:18}},
+        React.createElement("input", {type:"range",min:1,max:10,value:overallRpe,onChange:function(e){setOverallRpe(parseInt(e.target.value));},style:{width:"100%",accentColor:RPE_COLOR[overallRpe]||"#FFB300"}}),
+        React.createElement("div", {style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:13,fontWeight:700}},
+          React.createElement("span", {style:{color:RPE_COLOR[overallRpe]||"#FFB300"}}, overallRpe + "/10"),
+          React.createElement("span", {style:{color:"var(--dim)"}}, RPE_DESC[overallRpe]||"")
+        )
+      ),
+
+      React.createElement("label", {className:"lbl"}, "TOTAL DURATION"),
+      React.createElement("div", {style:{display:"flex",gap:6,marginBottom:18}},
+        ["15","30","45","60","90","120+"].map(function(d){
+          var on = totalDur === d;
+          return React.createElement("button", {key:d,onClick:function(){buzz();setTotalDur(d);},style:{flex:1,padding:"12px 0",borderRadius:12,fontFamily:D,fontSize:18,background:on?"rgba(0,255,135,0.15)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.35)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, d);
+        })
+      ),
+
+      React.createElement("button", {onClick:function(){buzz();if(fileRef.current)fileRef.current.click();},style:{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:12,background:editPhoto?"rgba(76,175,80,0.06)":"rgba(124,58,237,0.03)",border:"1.5px solid "+(editPhoto?"rgba(76,175,80,0.2)":"rgba(124,58,237,0.06)"),marginBottom:12,width:"100%"}},
+        React.createElement("span", {style:{fontSize:22}}, editPhoto ? "\u2705" : "\uD83D\uDCF8"),
+        React.createElement("div", {style:{flex:1}},
+          React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:editPhoto?"var(--grn)":"var(--dim)",fontWeight:700,letterSpacing:"0.5px"}}, editPhoto ? "PROOF ATTACHED" : "PROOF OF GRIND")
+        )
+      ),
+
+      coachTaskText && React.createElement("button", {onClick:function(){buzz();setCoachTask(!coachTask);},style:{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:12,background:coachTask?"rgba(0,255,135,0.06)":"rgba(12,12,18,0.8)",border:"1.5px solid "+(coachTask?"rgba(0,255,135,0.2)":"rgba(0,255,135,0.04)"),width:"100%"}},
+        React.createElement("span", {style:{fontSize:18,color:coachTask?"var(--g1)":"var(--dim)"}}, coachTask ? "\u2713" : ""),
+        React.createElement("div", {style:{flex:1,textAlign:"left"}},
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"2px",fontWeight:700}}, "COACH'S TASK"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:coachTask?"var(--g1)":"var(--sub)",fontWeight:600}}, coachTaskText)
+        )
+      )
+    )
+  ) :
+
+  /* ═══ CARDS 3-4 placeholder ═══ */
+  React.createElement("div", {style:{padding:"24px 20px"}},
+    React.createElement("div", {style:{fontFamily:D,fontSize:32,marginBottom:12,color:"var(--txt)"}},
+      card===3 ? "CARD 3: FUEL" : "CARD 4: SUMMARY"
+    ),
+    React.createElement("div", {style:{fontFamily:D2,fontSize:16,color:"var(--sub)"}}, "BUILD-V13 — CARDS 0-2 LIVE")
+  )),
 
   /* ── Bottom button ── */
   React.createElement("div", {style:{padding:"16px 20px 28px"}},
