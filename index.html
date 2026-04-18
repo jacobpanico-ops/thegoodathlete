@@ -1539,13 +1539,92 @@ function Huddle({
     )
   ) :
 
-  /* ═══ CARDS 3-4 placeholder ═══ */
-  React.createElement("div", {style:{padding:"24px 20px"}},
-    React.createElement("div", {style:{fontFamily:D,fontSize:32,marginBottom:12,color:"var(--txt)"}},
-      card===3 ? "CARD 3: FUEL" : "CARD 4: SUMMARY"
+  /* ═══ CARD 3 — Fuel ═══ */
+  card === 3 ? React.createElement("div", {className:"ci",key:"c3",style:{padding:"24px 20px",overflowY:"auto"}},
+    React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "FUEL"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 18px",fontWeight:700}}, "HOW DID YOU FUEL?"),
+
+    React.createElement("label", {className:"lbl"}, "HYDRATION"),
+    React.createElement("div", {style:{display:"flex",gap:4,marginBottom:20}},
+      [0,1,2,3,4,5,6,7,8].map(function(n){
+        var on = hydration >= n && n > 0;
+        return React.createElement("button", {key:n,onClick:function(){buzz();setHydration(n);},style:{flex:1,padding:"14px 0",borderRadius:12,fontSize:18,background:n===0?"rgba(12,12,18,0.8)":on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",border:"2px solid "+(on?"rgba(0,255,135,0.25)":"rgba(0,255,135,0.04)"),color:on?"var(--g1)":"var(--dim)",fontFamily:D,transition:"all 0.15s"}}, n===0?"\u2715":"\uD83D\uDCA7");
+      })
     ),
-    React.createElement("div", {style:{fontFamily:D2,fontSize:16,color:"var(--sub)"}}, "BUILD-V13 — CARDS 0-2 LIVE")
-  )),
+    React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginBottom:20,fontWeight:600}}, hydration===0?"NOT TRACKED":hydration+" / 8 GLASSES"),
+
+    React.createElement("label", {className:"lbl"}, "FUEL WINDOW"),
+    React.createElement("div", {style:{display:"flex",gap:8,marginBottom:20}},
+      [{id:"before",l:"BEFORE"},{id:"after",l:"AFTER"},{id:"both",l:"BOTH"},{id:"neither",l:"NEITHER"}].map(function(fw){
+        var on = fuelWindow === fw.id;
+        return React.createElement("button", {key:fw.id,onClick:function(){buzz();setFuelWindow(fw.id);},style:{flex:1,padding:"12px 4px",borderRadius:12,fontFamily:D2,fontSize:12,fontWeight:700,letterSpacing:"1px",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, fw.l);
+      })
+    ),
+
+    React.createElement("label", {className:"lbl"}, "PLATE COLOR CHECK"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",marginBottom:12,fontWeight:600}}, "LOOK AT YOUR LAST MEAL. HOW MANY COLORS?"),
+    React.createElement("div", {style:{display:"flex",gap:8}},
+      [{id:"green",i:"\uD83D\uDFE2",l:"3+ COLORS",c:"#4CAF50"},{id:"yellow",i:"\uD83D\uDFE1",l:"1-2 COLORS",c:"#FFB300"},{id:"red",i:"\uD83D\uDD34",l:"ALL BROWN",c:"#EF5350"}].map(function(mc){
+        var on = mealColor === mc.id;
+        return React.createElement("button", {key:mc.id,onClick:function(){buzz(15);setMealColor(mc.id);},style:{flex:1,padding:"14px 6px",borderRadius:12,textAlign:"center",background:on?mc.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?mc.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.05)":"scale(1)"}},
+          React.createElement("div", {style:{fontSize:on?30:24,transition:"font-size 0.2s"}}, mc.i),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:on?mc.c:"var(--dim)",letterSpacing:"1px",marginTop:4,fontWeight:700}}, mc.l)
+        );
+      })
+    )
+  ) :
+
+  /* ═══ CARD 4 — Summary ═══ */
+  function(){
+    var rd = calcReadiness();
+    var scoreColor = rd.score >= 70 ? "var(--grn)" : rd.score >= 40 ? "var(--g4)" : "var(--red)";
+    var sessions = buildSessions();
+    var pts = calcPts();
+    var streakNext = Math.min(15, Math.max(1, (profile.streak||0) + 1));
+    return React.createElement("div", {className:"ci",key:"c4",style:{padding:"24px 20px",overflowY:"auto"}},
+      React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
+        React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:44,lineHeight:0.85,marginBottom:12}}, "HUDDLE COMPLETE")
+      ),
+      React.createElement("div", {className:"gc2",style:{padding:18,maxWidth:320,margin:"0 auto",marginBottom:14}},
+        React.createElement("div", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.9,marginBottom:10,textAlign:"center"}},
+          React.createElement("span", {className:"gp"}, "+" + pts + " GP")
+        ),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",textAlign:"center",letterSpacing:"1px",fontWeight:600}},
+          "BASE 10 + STREAK BONUS " + streakNext
+          + (sleepHrs && ["8","9","10+"].includes(sleepHrs) ? " + SLEEP 8" : "")
+          + (mealColor === "green" ? " + FUEL 5" : "")
+          + (didWork === false ? " + REST 3" : "")
+        )
+      ),
+
+      React.createElement("div", {className:"gc",style:{padding:16,marginBottom:14}},
+        React.createElement("div", {style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}},
+          React.createElement("span", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:700,letterSpacing:"2px"}}, "READINESS"),
+          React.createElement("span", {style:{fontFamily:D,fontSize:28,color:scoreColor}}, rd.score + "/100")
+        ),
+        React.createElement("div", {className:"xb"},
+          React.createElement("div", {className:"xf",style:{width:rd.score+"%"}})
+        ),
+        rd.redFlag && React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--red)",marginTop:8,fontWeight:700}},
+          "\u26A0 " + rd.reasons.join(" \u00B7 ")
+        )
+      ),
+
+      sessions.length > 0 && React.createElement("div", {className:"gc",style:{padding:16,marginBottom:14}},
+        React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"2px",fontWeight:700,marginBottom:8}}, "SESSIONS"),
+        sessions.map(function(s,i){
+          return React.createElement("div", {key:i,style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:14,color:"var(--sub)",fontWeight:600,marginBottom:4}},
+            React.createElement("span", null, s.sport),
+            React.createElement("span", null, s.dur + "min \u00B7 RPE " + s.rpe)
+          );
+        })
+      ),
+
+      React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginTop:8,fontWeight:600}},
+        "BUILD-V14 \u00B7 FULL FLOW LIVE"
+      )
+    );
+  }()),
 
   /* ── Bottom button ── */
   React.createElement("div", {style:{padding:"16px 20px 28px"}},
