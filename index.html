@@ -116,6 +116,7 @@ i[class^="ph-"],i[class*=" ph-"]{display:inline-flex;align-items:center;justify-
    ║  §10  DASHBOARD — Athlete home with hero Huddle CTA                ║
    ║  §11  LEADERBOARD — Consistency score, no health data              ║
    ║  §11b COACH DASHBOARD — Tiered access roster with traffic lights   ║
+   ║  §11c COACH PROTOCOL — Required agreement before coach access      ║
    ║  §12  NAV — Bottom tab bar                                         ║
    ║  §12a PROFILE PAGE — Settings, edit sports, sign out               ║
    ║  §12b LEVEL UP CELEBRATION — Full-screen overlay on XP threshold   ║
@@ -1454,17 +1455,60 @@ function Huddle({
       ),
       React.createElement("button", {onClick:function(){buzz();setShowBodyMap(true);},style:{background:"none",border:"none",fontFamily:D2,fontSize:14,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,padding:"8px 16px"}}, "REPORT PAIN OR SORENESS")
     ) : React.createElement("div", null,
-      React.createElement("label", {className:"lbl"}, "TAP AREAS THAT HURT"),
-      React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}},
+      React.createElement("label", {className:"lbl"}, "TAP BODY ZONES — 1 TAP = SORE, 2 = SHARP, 3 = CLEAR"),
+
+      /* SVG Body Map */
+      React.createElement("div", {style:{position:"relative",width:"100%",maxWidth:280,margin:"0 auto 16px",aspectRatio:"0.42"}},
+        /* Body silhouette SVG */
+        React.createElement("svg", {viewBox:"0 0 100 100",style:{position:"absolute",inset:0,width:"100%",height:"100%"},xmlns:"http://www.w3.org/2000/svg"},
+          /* Body glow backdrop */
+          React.createElement("ellipse", {cx:52,cy:50,rx:28,ry:48,fill:"rgba(124,58,237,0.04)"}),
+          /* Head */
+          React.createElement("ellipse", {cx:52,cy:6,rx:5.5,ry:5,fill:"rgba(255,255,255,0.06)",stroke:"rgba(255,255,255,0.4)",strokeWidth:0.7}),
+          /* Neck */
+          React.createElement("rect", {x:49.5,y:11,width:5,height:4,rx:1,fill:"rgba(255,255,255,0.04)",stroke:"rgba(255,255,255,0.3)",strokeWidth:0.5}),
+          /* Torso */
+          React.createElement("path", {d:"M40,15 L36,16 L33,20 L32,28 L34,35 L36,44 L40,50 L44,52 L52,52 L60,52 L64,50 L68,44 L70,35 L72,28 L71,20 L68,16 L64,15 Z",fill:"rgba(255,255,255,0.05)",stroke:"rgba(255,255,255,0.35)",strokeWidth:0.6}),
+          /* Left arm */
+          React.createElement("path", {d:"M33,20 L28,22 L25,28 L24,34 L26,40",fill:"none",stroke:"rgba(255,255,255,0.3)",strokeWidth:0.6,strokeLinecap:"round"}),
+          /* Right arm */
+          React.createElement("path", {d:"M71,20 L76,22 L79,28 L80,34 L78,40",fill:"none",stroke:"rgba(255,255,255,0.3)",strokeWidth:0.6,strokeLinecap:"round"}),
+          /* Left leg */
+          React.createElement("path", {d:"M44,52 L40,58 L38,66 L37,74 L36,82 L37,90 L40,97",fill:"none",stroke:"rgba(255,255,255,0.3)",strokeWidth:0.6,strokeLinecap:"round"}),
+          /* Right leg */
+          React.createElement("path", {d:"M60,52 L64,58 L66,66 L67,74 L68,82 L67,90 L64,97",fill:"none",stroke:"rgba(255,255,255,0.3)",strokeWidth:0.6,strokeLinecap:"round"}),
+          /* Center line */
+          React.createElement("line", {x1:52,y1:15,x2:52,y2:50,stroke:"rgba(255,255,255,0.08)",strokeWidth:0.3,strokeDasharray:"1,2"})
+        ),
+
+        /* Tappable hit zones */
         ZONES.map(function(z){
           var st = zoneState(z.id);
-          var bg = st==="sharp" ? "rgba(239,83,80,0.2)" : st==="sore" ? "rgba(255,179,0,0.15)" : "rgba(12,12,18,0.8)";
-          var bc = st==="sharp" ? "rgba(239,83,80,0.5)" : st==="sore" ? "rgba(255,179,0,0.4)" : "rgba(0,255,135,0.04)";
-          var tc = st==="sharp" ? "var(--red)" : st==="sore" ? "#FFB300" : "var(--dim)";
-          return React.createElement("button", {key:z.id,onClick:function(){togZone(z.id);},style:{padding:"8px 12px",borderRadius:12,background:bg,border:"2px solid "+bc,fontFamily:D2,fontSize:12,color:tc,fontWeight:700,letterSpacing:"1px"}}, z.l.toUpperCase());
+          var bg = st==="sharp" ? "rgba(239,83,80,0.45)" : st==="sore" ? "rgba(255,179,0,0.35)" : "rgba(255,255,255,0.06)";
+          var bc = st==="sharp" ? "rgba(239,83,80,0.7)" : st==="sore" ? "rgba(255,179,0,0.6)" : "rgba(255,255,255,0.15)";
+          var tc = st==="sharp" ? "#FF6B6B" : st==="sore" ? "#FFB300" : "rgba(255,255,255,0.4)";
+          return React.createElement("button", {
+            key:z.id,
+            onClick:function(){togZone(z.id);},
+            style:{
+              position:"absolute",
+              left:z.x+"%",top:z.y+"%",width:z.w+"%",height:z.h+"%",
+              background:bg,
+              border:"1px solid "+bc,
+              borderRadius:4,
+              display:"flex",alignItems:"center",justifyContent:"center",
+              fontFamily:D2,fontSize:"clamp(7px,2vw,9px)",fontWeight:700,letterSpacing:"0.5px",
+              color:tc,
+              transition:"all 0.15s ease",
+              padding:0,
+              cursor:"pointer"
+            }
+          }, st!=="off" ? z.l.toUpperCase() : z.l.split(" ").pop().toUpperCase());
         })
       ),
-      zoneCount() > 0 && React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",marginBottom:12,fontWeight:600}},
+
+      /* Pain zone summary */
+      zoneCount() > 0 && React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",marginBottom:12,fontWeight:600,textAlign:"center"}},
         painZones.filter(function(z){return z.startsWith("sore:")||z.startsWith("sharp:")}).map(function(z){
           var rid = rawZoneId(z);
           var isSharp = z.startsWith("sharp:");
@@ -1472,7 +1516,7 @@ function Huddle({
           return React.createElement("span", {key:z,style:{color:isSharp?"var(--red)":"#FFB300",marginRight:8}}, (label?label.l:"").toUpperCase() + (isSharp ? " \u25AA SHARP" : " \u25AA SORE"));
         })
       ),
-      React.createElement("button", {onClick:function(){setShowBodyMap(false);setPainZones([]);},style:{background:"none",border:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,padding:"8px 0"}}, "CLEAR ALL")
+      React.createElement("button", {onClick:function(){setShowBodyMap(false);setPainZones([]);},style:{background:"none",border:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,padding:"8px 0",display:"block",margin:"0 auto"}}, "CLEAR ALL")
     ),
     React.createElement(DailyTip, {tip:TIPS_RECOVER[TIP_DAY],color:"#FFB300"})
   ),
@@ -2614,6 +2658,101 @@ function Leaderboard({
 
 
 /* ████████████████████████████████████████████████████████████████████████
+   §11c  COACH / AD PROTOCOL AGREEMENT — Required before accessing roster
+   ████████████████████████████████████████████████████████████████████████ */
+
+var COACH_PROTOCOL = [
+  {id:"review",text:"I will review athlete red flags and readiness alerts BEFORE every practice and competition."},
+  {id:"modify",text:"I will modify participation for any athlete flagged with sharp pain, critical readiness, or persistent red flags."},
+  {id:"followup",text:"I will follow up individually with any athlete who reports sharp pain or scores below 30 readiness."},
+  {id:"nopunish",text:"I will NEVER use wellness data to punish, bench, or publicly call out an athlete. This data exists to protect them."},
+  {id:"confidential",text:"I will keep individual athlete health data confidential. Only staff with legitimate educational interest will have access."},
+  {id:"escalate",text:"I will report persistent red flags (3+ consecutive days) to the athletic trainer and/or athletic director."},
+  {id:"document",text:"I understand that red flag alerts are timestamped and logged. My access to this data creates a duty to act on it."}
+];
+
+var AD_PROTOCOL = [
+  {id:"oversight",text:"I will review the daily red flag summary EVERY school day and acknowledge critical alerts within 24 hours."},
+  {id:"3day",text:"When an athlete has 3+ CONSECUTIVE red flag days, I will personally follow up with BOTH the athlete and their coach within one business day."},
+  {id:"coachcheck",text:"I will verify that coaches are reviewing and acting on red flag data. Coaches who ignore alerts will be counseled."},
+  {id:"nopunish",text:"I will NEVER allow wellness data to be used punitively against any athlete, and will intervene if I observe this."},
+  {id:"ferpa",text:"I will ensure all athlete wellness data is handled in compliance with FERPA. Access is limited to staff with legitimate educational interest."},
+  {id:"training",text:"I will ensure every coach using this system has completed the Coach Protocol agreement before accessing athlete data."},
+  {id:"incident",text:"When a red flag results in a modified practice plan, injury report, or parent contact, I will document the response and outcome."},
+  {id:"duty",text:"I understand that this system creates documented, timestamped awareness of athlete risk. Failure to act on known risk may create institutional liability."}
+];
+
+function ProtocolAgreement({ role, onAccept }) {
+  var isAD = role === "ad";
+  var ITEMS = isAD ? AD_PROTOCOL : COACH_PROTOCOL;
+  var storageKey = isAD ? "tga_ad_protocol" : "tga_coach_protocol";
+  var title = isAD ? "ATHLETIC DIRECTOR PROTOCOL" : "COACH PROTOCOL";
+  var iconClass = isAD ? "ph-thin ph-buildings" : "ph-thin ph-shield-warning";
+  var iconColor = isAD ? "var(--pr2)" : "var(--ember)";
+
+  var [checks, setChecks] = useState({});
+  var allChecked = ITEMS.every(function(it){ return checks[it.id]; });
+
+  function toggle(id) {
+    setChecks(function(prev){
+      var next = Object.assign({}, prev);
+      next[id] = !next[id];
+      return next;
+    });
+  }
+
+  return React.createElement("div", {style:{padding:"20px",paddingBottom:120,maxWidth:480,margin:"0 auto"}},
+    React.createElement("div", {style:{textAlign:"center",marginBottom:24}},
+      React.createElement("i", {className:iconClass,style:{fontSize:64,color:iconColor,marginBottom:8,filter:"drop-shadow(0 0 16px "+iconColor+"55)"}}),
+      React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:32,lineHeight:0.9,marginBottom:8}}, title),
+      React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",fontWeight:600,letterSpacing:"1px",lineHeight:1.5}},
+        isAD ? "AS ATHLETIC DIRECTOR, YOU HAVE OVERSIGHT OF ALL ATHLETE WELLNESS DATA IN THIS SYSTEM. THIS ACCESS CARRIES INSTITUTIONAL RESPONSIBILITY. READ AND CONFIRM EACH ITEM."
+             : "THIS APP GIVES YOU ACCESS TO ATHLETE WELLNESS DATA. WITH THAT ACCESS COMES RESPONSIBILITY. READ AND CONFIRM EACH ITEM BELOW."
+      )
+    ),
+
+    React.createElement("div", {style:{marginBottom:24}},
+      ITEMS.map(function(it){
+        var on = checks[it.id];
+        return React.createElement("button", {
+          key:it.id,
+          onClick:function(){ toggle(it.id); },
+          style:{
+            display:"flex",alignItems:"flex-start",gap:14,
+            width:"100%",textAlign:"left",
+            padding:"16px",marginBottom:8,borderRadius:12,
+            background:on ? "rgba(0,255,135,0.06)" : "rgba(12,12,18,0.8)",
+            border:"1.5px solid " + (on ? "rgba(0,255,135,0.25)" : "rgba(255,255,255,0.06)"),
+            transition:"all 0.2s"
+          }
+        },
+          React.createElement("div", {style:{
+            width:24,height:24,borderRadius:6,flexShrink:0,marginTop:2,
+            display:"flex",alignItems:"center",justifyContent:"center",
+            background:on ? "var(--g1)" : "transparent",
+            border:on ? "none" : "2px solid var(--dim)",
+            transition:"all 0.2s",
+            color:"var(--bg)",fontFamily:D2,fontSize:14,fontWeight:900
+          }}, on ? "\u2713" : ""),
+          React.createElement("div", null,
+            React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:on ? "var(--txt)" : "var(--sub)",fontWeight:600,lineHeight:1.5}}, it.text)
+          )
+        );
+      })
+    ),
+
+    React.createElement("button", {
+      className:"btn-gold",
+      disabled:!allChecked,
+      onClick:function(){
+        localStorage.setItem(storageKey, new Date().toISOString());
+        onAccept();
+      }
+    }, "I ACCEPT THESE RESPONSIBILITIES")
+  );
+}
+
+/* ████████████████████████████████████████████████████████████████████████
    §11b  COACH DASHBOARD — Tiered access roster with traffic lights
    ████████████████████████████████████████████████████████████████████████ */
 
@@ -2627,11 +2766,51 @@ function CoachDashboard({
   var [taskSaved, setTaskSaved] = useState(false);
   var [editingTask, setEditingTask] = useState(false);
   var [teamSummary, setTeamSummary] = useState([]);
+  var [todayRedFlags, setTodayRedFlags] = useState([]);
+  var [streakAlerts, setStreakAlerts] = useState([]);
 
   useEffect(function(){
     var sport = (profile.sports||[])[0]||"";
     if(sport){SB.from('coach_tasks').select('task_text').eq('sport',sport).eq('active',true).order('updated_at',{ascending:false}).limit(1).then(function(r){if(!r.error&&r.data&&r.data[0])setTaskText(r.data[0].task_text)})}
     if(profile.role==="ad"){SB.from('ad_team_summary').select('*').then(function(r){if(!r.error&&r.data)setTeamSummary(r.data)})}
+
+    /* Fetch red flags for AD alert panel */
+    if(profile.role==="ad"||profile.role==="coach"){
+      /* Today's red flags */
+      var todayStr = new Date().toISOString().slice(0,10);
+      SB.from('checkins').select('athlete_id, red_flag, red_flag_reasons, readiness_score, date, profiles!inner(first_name, last_name, sports)').eq('red_flag',true).eq('date',todayStr).then(function(r){
+        if(!r.error&&r.data) setTodayRedFlags(r.data);
+      });
+
+      /* Last 7 days for consecutive streak detection */
+      var d = new Date();
+      var weekAgo = new Date(d.getTime()-7*86400000).toISOString().slice(0,10);
+      SB.from('checkins').select('athlete_id, red_flag, date, profiles!inner(first_name, last_name, sports)').eq('red_flag',true).gte('date',weekAgo).order('date',{ascending:true}).then(function(r){
+        if(!r.error&&r.data){
+          /* Group by athlete and find 3+ consecutive days */
+          var byAthlete = {};
+          r.data.forEach(function(c){
+            if(!byAthlete[c.athlete_id]) byAthlete[c.athlete_id] = {name:(c.profiles.first_name||"")+" "+(c.profiles.last_name||""),sports:c.profiles.sports||[],dates:[]};
+            if(!byAthlete[c.athlete_id].dates.includes(c.date)) byAthlete[c.athlete_id].dates.push(c.date);
+          });
+          var alerts = [];
+          Object.keys(byAthlete).forEach(function(aid){
+            var a = byAthlete[aid];
+            a.dates.sort();
+            /* Find longest consecutive run */
+            var maxRun = 1, run = 1;
+            for(var i=1;i<a.dates.length;i++){
+              var prev = new Date(a.dates[i-1]+"T00:00:00");
+              var curr = new Date(a.dates[i]+"T00:00:00");
+              if(curr.getTime()-prev.getTime()===86400000){ run++; maxRun=Math.max(maxRun,run); }
+              else { run=1; }
+            }
+            if(maxRun>=3) alerts.push({id:aid,name:a.name,sports:a.sports,days:maxRun,lastDate:a.dates[a.dates.length-1]});
+          });
+          setStreakAlerts(alerts);
+        }
+      });
+    }
   },[]);
 
   function saveTask(){
@@ -2773,7 +2952,64 @@ function CoachDashboard({
     style: {
       padding: "20px 20px 110px"
     }
-  }, /*#__PURE__*/React.createElement("h1", {
+  },
+
+  /* ── AD/Coach Red Flag Alert Panel ── */
+  (streakAlerts.length > 0) && React.createElement("div", {style:{
+    marginBottom:20,padding:"18px 16px",borderRadius:16,
+    background:"linear-gradient(160deg,rgba(239,83,80,0.12),rgba(30,8,8,0.9))",
+    border:"1.5px solid rgba(239,83,80,0.35)"
+  }},
+    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10,marginBottom:12}},
+      React.createElement("i", {className:"ph-thin ph-warning-octagon",style:{fontSize:32,color:"var(--red)"}}),
+      React.createElement("div", null,
+        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--red)",letterSpacing:"-0.02em"}}, "CONSECUTIVE RED FLAG ALERT"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,letterSpacing:"1px"}}, "REQUIRES IMMEDIATE FOLLOW-UP WITH ATHLETE AND COACH")
+      )
+    ),
+    streakAlerts.map(function(a){
+      return React.createElement("div", {key:a.id,style:{
+        display:"flex",alignItems:"center",justifyContent:"space-between",
+        padding:"12px 14px",marginBottom:6,borderRadius:12,
+        background:"rgba(239,83,80,0.08)",border:"1px solid rgba(239,83,80,0.2)"
+      }},
+        React.createElement("div", null,
+          React.createElement("div", {style:{fontFamily:D2,fontSize:15,color:"var(--txt)",fontWeight:700}}, a.name),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600,letterSpacing:"1px"}}, (a.sports||[]).join(" \u00B7 ").toUpperCase())
+        ),
+        React.createElement("div", {style:{textAlign:"right"}},
+          React.createElement("div", {style:{fontFamily:D,fontSize:28,color:"var(--red)"}}, a.days + " DAYS"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:600,letterSpacing:"1px"}}, "LAST: " + a.lastDate)
+        )
+      );
+    })
+  ),
+
+  todayRedFlags.length > 0 && React.createElement("div", {style:{
+    marginBottom:20,padding:"16px",borderRadius:16,
+    background:"rgba(255,179,0,0.06)",
+    border:"1px solid rgba(255,179,0,0.2)"
+  }},
+    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10,marginBottom:10}},
+      React.createElement("i", {className:"ph-thin ph-flag-banner",style:{fontSize:26,color:"#FFB300"}}),
+      React.createElement("div", {style:{fontFamily:D,fontSize:18,color:"#FFB300",letterSpacing:"-0.02em"}}, "TODAY'S RED FLAGS (" + todayRedFlags.length + ")")
+    ),
+    todayRedFlags.map(function(rf,i){
+      return React.createElement("div", {key:i,style:{
+        display:"flex",alignItems:"center",justifyContent:"space-between",
+        padding:"10px 12px",marginBottom:4,borderRadius:10,
+        background:"rgba(12,12,18,0.6)"
+      }},
+        React.createElement("div", null,
+          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--txt)",fontWeight:700}}, (rf.profiles.first_name||"")+" "+(rf.profiles.last_name||"")),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600}}, (rf.red_flag_reasons||[]).join(" \u00B7 "))
+        ),
+        React.createElement("div", {style:{fontFamily:D,fontSize:20,color:"var(--red)"}}, (rf.readiness_score||0)+"/100")
+      );
+    })
+  ),
+
+  /*#__PURE__*/React.createElement("h1", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -3684,6 +3920,9 @@ function App() {
   var [todayCheckin, setTodayCheckin] = useState(null);
   var [todaySessions, setTodaySessions] = useState([]);
   var [levelUp, setLevelUp] = useState(null); /* level-up celebration data */
+  var [coachProtocolDone, setCoachProtocolDone] = useState(function(){
+    return !!(localStorage.getItem('tga_coach_protocol') || localStorage.getItem('tga_ad_protocol'));
+  });
   var [toastMsg, setToastMsg] = useState(null);
   var [toastType, setToastType] = useState("ok");
   function toast(msg, type) {
@@ -3901,9 +4140,11 @@ function App() {
     onSignOut: signOut
   }), page === "board" && /*#__PURE__*/React.createElement(Leaderboard, {
     myId: user.id
-  }), page === "roster" && (profile.role === "coach" || profile.role === "ad") && /*#__PURE__*/React.createElement(CoachDashboard, {
-      profile: profile
-    }), page === "profile" && /*#__PURE__*/React.createElement(ProfilePage, {
+  }), page === "roster" && (profile.role === "coach" || profile.role === "ad") && (
+    coachProtocolDone ?
+      React.createElement(CoachDashboard, { profile: profile }) :
+      React.createElement(ProtocolAgreement, { role: profile.role, onAccept: function(){ setCoachProtocolDone(true); } })
+    ), page === "profile" && /*#__PURE__*/React.createElement(ProfilePage, {
     profile: profile,
     onSignOut: signOut,
     onUpdateSports: function (s) {
