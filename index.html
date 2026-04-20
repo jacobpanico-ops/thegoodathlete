@@ -1300,7 +1300,7 @@ function Huddle({
         p_stress: stress,
         p_pain_zones: painZones.length > 0 ? [].concat(painZones, ["level_" + painLevel]) : painZones,
         p_hydration: hydration,
-        p_fuel_window: fuelWindow || 'none',
+        p_fuel_window: fuelWindow || 'na',
         p_meal_color: mealColor,
         p_coach_task: coachTask,
         p_readiness_score: rd.score,
@@ -1553,9 +1553,9 @@ function Huddle({
     ),
     React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginBottom:20,fontWeight:600}}, hydration===0?"NOT TRACKED":hydration+" / 8 GLASSES"),
 
-    React.createElement("label", {className:"lbl"}, "FUEL WINDOW"),
+    React.createElement("label", {className:"lbl"}, "EAT AROUND TRAINING?"),
     React.createElement("div", {style:{display:"flex",gap:8,marginBottom:20}},
-      [{id:"before",l:"BEFORE"},{id:"after",l:"AFTER"},{id:"both",l:"BOTH"},{id:"none",l:"NEITHER"}].map(function(fw){
+      [{id:"yes",l:"YES"},{id:"no",l:"NO"},{id:"na",l:"N/A"}].map(function(fw){
         var on = fuelWindow === fw.id;
         return React.createElement("button", {key:fw.id,onClick:function(){buzz();setFuelWindow(fw.id);},style:{flex:1,padding:"12px 4px",borderRadius:12,fontFamily:D2,fontSize:12,fontWeight:700,letterSpacing:"1px",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, fw.l);
       })
