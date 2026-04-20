@@ -1394,6 +1394,7 @@ function Huddle({
 
   /* ═══ CARD 0 — Sleep + Readiness ═══ */
   card === 0 && React.createElement("div", {className:"ci",key:"c0",style:{padding:"24px 20px",overflowY:"auto"}},
+    React.createElement("i", {className:"ph-thin ph-moon",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "SLEEP + READINESS"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW'D YOU SLEEP? HOW DO YOU FEEL?"),
 
@@ -1425,11 +1426,13 @@ function Huddle({
           React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:on?r.c:"var(--dim)",letterSpacing:"1px",marginTop:2,fontWeight:700}}, r.l)
         );
       })
-    )
+    ),
+    React.createElement(DailyTip, {tip:TIPS_SLEEP[TIP_DAY],color:"var(--pr2)"})
   ),
 
   /* ═══ CARDS 1-4 placeholder ═══ */
   card === 1 && React.createElement("div", {className:"ci",key:"c1",style:{padding:"24px 20px",overflowY:"auto"}},
+    React.createElement("i", {className:"ph-thin ph-heartbeat",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "BODY SCAN"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW IS YOUR BODY TODAY?"),
 
@@ -1470,11 +1473,13 @@ function Huddle({
         })
       ),
       React.createElement("button", {onClick:function(){setShowBodyMap(false);setPainZones([]);},style:{background:"none",border:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,padding:"8px 0"}}, "CLEAR ALL")
-    )
+    ),
+    React.createElement(DailyTip, {tip:TIPS_RECOVER[TIP_DAY],color:"#FFB300"})
   ),
 
   card >= 2 && card <= 4 && (card === 2 ? React.createElement("div", {className:"ci",key:"c2",style:{padding:"24px 20px",overflowY:"auto"}},
     React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
+    React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:52,marginBottom:6,color:"var(--ember)",filter:"drop-shadow(0 0 12px rgba(255,109,0,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 16px",fontWeight:700}}, "WHAT DID YOU DO TODAY?"),
 
@@ -1536,11 +1541,13 @@ function Huddle({
           React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:coachTask?"var(--g1)":"var(--sub)",fontWeight:600}}, coachTaskText)
         )
       )
-    )
+    ),
+    React.createElement(DailyTip, {tip:TIPS_TRAINING[TIP_DAY],color:"var(--ember)"})
   ) :
 
   /* ═══ CARD 3 — Fuel ═══ */
   card === 3 ? React.createElement("div", {className:"ci",key:"c3",style:{padding:"24px 20px",overflowY:"auto"}},
+    React.createElement("i", {className:"ph-thin ph-fork-knife",style:{fontSize:52,marginBottom:6,color:"var(--g1)",filter:"drop-shadow(0 0 12px rgba(0,255,135,0.25))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "FUEL"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 18px",fontWeight:700}}, "HOW DID YOU FUEL?"),
 
@@ -1571,7 +1578,8 @@ function Huddle({
           React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:on?mc.c:"var(--dim)",letterSpacing:"1px",marginTop:4,fontWeight:700}}, mc.l)
         );
       })
-    )
+    ),
+    React.createElement(DailyTip, {tip:TIPS_FUEL[TIP_DAY],color:"var(--g1)"})
   ) :
 
   /* ═══ CARD 4 — Summary ═══ */
@@ -1583,6 +1591,7 @@ function Huddle({
     var streakNext = Math.min(15, Math.max(1, (profile.streak||0) + 1));
     return React.createElement("div", {className:"ci",key:"c4",style:{padding:"24px 20px",overflowY:"auto"}},
       React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
+        React.createElement("i", {className:"ph-thin ph-check-circle pi",style:{fontSize:64,marginBottom:8,color:"var(--g1)",filter:"drop-shadow(0 0 16px rgba(0,255,135,0.4))"}}),
         React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:44,lineHeight:0.85,marginBottom:12}}, "HUDDLE COMPLETE")
       ),
       React.createElement("div", {className:"gc2",style:{padding:18,maxWidth:320,margin:"0 auto",marginBottom:14}},
@@ -1621,7 +1630,7 @@ function Huddle({
       ),
 
       React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginTop:8,fontWeight:600}},
-        "BUILD-V14 \u00B7 FULL FLOW LIVE"
+        "BUILD-V15 \u00B7 FULL FLOW"
       )
     );
   }()),
