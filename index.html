@@ -1,4 +1,64 @@
 <!DOCTYPE html>
+<!--
+================================================================================
+  SESSION END — 2026-04-30 · OPEN ITEMS BEFORE JUNE TRIAL
+================================================================================
+
+  HTML/CLIENT TODO (in this file):
+  --------------------------------
+  [ ] lightPill helper (around line ~3500) is unused — defined for the
+      old red-flag panel that got removed. Safe to delete.
+  [ ] RPE_DESC and RPE_COLOR constants (in §3) are unused since the
+      effort slider rewrite. Safe to delete.
+  [ ] "BUILD-V15 · FULL FLOW" footer string on Card 4 of Huddle —
+      version label is stale. Bump or remove.
+  [ ] Trial setup: confirm SCHOOL.SHORT_NAME and SCHOOL.LOGO read
+      correctly for the "ALL [SHORT_NAME]" leaderboard subtitle.
+
+  SUPABASE / DB TODO (BLOCKING JUNE TRIAL):
+  -----------------------------------------
+  [!] checkins.readiness column type — submit_checkin RPC now sends
+      INTEGER 1-5 for p_readiness. Current column is likely TEXT with
+      CHECK constraint on ('ready','sluggish','exhausted'). Submits will
+      FAIL until migrated. Mirror the sleep_quality migration path:
+      change column to smallint, drop or update CHECK constraint, update
+      RPC param type from text → smallint.
+  [!] consistency_scores view — add a checkin_count column for accurate
+      leaderboard counts. Until it's added, leaderboard falls back to
+      Math.round(consistency_score / 100 * 30) which is approximate.
+      Same column should be added to the leaderboard view (used as
+      secondary fallback).
+      Suggested: COUNT(DISTINCT c.date) AS checkin_count
+
+  SUPABASE / DB TODO (PRIVACY HARDENING — POST-TRIAL OK):
+  -------------------------------------------------------
+  [ ] coach_athlete_status view — drop columns the new UI no longer
+      reads, for FERPA-grade in-transit privacy. KEEP: athlete_id, name,
+      grade, sports, status, checked_in, today_load, sports_today,
+      streak. DROP: sleep_trend, stress_trend, did_coach_task, has_pain,
+      pain_locations, flag_category, multi_sport_conflicts.
+  [ ] checkins.pain_zones historical scrub — old rows contain body-part
+      labels and verbatim notes from before the 3-button body scan.
+      One-time UPDATE to normalize to []/['sore:general']/['sharp:general'].
+  [ ] checkins.red_flag and red_flag_reasons columns — still being
+      written by submit_checkin via calcReadiness, but no UI reads them.
+      Either drop the columns and the writes, or keep for future use.
+
+  SUPABASE / DB TODO (CARRYOVER FROM PRIOR SESSIONS):
+  ---------------------------------------------------
+  [ ] ad-daily-alerts Edge Function — needs Resend API key + AD email
+      + pg_cron schedule.
+  [ ] xp → gp column rename on profiles (RPC audit needed first).
+  [ ] Restore lost badge icon (Jake to provide source file).
+  [ ] photo_url → photo_path rename (cosmetic).
+
+  PRIVACY AGREEMENT:
+  ------------------
+  [ ] Privacy Promise bumped to v2 (May 2026). Consider whether to
+      re-prompt existing users to re-accept, or just stamp going forward.
+
+================================================================================
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
