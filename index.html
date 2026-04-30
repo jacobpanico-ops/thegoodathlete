@@ -590,7 +590,7 @@ function DataAgreement({
       fontWeight: 600,
       margin: 0
     }
-  }, "We collect only what's needed to keep you healthy and performing. No GPS tracking, no social media, no advertising, no data sold to third parties \u2014 ever. Coaches see readiness status and trends, not raw numbers. Stress levels are never shared with coaching staff. All data is encrypted, stored on SOC 2-compliant infrastructure, and can be deleted at any time by request. We follow FERPA guidelines for student data protection.")), /*#__PURE__*/React.createElement("div", {
+  }, "We collect only what's needed to keep you healthy and performing. Your coach sees four daily traffic lights for you: SCORE (the app's overall readiness number), FEEL (how ready you said you were to compete), LOAD (your training intensity), and BODY (whether you reported any pain). They see the colors, not your specific answers \u2014 your sleep hours, mental load, hydration, and meal choices stay between you and the app. Your athletic director sees team-level wellness totals; if you report pain, they're notified by name so they can coordinate with the trainer. No GPS tracking, no social media, no advertising, no data sold to third parties \u2014 ever. All data is encrypted, stored on SOC 2-compliant infrastructure, and can be deleted at any time by request. We follow FERPA guidelines for student data protection.")), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 28
     }
@@ -635,19 +635,19 @@ function DataAgreement({
     style: {
       marginBottom: 4
     }
-  }, "\u25C6 Coaches see status, not private details"), /*#__PURE__*/React.createElement("div", {
+  }, "\u25C6 Coaches see four colors, not your specific answers"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 4
     }
-  }, "\u25C6 Stress data is never shared with coaches"), /*#__PURE__*/React.createElement("div", {
+  }, "\u25C6 Sleep, mental load, and meals stay private"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 4
     }
-  }, "\u25C6 No tracking, no ads, no third-party access"), /*#__PURE__*/React.createElement("div", {
+  }, "\u25C6 ADs see team totals plus pain reports only"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 4
     }
-  }, "\u25C6 Data can be deleted at any time on request"), /*#__PURE__*/React.createElement("div", null, "\u25C6 FERPA-aligned student data practices"))), /*#__PURE__*/React.createElement("button", {
+  }, "\u25C6 No tracking, no ads, no third-party access"), /*#__PURE__*/React.createElement("div", null, "\u25C6 FERPA-aligned \u00B7 Delete any time on request"))), /*#__PURE__*/React.createElement("button", {
     className: "btn-gold",
     onClick: onAgree
   }, "I UNDERSTAND AND AGREE"), /*#__PURE__*/React.createElement("div", {
@@ -662,7 +662,17 @@ function DataAgreement({
       color: "var(--dim)",
       fontWeight: 600
     }
-  }, "BY CONTINUING YOU ACCEPT THESE TERMS"))));
+  }, "BY CONTINUING YOU ACCEPT THESE TERMS"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: D2,
+      fontSize: 10,
+      color: "var(--dim)",
+      fontWeight: 700,
+      letterSpacing: "2px",
+      marginTop: 4,
+      opacity: 0.6
+    }
+  }, "PRIVACY PROMISE v2 \u00B7 MAY 2026"))));
 }
 
 /* ████████████████████████████████████████████████████████████████████████
@@ -935,26 +945,20 @@ function Huddle({
   /* §9a Sleep + Readiness (merged) */
   var [sleepHrs, setSleepHrs] = useState(null);
   var [sleepQ, setSleepQ] = useState(null);
-  var [readiness, setReadiness] = useState(null);
+  var [readiness, setReadiness] = useState(null); /* perceived readiness to compete: 1-5 (1=not at all, 5=locked in). Captured but does not feed calcReadiness — kept as athlete reflection only. */
 
-  /* §9b Body Scan */
+  /* §9b Body Scan — generic pain reporting only (no body-part detail, no notes).
+     Liability stance: TGA is not a medical record. Detailed pain location and
+     verbatim symptom descriptions belong with the athletic trainer, not in this
+     app. We collect a single 3-state signal (good / sore / injury) and route any
+     "pain" report straight to the athletic trainer. */
   var [stress, setStress] = useState(null);
-  var [painZones, setPainZones] = useState([]);
-  var [injuryNote, setInjuryNote] = useState("");
   var [bodyStatus, setBodyStatus] = useState(null); /* null | "good" | "sore" | "injury" */
-  var [bmMode, setBmMode] = useState("sore");       /* current tap mode: "sore" | "sharp" */
-  var [recentCheckins, setRecentCheckins] = useState([]);
-  useEffect(function(){
-    if(!profile||!profile.id) return;
-    SB.from('checkins').select('date, pain_zones').eq('athlete_id',profile.id).order('date',{ascending:false}).limit(7).then(function(res){
-      if(!res.error&&res.data) setRecentCheckins(res.data);
-    });
-  },[]);
 
   /* §9c Work — Quick Log */
   var [didWork, setDidWork] = useState(null);
   var [selectedSports, setSelectedSports] = useState([]);
-  var [overallRpe, setOverallRpe] = useState(6);
+  var [overallRpe, setOverallRpe] = useState(null);
   var [totalDur, setTotalDur] = useState(null);
   var [coachTask, setCoachTask] = useState(false);
   var [editPhoto, setEditPhoto] = useState(null);
@@ -991,68 +995,16 @@ function Huddle({
     } catch (e) {}
   }
 
-  /* ── Zones ── */
-  /* Body-map zones — coordinates in SVG viewBox "0 0 220 480" (anatomical front view).
-     t:"e" = ellipse {cx,cy,rx,ry} | t:"r" = rounded rect {x,y,w,h,r}
-     l = full label, s = short label shown on-zone when selected. */
-  var ZONES = [
-    {id:"head",      l:"Head",      s:"HEAD",     t:"e", cx:110, cy:40,  rx:26, ry:32},
-    {id:"neck",      l:"Neck",      s:"NECK",     t:"r", x:100, y:72,  w:20, h:16, r:6},
-    {id:"l_shoulder",l:"L Shoulder",s:"SHLD",     t:"e", cx:68,  cy:102, rx:20, ry:14},
-    {id:"r_shoulder",l:"R Shoulder",s:"SHLD",     t:"e", cx:152, cy:102, rx:20, ry:14},
-    {id:"chest",     l:"Chest",     s:"CHEST",    t:"r", x:86,  y:110, w:48, h:40, r:10},
-    {id:"l_arm",     l:"L Arm",     s:"ARM",      t:"r", x:36,  y:118, w:24, h:130, r:12},
-    {id:"r_arm",     l:"R Arm",     s:"ARM",      t:"r", x:160, y:118, w:24, h:130, r:12},
-    {id:"core",      l:"Core",      s:"CORE",     t:"r", x:86,  y:152, w:48, h:44, r:8},
-    {id:"low_back",  l:"Low Back",  s:"LOW BACK", t:"r", x:86,  y:200, w:48, h:22, r:6},
-    {id:"l_hip",     l:"L Hip",     s:"HIP",      t:"e", cx:94,  cy:238, rx:16, ry:12},
-    {id:"r_hip",     l:"R Hip",     s:"HIP",      t:"e", cx:126, cy:238, rx:16, ry:12},
-    {id:"l_quad",    l:"L Quad",    s:"QUAD",     t:"r", x:74,  y:256, w:30, h:68, r:12},
-    {id:"r_quad",    l:"R Quad",    s:"QUAD",     t:"r", x:116, y:256, w:30, h:68, r:12},
-    {id:"l_knee",    l:"L Knee",    s:"KNEE",     t:"r", x:76,  y:326, w:28, h:22, r:8},
-    {id:"r_knee",    l:"R Knee",    s:"KNEE",     t:"r", x:116, y:326, w:28, h:22, r:8},
-    {id:"l_shin",    l:"L Shin",    s:"SHIN",     t:"r", x:76,  y:350, w:28, h:72, r:10},
-    {id:"r_shin",    l:"R Shin",    s:"SHIN",     t:"r", x:116, y:350, w:28, h:72, r:10},
-    {id:"l_ankle",   l:"L Foot",    s:"FOOT",     t:"r", x:70,  y:424, w:34, h:28, r:8},
-    {id:"r_ankle",   l:"R Foot",    s:"FOOT",     t:"r", x:116, y:424, w:34, h:28, r:8}
-  ];
-  function togZone(id) {
-    /* INJURY mode = heavier haptic so athlete feels the severity of what they're reporting */
-    if (bmMode === "sharp") buzzDouble(); else buzz(20);
-    setPainZones(function (p) {
-      var cur = bmMode + ":" + id;
-      var other = (bmMode === "sore" ? "sharp" : "sore") + ":" + id;
-      /* same-mode tap → clear */
-      if (p.includes(cur)) return p.filter(function (z) { return z !== cur; });
-      /* otherwise: remove any other-mode mark on this zone, then add current mode */
-      return p.filter(function (z) { return z !== other; }).concat([cur]);
-    });
+  /* ── Body status sentinel — single value written to checkins.pain_zones ──
+     Backward-compatible with the old per-zone schema: downstream queries that
+     filter on "sore:" or "sharp:" prefixes still work, they just see a single
+     generic entry instead of body-part labels. */
+  function bodyZonesPayload() {
+    if (bodyStatus === "injury") return ["sharp:general"];
+    if (bodyStatus === "sore")   return ["sore:general"];
+    return [];
   }
-  function zoneState(id) {
-    if (painZones.includes("sharp:" + id)) return "sharp";
-    if (painZones.includes("sore:" + id)) return "sore";
-    return "off";
-  }
-  function zoneCount() { return painZones.filter(function(z){return z.startsWith("sore:") || z.startsWith("sharp:")}).length; }
-  function rawZoneId(entry) { return entry.replace("sore:","").replace("sharp:",""); }
-  function hasSharpZones() { return painZones.some(function(z){return z.startsWith("sharp:")}); }
-  /* Recent-checkin derivatives (for "same as yesterday" + recurrence badges) */
-  var _todayISO = new Date().toISOString().slice(0,10);
-  var pastCheckins = recentCheckins.filter(function(c){return c.date !== _todayISO;});
-  var yesterdayZones = pastCheckins.length > 0
-    ? (pastCheckins[0].pain_zones || []).filter(function(z){return z.startsWith("sore:")||z.startsWith("sharp:");})
-    : [];
-  function zoneRecurrence(id) {
-    /* how many of the last N past checkins had this zone flagged (either state) */
-    return pastCheckins.filter(function(c){
-      return (c.pain_zones || []).some(function(z){return z === "sore:" + id || z === "sharp:" + id;});
-    }).length;
-  }
-  function fillFromYesterday() {
-    if (yesterdayZones.length === 0) return;
-    buzz(15);
-    setPainZones(yesterdayZones.slice());
-  }
+
   function togSport(s) {
     buzz(15);
     setSelectedSports(function (p) {
@@ -1062,10 +1014,11 @@ function Huddle({
     });
   }
   function canNext() {
-    if (card === 0) return sleepHrs != null && sleepQ != null && readiness != null;
+    if (card === 0) return sleepHrs != null && sleepQ != null;
     if (card === 1) return stress != null && bodyStatus != null;
-    if (card === 2) return didWork != null && (didWork === false || selectedSports.length > 0 && totalDur != null);
+    if (card === 2) return didWork != null && (didWork === false || (selectedSports.length > 0 && totalDur != null && overallRpe != null));
     if (card === 3) return mealColor != null;
+    if (card === 4) return readiness != null;
     return true;
   }
   function advanceCard() {
@@ -1108,7 +1061,7 @@ function Huddle({
     var p = 10;
     var streakBonus = Math.min(15, Math.max(1, profile.streak + 1));
     p += streakBonus;
-    if (sleepHrs && ["8", "9", "10+"].includes(sleepHrs)) p += 8;
+    if (sleepHrs && ["8", "9", "9+", "10+"].includes(sleepHrs)) p += 8;
     if (mealColor === "green") p += 5;
     if (coachTask) p += 5;
     if ((hydration || 0) >= 8) p += 3;
@@ -1121,67 +1074,42 @@ function Huddle({
     var score = 0;
     var redFlag = false;
     var reasons = [];
+    /* hrsMap supports both new keys (<6, 7, 8, 9+) and legacy keys (6, 9, 10+)
+       so old check-ins still calculate the same readiness score. */
     var hrsMap = {
       "<6": 5,
-      "6": 12,
-      "7": 22,
-      "8": 30,
-      "9": 35,
-      "10+": 35
+      "6":  12,
+      "7":  22,
+      "8":  30,
+      "9":  35,
+      "9+": 35,
+      "10+":35
     };
     var sleepScore = hrsMap[sleepHrs] || 15;
-    if (sleepQ === "bad") sleepScore = Math.max(0, sleepScore - 12);
+    /* Sleep quality penalty — sleepQ is 1-5 (new) or "bad"/"good" (legacy reads).
+       1=ROUGH (-14), 2=SO-SO (-8), 3=OK (-4), 4=GOOD (0), 5=GREAT (0). */
+    if (typeof sleepQ === "number") {
+      var qPenalty = sleepQ <= 1 ? -14 : sleepQ === 2 ? -8 : sleepQ === 3 ? -4 : 0;
+      sleepScore = Math.max(0, sleepScore + qPenalty);
+    } else if (sleepQ === "bad") {
+      sleepScore = Math.max(0, sleepScore - 12);
+    }
     score += sleepScore;
     var stressScore = Math.max(0, 30 - (stress - 1) * 7.5);
     score += stressScore;
-    var CRITICAL = ["head", "neck"];
-    var hasCriticalZone = painZones.some(function (z) {
-      return CRITICAL.includes(rawZoneId(z));
-    });
-    var injuryZones = painZones.filter(function(z){return z.startsWith("sharp:");}).map(rawZoneId);
-    var soreZones = painZones.filter(function(z){return z.startsWith("sore:");}).map(rawZoneId);
-    var sharpCount = injuryZones.length;
-    var soreCount = soreZones.length;
-    var recurringInjury = injuryZones.find(function(id){return zoneRecurrence(id) >= 3;});
-    function _label(id){var z = ZONES.find(function(zn){return zn.id===id;}); return z?z.l:id.replace(/_/g," ");}
-    var painScore = 35;
 
-    /* HARD flags — unambiguous injury or acute concern */
-    if (hasCriticalZone) {
+    /* Pain scoring — generic only. Liability stance: any "in pain" report
+       is a hard red flag with a single fixed reason that routes the athlete
+       to the athletic trainer. We do NOT record body parts or symptoms. */
+    var painScore = 35;
+    if (bodyStatus === "injury") {
       painScore = 0;
       redFlag = true;
-      reasons.push("\uD83D\uDEA8 Head/neck pain reported");
-    } else if (sharpCount >= 2) {
-      painScore = 0;
-      redFlag = true;
-      reasons.push("\uD83D\uDEA8 " + sharpCount + " injury zones: " + injuryZones.map(_label).join(", "));
-    } else if (sharpCount >= 1 && recurringInjury) {
-      painScore = 2;
-      redFlag = true;
-      reasons.push("\uD83D\uDEA8 Recurring injury (" + zoneRecurrence(recurringInjury) + " of last 6 days): " + _label(recurringInjury));
-    }
-    /* SOFT flags — deserves coach awareness but not urgent */
-    else if (sharpCount === 1) {
-      painScore = 12;
-      redFlag = true;
-      reasons.push("\u26A0\uFE0F Possible injury: " + _label(injuryZones[0]));
-    }
-    else if (soreCount >= 5) {
-      painScore = 8;
-      redFlag = true;
-      reasons.push("\u26A0\uFE0F Widespread soreness (" + soreCount + " zones)");
-    }
-    /* Below threshold — score reduction only, no flag */
-    else if (soreCount >= 3) {
-      painScore = 15;
-    } else if (soreCount >= 1) {
-      painScore = Math.max(18, 35 - soreCount * 6);
+      reasons.push("\uD83D\uDEA8 Pain reported \u2014 directed to athletic trainer");
+    } else if (bodyStatus === "sore") {
+      painScore = 22;
     }
     score += painScore;
-    if (readiness === "exhausted") {
-      redFlag = true;
-      reasons.push("\u26A0\uFE0F Self-reported exhausted");
-    }
     if (score < 30 && !redFlag) {
       redFlag = true;
       reasons.push("\uD83D\uDEA8 Readiness critical (" + Math.round(score) + "/100)");
@@ -1241,14 +1169,7 @@ function Huddle({
         p_sleep_quality: sleepQ,
         p_readiness: readiness,
         p_stress: stress,
-        p_pain_zones: (function(){
-          var base = painZones.slice();
-          var trimmedNote = (injuryNote || "").trim();
-          if (trimmedNote && painZones.some(function(z){return z.startsWith("sharp:");})) {
-            base.push("note:" + trimmedNote.slice(0, 200));
-          }
-          return base;
-        })(),
+        p_pain_zones: bodyZonesPayload(),
         p_hydration: hydration,
         p_fuel_window: fuelWindow || 'na',
         p_meal_color: mealColor,
@@ -1342,41 +1263,48 @@ function Huddle({
 
   /* ── Card content ── */
 
-  /* ═══ CARD 0 — Sleep + Readiness ═══ */
+  /* ═══ CARD 0 — Sleep ═══ */
   card === 0 && React.createElement("div", {className:"ci",key:"c0",style:{padding:"24px 20px",overflowY:"auto"}},
     React.createElement("i", {className:"ph-thin ph-moon",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
-    React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "SLEEP + READINESS"),
-    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW'D YOU SLEEP? HOW DO YOU FEEL?"),
+    React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "SLEEP"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW'D YOU SLEEP?"),
 
     React.createElement("label", {className:"lbl"}, "HOURS"),
-    React.createElement("div", {style:{display:"flex",gap:6,marginBottom:18}},
-      ["<6","6","7","8","9","10+"].map(function(h){
+    React.createElement("div", {style:{display:"flex",gap:8,marginBottom:22}},
+      ["<6","7","8","9+"].map(function(h){
         var on = sleepHrs === h;
-        return React.createElement("button", {key:h,onClick:function(){buzz();setSleepHrs(h);},style:{flex:1,padding:"12px 0",borderRadius:12,fontFamily:D,fontSize:20,background:on?"rgba(0,255,135,0.15)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.35)":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.06)":"scale(1)"}}, h);
+        return React.createElement("button", {key:h,onClick:function(){buzz();setSleepHrs(h);},style:{flex:1,padding:"16px 0",borderRadius:12,fontFamily:D,fontSize:24,background:on?"rgba(0,255,135,0.15)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.35)":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.06)":"scale(1)",cursor:"pointer"}}, h);
       })
     ),
 
     React.createElement("label", {className:"lbl"}, "QUALITY"),
-    React.createElement("div", {style:{display:"flex",gap:10,marginBottom:20}},
-      [{id:"good",i:"\uD83D\uDC4D",l:"GOOD"},{id:"bad",i:"\uD83D\uDC4E",l:"ROUGH"}].map(function(q){
-        var on = sleepQ === q.id;
-        return React.createElement("button", {key:q.id,onClick:function(){buzz();setSleepQ(q.id);},style:{flex:1,padding:16,borderRadius:12,textAlign:"center",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.05)":"scale(1)"}},
-          React.createElement("div", {style:{fontSize:on?34:28,transition:"font-size 0.2s"}}, q.i),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:on?"var(--g1)":"var(--dim)",letterSpacing:"2px",marginTop:4,fontWeight:700}}, q.l)
-        );
-      })
-    ),
+    (function(){
+      /* Quality slider — 1-5. 1=ROUGH, 5=GREAT. Emoji + label morph with value. */
+      var qLabels = ["ROUGH","SO-SO","OK","GOOD","GREAT"];
+      var qIcons  = ["\uD83D\uDE29","\uD83D\uDE2A","\uD83D\uDE10","\uD83D\uDE42","\uD83D\uDE0C"];
+      var qColors = ["#EF5350","#FF9800","#FFB300","#66FFAA","#00FF87"];
+      var v = sleepQ || 3;  /* slider needs a value to render; default visual is 3 (OK) until user touches it */
+      var hasValue = sleepQ != null;
+      var col = hasValue ? qColors[v-1] : "var(--dim)";
+      return React.createElement("div", {style:{marginBottom:10}},
+        React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
+          React.createElement("div", {style:{fontSize:48,lineHeight:1,marginBottom:6,opacity:hasValue?1:0.35,transition:"all 0.2s"}}, hasValue ? qIcons[v-1] : "\uD83D\uDE10"),
+          React.createElement("div", {style:{fontFamily:D,fontSize:26,color:col,letterSpacing:"-0.01em",lineHeight:1,transition:"color 0.2s"}}, hasValue ? qLabels[v-1] : "TAP THE SLIDER")
+        ),
+        React.createElement("input", {
+          type:"range",min:1,max:5,step:1,value:v,
+          onChange:function(e){buzz();setSleepQ(parseInt(e.target.value));},
+          onTouchStart:function(){if(!hasValue)setSleepQ(3);},
+          onMouseDown:function(){if(!hasValue)setSleepQ(3);},
+          style:{width:"100%",accentColor:col}
+        }),
+        React.createElement("div", {style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:700,letterSpacing:"1.5px",marginTop:6,padding:"0 2px"}},
+          React.createElement("span", null, "ROUGH"),
+          React.createElement("span", null, "GREAT")
+        )
+      );
+    })(),
 
-    React.createElement("label", {className:"lbl"}, "READINESS"),
-    React.createElement("div", {style:{display:"flex",gap:8}},
-      [{id:"ready",i:"\uD83D\uDE03",l:"READY",c:"#00FF87"},{id:"sluggish",i:"\uD83D\uDE10",l:"SLUGGISH",c:"#FFB300"},{id:"exhausted",i:"\uD83D\uDE2B",l:"SPENT",c:"#EF5350"}].map(function(r){
-        var on = readiness === r.id;
-        return React.createElement("button", {key:r.id,onClick:function(){buzz(15);setReadiness(r.id);},style:{flex:1,padding:"14px 6px",borderRadius:12,textAlign:"center",background:on?r.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?r.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.25s",transform:on?"scale(1.08)":"scale(0.95)"}},
-          React.createElement("div", {style:{fontSize:on?38:28,transition:"font-size 0.2s"}}, r.i),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:on?r.c:"var(--dim)",letterSpacing:"1px",marginTop:2,fontWeight:700}}, r.l)
-        );
-      })
-    ),
     React.createElement(DailyTip, {tip:TIPS_SLEEP[TIP_DAY],color:"var(--pr2)"})
   ),
 
@@ -1387,226 +1315,85 @@ function Huddle({
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW IS YOUR BODY TODAY?"),
 
     React.createElement("label", {className:"lbl"}, "MENTAL LOAD"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",margin:"0 0 12px",fontWeight:600,letterSpacing:"1px"}}, "STRESS \u00B7 CLASSES \u00B7 MENTAL ENERGY"),
     React.createElement("div", {style:{display:"flex",gap:6,marginBottom:20}},
-      [{id:1,i:"\uD83D\uDE0C",l:"LOW",c:"#00FF87"},{id:2,i:"\uD83D\uDE42",l:"MILD",c:"#66FFAA"},{id:3,i:"\uD83D\uDE10",l:"MODERATE",c:"#FFB300"},{id:4,i:"\uD83D\uDE30",l:"HIGH",c:"#FF6D00"},{id:5,i:"\uD83E\uDD2F",l:"MAXED",c:"#EF5350"}].map(function(st){
+      [{id:1,i:"\uD83D\uDE0C",l:"CHILL",c:"#00FF87"},{id:2,i:"\uD83D\uDE42",l:"STEADY",c:"#66FFAA"},{id:3,i:"\uD83D\uDE10",l:"MID",c:"#FFB300"},{id:4,i:"\uD83D\uDE30",l:"TENSE",c:"#FF6D00"},{id:5,i:"\uD83E\uDD2F",l:"WIRED",c:"#EF5350"}].map(function(st){
         var on = stress === st.id;
-        return React.createElement("button", {key:st.id,onClick:function(){buzz(15);setStress(st.id);},style:{flex:1,padding:"10px 2px",borderRadius:12,textAlign:"center",background:on?st.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?st.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.08)":"scale(1)"}},
-          React.createElement("div", {style:{fontSize:on?28:22,transition:"font-size 0.2s"}}, st.i),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:9,color:on?st.c:"var(--dim)",letterSpacing:"1px",marginTop:2,fontWeight:700}}, st.l)
+        return React.createElement("button", {key:st.id,onClick:function(){buzz(15);setStress(st.id);},style:{flex:1,padding:"12px 2px",borderRadius:12,textAlign:"center",background:on?st.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?st.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.08)":"scale(1)"}},
+          React.createElement("div", {style:{fontSize:on?38:30,transition:"font-size 0.2s",lineHeight:1}}, st.i),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:on?st.c:"var(--dim)",letterSpacing:"0.8px",marginTop:6,fontWeight:700,lineHeight:1}}, st.l)
         );
       })
     ),
 
-    /* BODY STATUS — 3-way triage selector */
-    React.createElement("label", {className:"lbl"}, "BODY STATUS"),
-    React.createElement("div", {style:{display:"flex",gap:6,marginBottom:bodyStatus==="good"?14:16}},
+    /* HOW IS YOUR BODY — generic 3-state report. No body-part detail collected.
+       Picking "IN PAIN" surfaces a non-dismissable callout routing the athlete
+       to the athletic trainer; the next button continues the Huddle either way. */
+    React.createElement("label", {className:"lbl"}, "HOW IS YOUR BODY?"),
+    React.createElement("div", {style:{display:"flex",gap:6,marginBottom:14}},
       [
-        {id:"good",   ico:"ph-smiley",          l:"FEELING GOOD",   c:"#00FF87"},
-        {id:"sore",   ico:"ph-bandaids",        l:"SORE",           c:"#FFB300"},
-        {id:"injury", ico:"ph-warning-octagon", l:"POSSIBLE INJURY",c:"#FF6B6B"}
+        {id:"good",   ico:"ph-smiley",          l:"FEELING GOOD", c:"#00FF87"},
+        {id:"sore",   ico:"ph-bandaids",        l:"DISCOMFORT",   c:"#FFB300"},
+        {id:"injury", ico:"ph-warning-octagon", l:"IN PAIN",      c:"#FF6B6B"}
       ].map(function(opt){
         var on = bodyStatus === opt.id;
         return React.createElement("button", {
           key:opt.id,
-          onClick:function(){
-            buzz(15);
-            setBodyStatus(opt.id);
-            if (opt.id === "good") setPainZones([]);
-            if (opt.id === "sore") setBmMode("sore");
-            if (opt.id === "injury") setBmMode("sharp");
-          },
+          onClick:function(){buzz(15);setBodyStatus(opt.id);},
           style:{
-            flex:1,minHeight:78,padding:"12px 4px",borderRadius:14,
+            flex:1,minHeight:88,padding:"14px 4px",borderRadius:14,
             background:on?opt.c+"18":"rgba(12,12,18,0.8)",
             border:"2px solid "+(on?opt.c+"55":"rgba(255,255,255,0.04)"),
             transition:"all 0.2s",
             transform:on?"scale(1.04)":"scale(1)",
-            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
+            display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:6,
             cursor:"pointer"
           }
         },
           React.createElement("i", {
             className:"ph-thin "+opt.ico,
-            style:{fontSize:on?30:26,color:on?opt.c:"var(--dim)",transition:"all 0.2s",lineHeight:1,display:"block"}
+            style:{fontSize:on?40:34,color:on?opt.c:"var(--dim)",transition:"all 0.2s",lineHeight:1,display:"block"}
           }),
           React.createElement("div", {
-            style:{fontFamily:D2,fontSize:10,color:on?opt.c:"var(--dim)",letterSpacing:"0.8px",fontWeight:700,lineHeight:1.2,textAlign:"center",padding:"0 2px"}
+            style:{fontFamily:D2,fontSize:11,color:on?opt.c:"var(--dim)",letterSpacing:"0.8px",fontWeight:700,lineHeight:1.2,textAlign:"center",padding:"0 2px"}
           }, opt.l)
         );
       })
     ),
 
-    /* ALL CLEAR confirmation */
+    /* ALL CLEAR confirmation — feeling good */
     bodyStatus === "good" && React.createElement("div", {
-      style:{padding:"16px 20px",borderRadius:14,background:"rgba(0,255,135,0.06)",border:"2px solid rgba(0,255,135,0.20)",marginBottom:16,display:"flex",alignItems:"center",gap:14}
+      style:{padding:"16px 20px",borderRadius:14,background:"rgba(0,255,135,0.06)",border:"2px solid rgba(0,255,135,0.20)",marginBottom:8,display:"flex",alignItems:"center",gap:14}
     },
       React.createElement("i", {className:"ph-thin ph-check-circle",style:{fontSize:36,color:"var(--g1)",flexShrink:0,lineHeight:1}}),
       React.createElement("div", null,
         React.createElement("div", {style:{fontFamily:D,fontSize:24,color:"var(--g1)",lineHeight:0.95,letterSpacing:"-0.01em"}}, "ALL CLEAR"),
-        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,letterSpacing:"0.5px",marginTop:2}}, "NO PAIN OR SORENESS TO REPORT")
+        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,letterSpacing:"0.5px",marginTop:2}}, "NOTHING TO REPORT TODAY")
       )
     ),
 
-    /* BODY MAP — sore or injury */
-    (bodyStatus === "sore" || bodyStatus === "injury") && React.createElement("div", {style:{marginBottom:4}},
+    /* DISCOMFORT — gentle acknowledgment, no specifics requested */
+    bodyStatus === "sore" && React.createElement("div", {
+      style:{padding:"16px 20px",borderRadius:14,background:"rgba(255,179,0,0.06)",border:"2px solid rgba(255,179,0,0.22)",marginBottom:8,display:"flex",alignItems:"flex-start",gap:14}
+    },
+      React.createElement("i", {className:"ph-thin ph-bandaids",style:{fontSize:32,color:"#FFB300",flexShrink:0,lineHeight:1,marginTop:2}}),
+      React.createElement("div", null,
+        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"#FFB300",lineHeight:1,letterSpacing:"-0.01em",marginBottom:4}}, "NOTED"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,lineHeight:1.4}}, "Some discomfort is normal. Recover well \u2014 sleep, hydrate, fuel up. If it gets worse or doesn't fade, talk to your athletic trainer.")
+      )
+    ),
 
-      /* Mode toggle — segmented control */
-      React.createElement("div", {style:{display:"flex",gap:4,marginBottom:12,padding:4,borderRadius:12,background:"rgba(8,8,14,0.7)",border:"1px solid rgba(255,255,255,0.05)"}},
-        [
-          {m:"sore", l:"SORENESS",       c:"#FFB300"},
-          {m:"sharp",l:"POSSIBLE INJURY",c:"#FF6B6B"}
-        ].map(function(tog){
-          var on = bmMode === tog.m;
-          return React.createElement("button", {
-            key:tog.m,
-            onClick:function(){buzz(10);setBmMode(tog.m);},
-            style:{
-              flex:1,padding:"9px 4px",borderRadius:9,
-              background:on?tog.c+"22":"transparent",
-              border:on?"1px solid "+tog.c+"55":"1px solid transparent",
-              fontFamily:D2,fontSize:11,fontWeight:700,letterSpacing:"1.2px",
-              color:on?tog.c:"var(--dim)",
-              transition:"all 0.2s",
-              cursor:"pointer"
-            }
-          }, tog.l);
-        })
-      ),
-
-      /* Injury-mode callout (transparency about coach visibility) */
-      bmMode === "sharp" && React.createElement("div", {
-        style:{padding:"10px 14px",borderRadius:10,background:"rgba(255,107,107,0.08)",border:"1px solid rgba(255,107,107,0.22)",marginBottom:12,display:"flex",alignItems:"center",gap:10}
-      },
-        React.createElement("i", {className:"ph-thin ph-warning-circle",style:{fontSize:22,color:"var(--red)",flexShrink:0,lineHeight:1}}),
-        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,lineHeight:1.35}}, "YOUR COACH WILL SEE THIS FLAGGED SO THEY CAN CHECK IN WITH YOU.")
-      ),
-
-      /* Same-as-yesterday quick-fill — only when empty and yesterday had zones */
-      zoneCount() === 0 && yesterdayZones.length > 0 && React.createElement("button", {
-        onClick:fillFromYesterday,
-        style:{
-          width:"100%",padding:"10px 14px",marginBottom:12,
-          background:"rgba(124,58,237,0.06)",
-          border:"1px solid rgba(124,58,237,0.25)",
-          borderRadius:10,
-          display:"flex",alignItems:"center",gap:10,justifyContent:"center",
-          cursor:"pointer",fontFamily:D2
-        }
-      },
-        React.createElement("i", {className:"ph-thin ph-arrow-counter-clockwise",style:{fontSize:18,color:"var(--pr2)",lineHeight:1}}),
-        React.createElement("span", {style:{fontSize:11,fontWeight:700,color:"var(--pr2)",letterSpacing:"1.2px"}}, "SAME AS YESTERDAY"),
-        React.createElement("span", {style:{fontSize:11,fontWeight:600,color:"var(--dim)",letterSpacing:"0.5px"}},
-          "(" + yesterdayZones.map(function(z){
-            var rid = rawZoneId(z);
-            var lbl = ZONES.find(function(zn){return zn.id===rid;});
-            return lbl ? lbl.s : rid.toUpperCase();
-          }).slice(0,3).join(", ") + (yesterdayZones.length>3 ? " +"+(yesterdayZones.length-3) : "") + ")"
+    /* IN PAIN — hard route to athletic trainer. Liability-critical: no symptom detail collected, no notes, no body parts. */
+    bodyStatus === "injury" && React.createElement("div", {
+      style:{padding:"18px 20px",borderRadius:14,background:"rgba(255,107,107,0.10)",border:"2px solid rgba(255,107,107,0.45)",marginBottom:8,boxShadow:"0 0 20px rgba(255,107,107,0.10)"}
+    },
+      React.createElement("div", {style:{display:"flex",alignItems:"flex-start",gap:14}},
+        React.createElement("i", {className:"ph-thin ph-first-aid-kit",style:{fontSize:42,color:"var(--red)",flexShrink:0,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(255,107,107,0.4))"}}),
+        React.createElement("div", null,
+          React.createElement("div", {style:{fontFamily:D,fontSize:24,color:"var(--red)",lineHeight:1,letterSpacing:"-0.01em",marginBottom:6}}, "SEE THE ATHLETIC TRAINER"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:600,lineHeight:1.4}}, "Stop in before practice today. Don't push through pain alone \u2014 get a trained professional's eyes on it. Your coach will be notified that you reported pain.")
         )
-      ),
-
-      /* Instruction */
-      React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,textAlign:"center",marginBottom:4}},
-        "TAP A ZONE TO MARK · TAP AGAIN TO CLEAR"
-      ),
-
-      /* Unified SVG body map */
-      React.createElement("div", {style:{width:"100%",maxWidth:260,margin:"0 auto 12px"}},
-        React.createElement("svg", {
-          viewBox:"0 0 220 480",
-          style:{width:"100%",height:"auto",display:"block"},
-          xmlns:"http://www.w3.org/2000/svg"
-        },
-          ZONES.map(function(z){
-            var st = zoneState(z.id);
-            var bg = st==="sharp" ? "rgba(255,107,107,0.38)" : st==="sore" ? "rgba(255,179,0,0.30)" : "rgba(255,255,255,0.05)";
-            var bc = st==="sharp" ? "rgba(255,107,107,0.90)" : st==="sore" ? "rgba(255,179,0,0.80)" : "rgba(255,255,255,0.22)";
-            var tc = st==="sharp" ? "#FF6B6B" : st==="sore" ? "#FFB300" : "rgba(255,255,255,0.65)";
-            var sw = st==="off" ? 1 : 1.5;
-            var shape = z.t==="e"
-              ? React.createElement("ellipse", {cx:z.cx,cy:z.cy,rx:z.rx,ry:z.ry,fill:bg,stroke:bc,strokeWidth:sw,style:{transition:"all 0.15s ease"}})
-              : React.createElement("rect", {x:z.x,y:z.y,width:z.w,height:z.h,rx:z.r,fill:bg,stroke:bc,strokeWidth:sw,style:{transition:"all 0.15s ease"}});
-            var tx = z.t==="e" ? z.cx : z.x + z.w/2;
-            var ty = z.t==="e" ? z.cy + 2.8 : z.y + z.h/2 + 2.8;
-            var showLabel = st !== "off";
-            return React.createElement("g", {
-              key:z.id,
-              onClick:function(){togZone(z.id);},
-              style:{cursor:"pointer"}
-            },
-              shape,
-              showLabel && React.createElement("text", {
-                x:tx,y:ty,textAnchor:"middle",
-                fontFamily:D2,fontSize:"8",fontWeight:"700",fill:tc,letterSpacing:"0.4",
-                style:{userSelect:"none",pointerEvents:"none"}
-              }, z.s)
-            );
-          })
-        )
-      ),
-
-      /* Selected zones — chip list (anatomically sorted head → feet, with recurrence badge) */
-      zoneCount() > 0 && React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginBottom:10}},
-        (function(){
-          var zoneOrder = {};
-          ZONES.forEach(function(z,i){zoneOrder[z.id]=i;});
-          return painZones
-            .filter(function(z){return z.startsWith("sore:")||z.startsWith("sharp:");})
-            .slice()
-            .sort(function(a,b){
-              return (zoneOrder[rawZoneId(a)] || 0) - (zoneOrder[rawZoneId(b)] || 0);
-            });
-        })().map(function(z){
-          var rid = rawZoneId(z);
-          var isSharp = z.startsWith("sharp:");
-          var label = ZONES.find(function(zn){return zn.id===rid;});
-          var col = isSharp ? "#FF6B6B" : "#FFB300";
-          var rec = zoneRecurrence(rid); /* recurrence across past 6 checkins */
-          var suffix = isSharp ? " \u00B7 INJURY" : " \u00B7 SORE";
-          if (rec >= 2) suffix += " \u00B7 " + rec + "D";
-          return React.createElement("span", {
-            key:z,
-            style:{
-              fontFamily:D2,fontSize:10,fontWeight:700,letterSpacing:"0.6px",
-              padding:"4px 10px",borderRadius:999,
-              color:col,
-              background:col+"18",
-              border:"1px solid "+col+"40"
-            }
-          }, (label?label.l:"").toUpperCase() + suffix);
-        })
-      ),
-
-      /* Injury note — appears only when any sharp:zone is marked */
-      hasSharpZones() && React.createElement("div", {style:{marginBottom:10}},
-        React.createElement("div", {style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6}},
-          React.createElement("label", {className:"lbl",style:{marginBottom:0,fontSize:11,letterSpacing:"1.5px"}}, "ADD CONTEXT (OPTIONAL)"),
-          React.createElement("span", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:600,letterSpacing:"0.5px"}}, (injuryNote||"").length + "/200")
-        ),
-        React.createElement("textarea", {
-          value:injuryNote,
-          onChange:function(e){setInjuryNote(e.target.value.slice(0,200));},
-          placeholder:"e.g., sharp pain when I land on my left foot · twinge started Tuesday · felt a pop in practice",
-          rows:2,
-          style:{
-            width:"100%",padding:"10px 12px",
-            background:"rgba(12,12,18,0.8)",
-            border:"1.5px solid rgba(255,107,107,0.22)",
-            borderRadius:10,
-            fontFamily:D2,fontSize:13,fontWeight:600,
-            color:"var(--txt)",
-            letterSpacing:"0.3px",
-            lineHeight:1.4,
-            resize:"none",outline:"none",
-            boxSizing:"border-box"
-          }
-        })
-      ),
-
-      /* Clear all (only when zones are marked) */
-      zoneCount() > 0 && React.createElement("button", {
-        onClick:function(){buzz(10);setPainZones([]);setInjuryNote("");},
-        style:{background:"none",border:"none",fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,padding:"6px 0",display:"block",margin:"0 auto",cursor:"pointer"}
-      }, "CLEAR ALL ZONES")
+      )
     ),
 
     (function(){
@@ -1628,12 +1415,12 @@ function Huddle({
 
     didWork === null && React.createElement("div", {style:{display:"flex",gap:12,marginBottom:16}},
       React.createElement("button", {onClick:function(){buzz(15);setDidWork(true);},style:{flex:1,padding:22,borderRadius:16,textAlign:"center",background:"rgba(12,12,18,0.8)",border:"2px solid rgba(0,255,135,0.04)"}},
-        React.createElement("div", {style:{fontSize:36}}, "\uD83D\uDCAA"),
-        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--g1)",marginTop:4}}, "YES")
+        React.createElement("div", {style:{fontSize:48,lineHeight:1}}, "\uD83D\uDCAA"),
+        React.createElement("div", {style:{fontFamily:D,fontSize:24,color:"var(--g1)",marginTop:8}}, "YES")
       ),
       React.createElement("button", {onClick:function(){buzz(15);setDidWork(false);},style:{flex:1,padding:22,borderRadius:16,textAlign:"center",background:"rgba(12,12,18,0.8)",border:"2px solid rgba(0,255,135,0.04)"}},
-        React.createElement("div", {style:{fontSize:36}}, "\uD83D\uDECB\uFE0F"),
-        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--dim)",marginTop:4}}, "REST DAY")
+        React.createElement("div", {style:{fontSize:48,lineHeight:1}}, "\uD83D\uDECB\uFE0F"),
+        React.createElement("div", {style:{fontFamily:D,fontSize:24,color:"var(--dim)",marginTop:8}}, "REST DAY")
       )
     ),
 
@@ -1653,14 +1440,35 @@ function Huddle({
         })
       ),
 
-      React.createElement("label", {className:"lbl"}, "EFFORT (RPE)"),
-      React.createElement("div", {style:{marginBottom:18}},
-        React.createElement("input", {type:"range",min:1,max:10,value:overallRpe,onChange:function(e){setOverallRpe(parseInt(e.target.value));},style:{width:"100%",accentColor:RPE_COLOR[overallRpe]||"#FFB300"}}),
-        React.createElement("div", {style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:13,fontWeight:700}},
-          React.createElement("span", {style:{color:RPE_COLOR[overallRpe]||"#FFB300"}}, overallRpe + "/10"),
-          React.createElement("span", {style:{color:"var(--dim)"}}, RPE_DESC[overallRpe]||"")
-        )
-      ),
+      React.createElement("label", {className:"lbl"}, "EFFORT"),
+      (function(){
+        /* Simple 5-step effort slider — 1=EASY ... 5=ALL OUT.
+           Stored as overallRpe in the legacy 1-10 range (2/4/6/8/10) so
+           training_load (rpe * duration) stays comparable to old data. */
+        var effortLabels = ["EASY","LIGHT","MODERATE","HARD","ALL OUT"];
+        var effortIcons  = ["\uD83D\uDEB6","\uD83C\uDFC3","\uD83D\uDCAA","\uD83D\uDD25","\uD83D\uDCA5"];
+        var effortColors = ["#4CAF50","#8BC34A","#FFB300","#FF6D00","#D50000"];
+        var hasValue = overallRpe != null;
+        var pos = hasValue ? Math.max(1, Math.min(5, Math.round(overallRpe / 2))) : 3;
+        var col = hasValue ? effortColors[pos-1] : "var(--dim)";
+        return React.createElement("div", {style:{marginBottom:18}},
+          React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
+            React.createElement("div", {style:{fontSize:48,lineHeight:1,marginBottom:6,opacity:hasValue?1:0.35,transition:"all 0.2s"}}, hasValue ? effortIcons[pos-1] : "\uD83D\uDCAA"),
+            React.createElement("div", {style:{fontFamily:D,fontSize:26,color:col,letterSpacing:"-0.01em",lineHeight:1,transition:"color 0.2s"}}, hasValue ? effortLabels[pos-1] : "TAP THE SLIDER")
+          ),
+          React.createElement("input", {
+            type:"range",min:1,max:5,step:1,value:pos,
+            onChange:function(e){buzz();setOverallRpe(parseInt(e.target.value)*2);},
+            onTouchStart:function(){if(!hasValue)setOverallRpe(6);},
+            onMouseDown:function(){if(!hasValue)setOverallRpe(6);},
+            style:{width:"100%",accentColor:col}
+          }),
+          React.createElement("div", {style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:700,letterSpacing:"1.5px",marginTop:6,padding:"0 2px"}},
+            React.createElement("span", null, "EASY"),
+            React.createElement("span", null, "ALL OUT")
+          )
+        );
+      })(),
 
       React.createElement("label", {className:"lbl"}, "TOTAL DURATION"),
       React.createElement("div", {style:{display:"flex",gap:6,marginBottom:18}},
@@ -1694,31 +1502,60 @@ function Huddle({
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "FUEL"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 18px",fontWeight:700}}, "HOW DID YOU FUEL?"),
 
-    React.createElement("label", {className:"lbl"}, "HYDRATION"),
-    React.createElement("div", {style:{display:"flex",gap:4,marginBottom:20}},
+    React.createElement("label", {className:"lbl"}, "GLASSES OF WATER TODAY"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",margin:"0 0 10px",fontWeight:600,letterSpacing:"0.5px"}}, "Tap how many \u2014 about 8 oz each, like a small water bottle."),
+    React.createElement("div", {style:{display:"flex",gap:4,marginBottom:10}},
       [0,1,2,3,4,5,6,7,8].map(function(n){
         var on = hydration >= n && n > 0;
-        return React.createElement("button", {key:n,onClick:function(){buzz();setHydration(n);},style:{flex:1,padding:"14px 0",borderRadius:12,fontSize:18,background:n===0?"rgba(12,12,18,0.8)":on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",border:"2px solid "+(on?"rgba(0,255,135,0.25)":"rgba(0,255,135,0.04)"),color:on?"var(--g1)":"var(--dim)",fontFamily:D,transition:"all 0.15s"}}, n===0?"\u2715":"\uD83D\uDCA7");
+        var isZero = n === 0;
+        var isSelected = hydration === n;
+        return React.createElement("button", {
+          key:n,
+          onClick:function(){buzz();setHydration(n);},
+          style:{
+            flex:1,padding:"16px 0",borderRadius:12,
+            fontFamily:D,fontSize:22,fontWeight:700,lineHeight:1,
+            background: isZero
+              ? (isSelected ? "rgba(255,255,255,0.08)" : "rgba(12,12,18,0.8)")
+              : (on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)"),
+            border:"2px solid " + (isSelected
+              ? (isZero ? "rgba(255,255,255,0.25)" : "rgba(0,255,135,0.45)")
+              : (on ? "rgba(0,255,135,0.25)" : "rgba(0,255,135,0.04)")),
+            color: isZero
+              ? (isSelected ? "var(--sub)" : "var(--dim)")
+              : (on ? "var(--g1)" : "var(--dim)"),
+            transition:"all 0.15s",
+            cursor:"pointer"
+          }
+        }, isZero ? "0" : String(n));
       })
     ),
-    React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginBottom:20,fontWeight:600}}, hydration===0?"NOT TRACKED":hydration+" / 8 GLASSES"),
+    React.createElement("div", {style:{fontFamily:D,fontSize:32,color:hydration>=8?"var(--g1)":hydration>=5?"var(--g6)":hydration>0?"#FFB300":"var(--dim)",textAlign:"center",marginBottom:20,letterSpacing:"-0.01em",lineHeight:1}},
+      hydration === 0
+        ? React.createElement("span", {style:{fontFamily:D2,fontSize:14,fontWeight:600,letterSpacing:"2px"}}, "NOT TRACKED")
+        : hydration + " / 8 GLASSES"
+    ),
 
     React.createElement("label", {className:"lbl"}, "EAT AROUND TRAINING?"),
     React.createElement("div", {style:{display:"flex",gap:8,marginBottom:20}},
       [{id:"yes",l:"YES"},{id:"no",l:"NO"},{id:"na",l:"N/A"}].map(function(fw){
         var on = fuelWindow === fw.id;
-        return React.createElement("button", {key:fw.id,onClick:function(){buzz();setFuelWindow(fw.id);},style:{flex:1,padding:"12px 4px",borderRadius:12,fontFamily:D2,fontSize:12,fontWeight:700,letterSpacing:"1px",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, fw.l);
+        return React.createElement("button", {key:fw.id,onClick:function(){buzz();setFuelWindow(fw.id);},style:{flex:1,padding:"14px 4px",borderRadius:12,fontFamily:D2,fontSize:14,fontWeight:700,letterSpacing:"1.5px",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, fw.l);
       })
     ),
 
-    React.createElement("label", {className:"lbl"}, "PLATE COLOR CHECK"),
-    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",marginBottom:12,fontWeight:600}}, "LOOK AT YOUR LAST MEAL. HOW MANY COLORS?"),
+    React.createElement("label", {className:"lbl"}, "TODAY'S NUTRITION"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",marginBottom:12,fontWeight:600}}, "HOW DID YOU EAT TODAY?"),
     React.createElement("div", {style:{display:"flex",gap:8}},
-      [{id:"green",i:"\uD83D\uDFE2",l:"3+ COLORS",c:"#4CAF50"},{id:"yellow",i:"\uD83D\uDFE1",l:"1-2 COLORS",c:"#FFB300"},{id:"red",i:"\uD83D\uDD34",l:"ALL BROWN",c:"#EF5350"}].map(function(mc){
+      [
+        {id:"green", i:"\uD83D\uDFE2", l:"WHOLE FOODS",     c:"#4CAF50"},
+        {id:"yellow",i:"\uD83D\uDFE1", l:"PRETTY BALANCED", c:"#FFB300"},
+        {id:"red",   i:"\uD83D\uDD34", l:"MOSTLY JUNK",     c:"#EF5350"}
+      ].map(function(mc){
         var on = mealColor === mc.id;
-        return React.createElement("button", {key:mc.id,onClick:function(){buzz(15);setMealColor(mc.id);},style:{flex:1,padding:"14px 6px",borderRadius:12,textAlign:"center",background:on?mc.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?mc.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.05)":"scale(1)"}},
-          React.createElement("div", {style:{fontSize:on?30:24,transition:"font-size 0.2s"}}, mc.i),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:on?mc.c:"var(--dim)",letterSpacing:"1px",marginTop:4,fontWeight:700}}, mc.l)
+        return React.createElement("button", {key:mc.id,onClick:function(){buzz(15);setMealColor(mc.id);},style:{flex:1,padding:"16px 6px",borderRadius:12,textAlign:"center",background:on?mc.c+"18":"rgba(12,12,18,0.8)",border:"2px solid "+(on?mc.c+"45":"rgba(0,255,135,0.04)"),transition:"all 0.2s",transform:on?"scale(1.05)":"scale(1)",cursor:"pointer"}},
+          React.createElement("div", {style:{fontSize:on?44:36,transition:"font-size 0.2s",lineHeight:1}}, mc.i),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:on?mc.c:"var(--dim)",letterSpacing:"0.8px",marginTop:6,fontWeight:700,lineHeight:1.2}}, mc.l)
         );
       })
     ),
@@ -1743,7 +1580,7 @@ function Huddle({
         ),
         React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",textAlign:"center",letterSpacing:"1px",fontWeight:600}},
           "BASE 10 + STREAK BONUS " + streakNext
-          + (sleepHrs && ["8","9","10+"].includes(sleepHrs) ? " + SLEEP 8" : "")
+          + (sleepHrs && ["8","9","9+","10+"].includes(sleepHrs) ? " + SLEEP 8" : "")
           + (mealColor === "green" ? " + FUEL 5" : "")
           + (didWork === false ? " + REST 3" : "")
         )
@@ -1772,6 +1609,42 @@ function Huddle({
         })
       ),
 
+      /* ── Final gut-check: how ready do they feel to compete? Captured in
+            the moment after walking through sleep / body / work / fuel.
+            5-step slider, force-pick before LOCK IT IN. ── */
+      (function(){
+        var rLabels = ["NOT AT ALL","NOT SO MUCH","MEH","READY","LOCKED IN"];
+        var rIcons  = ["\uD83D\uDE29","\uD83D\uDE15","\uD83D\uDE10","\uD83D\uDCAA","\uD83D\uDD25"];
+        var rColors = ["#EF5350","#FF9800","#FFB300","#66FFAA","#00FF87"];
+        var v = readiness || 3;
+        var hasValue = readiness != null;
+        var col = hasValue ? rColors[v-1] : "var(--dim)";
+        return React.createElement("div", {className:"gc",style:{
+          padding:18,marginBottom:14,
+          border:hasValue?"1.5px solid rgba(255,255,255,0.04)":"1.5px solid rgba(185,123,255,0.35)",
+          boxShadow:hasValue?"none":"0 0 16px rgba(185,123,255,0.10)",
+          transition:"all 0.25s"
+        }},
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"2px",fontWeight:700,marginBottom:4,textAlign:"center"}}, "ONE LAST THING"),
+          React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--txt)",letterSpacing:"-0.01em",lineHeight:1.05,marginBottom:14,textAlign:"center"}}, "HOW READY ARE YOU TO COMPETE TODAY?"),
+          React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
+            React.createElement("div", {style:{fontSize:48,lineHeight:1,marginBottom:6,opacity:hasValue?1:0.35,transition:"all 0.2s"}}, hasValue ? rIcons[v-1] : "\uD83D\uDE10"),
+            React.createElement("div", {style:{fontFamily:D,fontSize:26,color:col,letterSpacing:"-0.01em",lineHeight:1,transition:"color 0.2s"}}, hasValue ? rLabels[v-1] : "TAP THE SLIDER")
+          ),
+          React.createElement("input", {
+            type:"range",min:1,max:5,step:1,value:v,
+            onChange:function(e){buzz();setReadiness(parseInt(e.target.value));},
+            onTouchStart:function(){if(!hasValue)setReadiness(3);},
+            onMouseDown:function(){if(!hasValue)setReadiness(3);},
+            style:{width:"100%",accentColor:col}
+          }),
+          React.createElement("div", {style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:700,letterSpacing:"1.5px",marginTop:6,padding:"0 2px"}},
+            React.createElement("span", null, "NOT AT ALL"),
+            React.createElement("span", null, "LOCKED IN")
+          )
+        );
+      })(),
+
       React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginTop:8,fontWeight:600}},
         "BUILD-V15 \u00B7 FULL FLOW"
       )
@@ -1782,7 +1655,7 @@ function Huddle({
   React.createElement("div", {style:{padding:"16px 20px 28px"}},
     card < 4 ?
       React.createElement("button", {className:"btn-gold",onClick:advanceCard,disabled:!canNext()}, "NEXT →") :
-      React.createElement("button", {className:"btn-gold",onClick:finish,disabled:saving}, saving ? "SAVING..." : "LOCK IT IN")
+      React.createElement("button", {className:"btn-gold",onClick:finish,disabled:saving || readiness == null}, saving ? "SAVING..." : (readiness == null ? "PICK A READINESS \u2191" : "LOCK IT IN"))
   ));
 }
 
@@ -1797,7 +1670,7 @@ function InsightCard(props) {
   var recent = recentCheckins || [];
   var recentCount = recent.length;
   var painDays = recent.filter(function(c){return c.pain_zones&&c.pain_zones.some(function(z){return z.startsWith("sore:")||z.startsWith("sharp:");})}).length;
-  var sleepMap = {"<6":5,"6":6,"7":7,"8":8,"9":9,"10+":10};
+  var sleepMap = {"<6":5,"6":6,"7":7,"8":8,"9":9,"9+":9,"10+":10};
   var avgSleep = recentCount>1?recent.reduce(function(sum,c){return sum+(sleepMap[c.sleep_hrs]||7)},0)/recentCount:null;
   var avgStress = recentCount>1?recent.reduce(function(sum,c){return sum+(c.stress||3)},0)/recentCount:null;
   var redMeals = recent.filter(function(c){return c.meal_color==="red"}).length;
@@ -1961,7 +1834,7 @@ function RecoveryCard(props) {
     status = "STRAINED"; statusDesc = "Recovery first. Rest, hydrate, sleep early.";
   }
 
-  var sleepMap = {"<6":5,"6":6,"7":7,"8":8,"9":9,"10+":10};
+  var sleepMap = {"<6":5,"6":6,"7":7,"8":8,"9":9,"9+":9,"10+":10};
   var hrs = sleepMap[checkin.sleep_hrs] || 0;
   var pz = checkin.pain_zones || [];
   var soreCount = pz.filter(function (z) { return z.indexOf('sore:') === 0 || z.indexOf('sharp:') === 0; }).length;
@@ -1979,10 +1852,24 @@ function RecoveryCard(props) {
     });
   }
 
+  /* Sleep quality format compat — checkin.sleep_quality may be:
+     - new: 1-5 (number, or numeric string from JSON)
+     - legacy: "good" / "bad" / "ok" */
+  function _sleepQText(q) {
+    var n = parseInt(q, 10);
+    if (!isNaN(n) && n >= 1 && n <= 5) return ["ROUGH","SO-SO","OK","GOOD","GREAT"][n-1];
+    return q === "good" ? "GOOD" : q === "ok" ? "OK" : "ROUGH";
+  }
+  function _sleepQGood(q) {
+    var n = parseInt(q, 10);
+    if (!isNaN(n) && n >= 1 && n <= 5) return n >= 4;
+    return q === "good";
+  }
+
   var factors = [
     { icon: "ph-moon", label: "SLEEP",
-      value: checkin.sleep_hrs + "H \u00B7 " + (checkin.sleep_quality === "good" ? "GOOD" : "ROUGH"),
-      status: hrs >= 8 && checkin.sleep_quality === "good" ? "good" : hrs >= 7 ? "ok" : "bad" },
+      value: checkin.sleep_hrs + "H \u00B7 " + _sleepQText(checkin.sleep_quality),
+      status: hrs >= 8 && _sleepQGood(checkin.sleep_quality) ? "good" : hrs >= 7 ? "ok" : "bad" },
     { icon: "ph-lightbulb", label: "STRESS",
       value: stress + "/5",
       status: stress <= 2 ? "good" : stress <= 3 ? "ok" : "bad" },
@@ -1990,10 +1877,10 @@ function RecoveryCard(props) {
       value: soreCount === 0 ? "ALL CLEAR" : (soreCount + " ZONE" + (soreCount === 1 ? "" : "S") + (hasSharp ? " \u00B7 INJURY" : "")),
       status: hasSharp ? "bad" : soreCount === 0 ? "good" : soreCount <= 2 ? "ok" : "bad" },
     { icon: "ph-fork-knife", label: "FUEL",
-      value: (checkin.meal_color || "?").toUpperCase(),
+      value: checkin.meal_color === "green" ? "WHOLE FOODS" : checkin.meal_color === "yellow" ? "BALANCED" : checkin.meal_color === "red" ? "MOSTLY JUNK" : "?",
       status: checkin.meal_color === "green" ? "good" : checkin.meal_color === "yellow" ? "ok" : "bad" },
     { icon: "ph-drop", label: "HYDRATION",
-      value: hyd + " CUP" + (hyd === 1 ? "" : "S"),
+      value: hyd + " GLASS" + (hyd === 1 ? "" : "ES"),
       status: hyd >= 8 ? "good" : hyd >= 5 ? "ok" : "bad" }
   ];
 
@@ -2280,26 +2167,12 @@ function Dashboard({
       boxShadow:"0 0 24px rgba(255,107,107,0.08)"
     }
   },
-    /*#__PURE__*/React.createElement("div", {style:{display:"flex",alignItems:"flex-start",gap:14,marginBottom:injuryStreak.zones.length>0?10:0}},
+    /*#__PURE__*/React.createElement("div", {style:{display:"flex",alignItems:"flex-start",gap:14}},
       /*#__PURE__*/React.createElement("i", {className:"ph-thin ph-first-aid-kit",style:{fontSize:40,color:"var(--red)",flexShrink:0,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(255,107,107,0.3))"}}),
       /*#__PURE__*/React.createElement("div", null,
-        /*#__PURE__*/React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--red)",letterSpacing:"-0.01em",lineHeight:1,marginBottom:6}}, "TALK TO YOUR COACH AND TRAINER"),
-        /*#__PURE__*/React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:600,lineHeight:1.4}}, "You've reported a possible injury " + injuryStreak.days + " days in a row. Don't push through this alone \u2014 get professional eyes on it before it gets worse.")
+        /*#__PURE__*/React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--red)",letterSpacing:"-0.01em",lineHeight:1,marginBottom:6}}, "SEE THE ATHLETIC TRAINER"),
+        /*#__PURE__*/React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:600,lineHeight:1.4}}, "You've reported pain " + injuryStreak.days + " days in a row. Don't push through this alone \u2014 get a trained professional's eyes on it before practice today.")
       )
-    ),
-    injuryStreak.zones.length > 0 && /*#__PURE__*/React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:5,paddingLeft:54}},
-      injuryStreak.zones.map(function(id,i){
-        return /*#__PURE__*/React.createElement("span", {
-          key:i,
-          style:{
-            fontFamily:D2,fontSize:10,fontWeight:700,letterSpacing:"0.5px",
-            padding:"3px 9px",borderRadius:999,
-            color:"var(--red)",
-            background:"rgba(255,107,107,0.14)",
-            border:"1px solid rgba(255,107,107,0.4)"
-          }
-        }, id.replace(/_/g," ").toUpperCase());
-      })
     )
   ), todayCheckin.readiness_score != null && /*#__PURE__*/React.createElement(RecoveryCard, {
     checkin: todayCheckin
@@ -2352,10 +2225,10 @@ function Dashboard({
     items.push({l:"HUDDLE CHECK-IN",v:10});
     var streak = Math.min(15, Math.max(1, (profile.streak||0) + 1));
     items.push({l: streak + "-DAY STREAK",v:streak});
-    if (["8","9","10+"].indexOf(todayCheckin.sleep_hrs) !== -1) items.push({l:"8+ HOURS SLEEP",v:8});
-    if (todayCheckin.meal_color === "green") items.push({l:"GREEN MEAL",v:5});
+    if (["8","9","9+","10+"].indexOf(todayCheckin.sleep_hrs) !== -1) items.push({l:"8+ HOURS SLEEP",v:8});
+    if (todayCheckin.meal_color === "green") items.push({l:"WHOLE FOODS MEAL",v:5});
     if (todayCheckin.coach_task) items.push({l:"COACH'S TASK DONE",v:5});
-    if ((todayCheckin.hydration||0) >= 8) items.push({l:"HYDRATION 8+ CUPS",v:3});
+    if ((todayCheckin.hydration||0) >= 8) items.push({l:"HYDRATION 8+ GLASSES",v:3});
     if (todayCheckin.rest_day) items.push({l:"SMART REST DAY",v:3});
     return React.createElement("div", {style:{marginTop:14, paddingTop:12, borderTop:"1px dashed rgba(76,175,80,0.15)"}},
       React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginBottom:8}}, "GP BREAKDOWN"),
@@ -2381,31 +2254,32 @@ function Dashboard({
       color: "var(--sub)",
       letterSpacing: "0.5px"
     }
-  }, /*#__PURE__*/React.createElement("span", null, "\uD83D\uDE34 ", todayCheckin.sleep_hrs, "h ", todayCheckin.sleep_quality === "good" ? "👍" : "👎"), /*#__PURE__*/React.createElement("span", null, todayCheckin.readiness === "ready" ? "😃" : todayCheckin.readiness === "sluggish" ? "😐" : "😫"), /*#__PURE__*/React.createElement("span", null, "\uD83E\uDDE0 ", todayCheckin.stress, "/5"), /*#__PURE__*/React.createElement("span", null, todayCheckin.meal_color === "green" ? "🟢" : todayCheckin.meal_color === "yellow" ? "🟡" : "🔴"), /*#__PURE__*/React.createElement("span", null, "\uD83D\uDCA7 ", todayCheckin.hydration), todayCheckin.coach_task && /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("span", null, "\uD83D\uDE34 ", todayCheckin.sleep_hrs, "h ", (function(q){
+    var n = parseInt(q, 10);
+    if (!isNaN(n) && n >= 1 && n <= 5) return n >= 4 ? "👍" : n === 3 ? "🆗" : "👎";
+    return q === "good" ? "👍" : "👎";
+  })(todayCheckin.sleep_quality)), /*#__PURE__*/React.createElement("span", null, "\uD83E\uDDE0 ", todayCheckin.stress, "/5"), /*#__PURE__*/React.createElement("span", null, todayCheckin.meal_color === "green" ? "🟢" : todayCheckin.meal_color === "yellow" ? "🟡" : "🔴"), /*#__PURE__*/React.createElement("span", null, "\uD83D\uDCA7 ", todayCheckin.hydration), todayCheckin.coach_task && /*#__PURE__*/React.createElement("span", {
     style: {
       color: "var(--grn)"
     }
-  }, "\u2705 TASK")), todayCheckin.pain_zones && todayCheckin.pain_zones.length > 0 && todayCheckin.pain_zones.some(function (z) {
-    return z.startsWith("sore:") || z.startsWith("sharp:");
-  }) && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 12,
-      color: "var(--red)",
-      letterSpacing: "0.5px",
-      marginTop: 8
-    }
-  }, "\u26A0\uFE0F PAIN: ", todayCheckin.pain_zones.filter(function (z) {
-    return z.startsWith("sore:") || z.startsWith("sharp:");
-  }).map(function (z) {
-    var isSharp = z.startsWith("sharp:");
-    var id = z.replace(/^(sore|sharp):/, "");
-    var friendly = id.replace(/_/g, " ").replace(/\b\w/g, function(c){return c.toUpperCase();});
-    return friendly + (isSharp ? " (injury)" : "");
-  }).join(", "), (function(){
-    var n = (todayCheckin.pain_zones||[]).find(function(z){return z.startsWith("note:");});
-    return n ? /*#__PURE__*/React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--sub)",marginTop:4,fontStyle:"italic",fontWeight:500}}, "\u201C" + n.replace("note:","") + "\u201D") : null;
-  })()))), todaySessions.length > 0 && (hasConflict || loadLevel !== "ok") && /*#__PURE__*/React.createElement("div", {
+  }, "\u2705 TASK")), todayCheckin.pain_zones && todayCheckin.pain_zones.length > 0 && (function(){
+    var pz = todayCheckin.pain_zones || [];
+    var hasPain  = pz.some(function (z) { return z.startsWith("sharp:"); });
+    var hasSore  = pz.some(function (z) { return z.startsWith("sore:"); });
+    if (!hasPain && !hasSore) return null;
+    return /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontFamily: D2,
+        fontSize: 12,
+        color: hasPain ? "var(--red)" : "#FFB300",
+        letterSpacing: "0.5px",
+        marginTop: 8,
+        fontWeight: 700
+      }
+    }, hasPain
+      ? "\u26A0\uFE0F PAIN REPORTED \u2014 SEE THE ATHLETIC TRAINER"
+      : "\u00B7 DISCOMFORT REPORTED");
+  })())), todaySessions.length > 0 && (hasConflict || loadLevel !== "ok") && /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "0 20px",
       marginBottom: 16
@@ -2812,7 +2686,7 @@ function TrendsPage(props) {
   }
 
   /* Date helpers */
-  var sleepMap = { "<6": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10+": 10 };
+  var sleepMap = { "<6": 5, "6": 6, "7": 7, "8": 8, "9": 9, "9+": 9, "10+": 10 };
   function isoNDaysAgo(n) { return new Date(Date.now() - n * 86400 * 1000).toISOString().slice(0, 10); }
   function buildRange(startDaysAgo, endDaysAgo) {
     var arr = [];
@@ -2979,17 +2853,18 @@ function TrendsPage(props) {
     if (metric === "soreness") {
       if (currAvg <= 0.3) return "Body's clean. Strong baseline.";
       if (d != null && d > 25) return "Trending tighter \u2014 listen to it.";
-      var zoneCount = {};
+      /* Count days with pain (sharp:) vs discomfort (sore:) without revealing
+         specific body parts. Keeps athlete-side trend useful, keeps the app
+         out of the medical-records business. */
+      var painDays = 0, soreDays = 0;
       checkins.forEach(function (c) {
-        (c.pain_zones || []).forEach(function (z) {
-          if (z.indexOf('sore:') === 0 || z.indexOf('sharp:') === 0) {
-            var id = z.split(':')[1];
-            zoneCount[id] = (zoneCount[id] || 0) + 1;
-          }
-        });
+        var pz = c.pain_zones || [];
+        if (pz.some(function (z) { return z.indexOf('sharp:') === 0; })) painDays++;
+        else if (pz.some(function (z) { return z.indexOf('sore:') === 0; })) soreDays++;
       });
-      var top = Object.keys(zoneCount).sort(function (a, b) { return zoneCount[b] - zoneCount[a]; })[0];
-      if (top && zoneCount[top] >= 3) return "Recurring in " + top.replace(/_/g, ' ').toUpperCase() + " \u2014 flag to coach.";
+      if (painDays >= 3) return "Multiple days reporting pain \u2014 see your athletic trainer.";
+      if (painDays >= 1) return "Pain reported this week \u2014 stay in touch with your trainer.";
+      if (soreDays >= 4) return "Soreness on most days \u2014 prioritize recovery.";
       return "Some tightness \u2014 keep monitoring.";
     }
     return "";
@@ -3096,25 +2971,52 @@ function Leaderboard({
   var [data, setData] = useState([]);
   var [loading, setLoading] = useState(true);
   useEffect(function () {
-    SB.from('consistency_scores').select('*').order('consistency_score', {ascending: false}).order('xp', {ascending: false}).limit(50).then(function (res) {
-      if (res.error) {
-        // Fallback: view not deployed yet — use base leaderboard ranked by GP.
-        // Rows get _fallback:true so render shows GP instead of a fake "0 SCORE".
-        SB.from('leaderboard').select('*').order('xp', {ascending: false}).limit(50).then(function (r2) {
-          if (!r2.error) setData((r2.data || []).map(function (a) {
-            return Object.assign({}, a, {
-              athlete_id: a.id,
-              _fallback: true
-            });
-          }));
+    SB.from('consistency_scores').select('*').then(function (res) {
+      if (res.error || !res.data) {
+        /* Fallback: consistency_scores view not deployed yet — try the base leaderboard view */
+        SB.from('leaderboard').select('*').then(function (r2) {
+          if (!r2.error && r2.data) {
+            setData(r2.data.map(function (a) {
+              return {
+                athlete_id: a.id,
+                name: a.name,
+                sports: a.sports || [],
+                streak: a.streak || 0,
+                checkin_count: a.checkin_count != null ? a.checkin_count : 0
+              };
+            }).sort(_sortRows));
+          }
           setLoading(false);
         });
-      } else {
-        setData(res.data || []);
-        setLoading(false);
+        return;
       }
+      var rows = res.data.map(function (a) {
+        /* Prefer explicit checkin_count from the view. Fall back to deriving
+           from consistency_score (% of last 30 days) if not exposed. The view
+           SHOULD be updated to expose checkin_count directly. */
+        var count;
+        if (a.checkin_count != null) count = a.checkin_count;
+        else if (a.consistency_score != null) count = Math.round((a.consistency_score / 100) * 30);
+        else count = 0;
+        return {
+          athlete_id: a.athlete_id || a.id,
+          name: a.name,
+          sports: a.sports || [],
+          streak: a.streak || 0,
+          checkin_count: count
+        };
+      });
+      setData(rows.sort(_sortRows));
+      setLoading(false);
     });
   }, []);
+
+  function _sortRows(a, b) {
+    if (b.checkin_count !== a.checkin_count) return b.checkin_count - a.checkin_count;
+    if (b.streak !== a.streak) return b.streak - a.streak;
+    return (a.name || "").localeCompare(b.name || "");
+  }
+
   if (loading) return /*#__PURE__*/React.createElement("div", {
     style: {
       padding: 40,
@@ -3154,9 +3056,10 @@ function Leaderboard({
       fontSize: 11,
       color: "var(--dim)",
       margin: "0 0 16px",
-      fontWeight: 600
+      fontWeight: 600,
+      letterSpacing: "1px"
     }
-  }, "RANKED BY CONSISTENCY \u2014 DAILY HABITS YOU CONTROL"), data.length === 0 && /*#__PURE__*/React.createElement("div", {
+  }, "DAYS CHECKED IN \u00B7 \uD83D\uDD25 = 3+ IN A ROW"), data.length === 0 && /*#__PURE__*/React.createElement("div", {
     className: "gc",
     style: {
       padding: 20,
@@ -3172,163 +3075,54 @@ function Leaderboard({
     }
   }, "NO ATHLETES YET \u2014 BE THE FIRST!")), data.map(function (a, i) {
     var isMe = a.athlete_id === myId;
-    /* Prefer gp (Good Points) from the view; fall back to xp for rows coming
-       from the legacy leaderboard view that doesn't expose the alias yet. */
-    var points = a.gp != null ? a.gp : (a.xp || 0);
-    var lv = gL(points);
-    /* Fallback mode: consistency_scores view not deployed — show GP instead
-       of a misleading "0 SCORE" for every athlete. */
-    var isFallback = a._fallback === true;
-    var displayValue = isFallback ? points : (a.consistency_score || 0);
-    var displayLabel = isFallback ? "GP" : "SCORE";
-
-    /* Badge array */
-    var badges = [];
-    if (a.badge_all_in) badges.push({
-      i: "🔥",
-      l: "ALL-IN"
-    });
-    if (a.badge_iron) badges.push({
-      i: "🦾",
-      l: "IRON"
-    });
-    if (a.badge_unbreakable) badges.push({
-      i: "🔗",
-      l: "UNBREAKABLE"
-    });
-    if (a.badge_centurion) badges.push({
-      i: "💯",
-      l: "CENTURION"
-    });
-    if (a.badge_first_light && !a.badge_iron) badges.push({
-      i: "🌅",
-      l: "FIRST LIGHT"
-    });
+    var onFire = a.streak >= 3;
     return /*#__PURE__*/React.createElement("div", {
-      key: a.athlete_id || a.id,
+      key: a.athlete_id,
       className: isMe ? "gc2" : "gc",
       style: {
         display: "flex",
         alignItems: "center",
         gap: 12,
-        padding: "14px 16px",
-        marginBottom: 10
+        padding: "12px 14px",
+        marginBottom: 6
       }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 32,
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D,
-        fontSize: i < 3 ? 22 : 18,
-        color: i === 0 ? "var(--g1)" : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "var(--dim)"
-      }
-    }, i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        minWidth: 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 6
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 18,
-        color: "var(--txt)",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, (a.name || "").toUpperCase()), isMe && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        padding: "2px 8px",
-        borderRadius: 8,
-        background: "rgba(0,255,135,0.1)",
-        color: "var(--g1)",
-        letterSpacing: "2px",
-        fontWeight: 700
-      }
-    }, "YOU")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 5,
-        marginTop: 3,
-        flexWrap: "wrap"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 11,
-        color: "var(--dim)",
-        fontWeight: 700
-      }
-    }, lv.i, " LVL ", lv.l), (a.sports || []).slice(0, 2).map(function (s) {
-      return /*#__PURE__*/React.createElement(ST, {
-        key: s,
-        s: s
-      });
-    }), (a.streak || 0) > 0 && /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 11,
-        color: "var(--ember)",
-        fontWeight: 700
-      }
-    }, "\uD83D\uDD25", a.streak, "d")), badges.length > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 4,
-        marginTop: 4,
-        flexWrap: "wrap"
-      }
-    }, badges.map(function (b) {
-      return /*#__PURE__*/React.createElement("span", {
-        key: b.l,
-        style: {
-          fontFamily: D2,
-          fontSize: 9,
-          padding: "2px 6px",
-          borderRadius: 6,
-          background: "rgba(124,58,237,0.08)",
-          color: "var(--pr2)",
-          border: "1px solid rgba(124,58,237,0.12)",
-          letterSpacing: "0.5px",
-          fontWeight: 700
-        }
-      }, b.i, " ", b.l);
-    }))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "gs",
-      style: {
-        fontFamily: D,
-        fontSize: 28,
-        lineHeight: 1
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "gp"
-    }, displayValue)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        color: "var(--dim)",
-        letterSpacing: "2px",
-        fontWeight: 700
-      }
-    }, displayLabel)));
+    },
+      /* Rank */
+      React.createElement("div", {style:{width:32,textAlign:"center",flexShrink:0}},
+        React.createElement("span", {style:{
+          fontFamily:D, fontSize: i < 3 ? 22 : 18,
+          color: i === 0 ? "var(--g1)" : i === 1 ? "#C0C0C0" : i === 2 ? "#CD7F32" : "var(--dim)"
+        }}, i < 3 ? ["🥇","🥈","🥉"][i] : i + 1)
+      ),
+      /* Name + sports */
+      React.createElement("div", {style:{flex:1,minWidth:0}},
+        React.createElement("div", {style:{display:"flex",alignItems:"center",gap:6}},
+          React.createElement("span", {style:{
+            fontFamily:D2, fontSize:18, color:"var(--txt)",
+            overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
+            letterSpacing:"1px", fontWeight:700
+          }}, (a.name || "").toUpperCase()),
+          onFire && React.createElement("span", {style:{fontSize:18,lineHeight:1,flexShrink:0}}, "\uD83D\uDD25"),
+          isMe && React.createElement("span", {style:{
+            fontFamily:D2, fontSize:10, padding:"2px 8px", borderRadius:8,
+            background:"rgba(0,255,135,0.1)", color:"var(--g1)",
+            letterSpacing:"2px", fontWeight:700, flexShrink:0
+          }}, "YOU")
+        ),
+        (a.sports || []).length > 0 && React.createElement("div", {style:{
+          display:"flex", alignItems:"center", gap:5, marginTop:3, flexWrap:"wrap"
+        }},
+          (a.sports || []).slice(0, 2).map(function (s) {
+            return React.createElement(ST, {key:s, s:s});
+          })
+        )
+      ),
+      /* Total days */
+      React.createElement("div", {style:{textAlign:"right",flexShrink:0}},
+        React.createElement("div", {className:"gs",style:{fontFamily:D,fontSize:28,lineHeight:1,color:"var(--txt)"}}, a.checkin_count),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"2px",fontWeight:700}}, a.checkin_count === 1 ? "DAY" : "DAYS")
+      )
+    );
   }));
 }
 
@@ -3442,9 +3236,8 @@ function CoachDashboard({
   var [taskSavedSport, setTaskSavedSport] = useState(null); /* sport name that just saved */
   var [editingSport, setEditingSport] = useState(null); /* sport currently being edited */
   var [teamSummary, setTeamSummary] = useState([]);
-  var [todayRedFlags, setTodayRedFlags] = useState([]);
-  var [streakAlerts, setStreakAlerts] = useState([]);
-  var [injuryNotes, setInjuryNotes] = useState([]);
+  var [todayCheckins, setTodayCheckins] = useState({}); /* {athlete_id: {pain_zones, readiness}} — feeds BODY + FEEL traffic lights */
+  var [trainerFollowups, setTrainerFollowups] = useState([]); /* AD-only: athletes with sharp pain reported today */
 
   /* Sport-scope filter — coach sees only athletes whose sports overlap with their own.
      AD and coaches without a sport set see everything. Matches the existing roster filter
@@ -3472,63 +3265,33 @@ function CoachDashboard({
     }
     if(profile.role==="ad"){SB.from('ad_team_summary').select('*').then(function(r){if(!r.error&&r.data)setTeamSummary(r.data)})}
 
-    /* Fetch red flags for AD alert panel */
+    /* Fetch today's pain reports — drives the BODY traffic light for coaches
+       and the AD's trainer follow-up panel. */
     if(profile.role==="ad"||profile.role==="coach"){
-      /* Today's red flags */
       var todayStr = new Date().toISOString().slice(0,10);
-      SB.from('checkins').select('athlete_id, red_flag, red_flag_reasons, readiness_score, date, profiles!inner(first_name, last_name, sports)').eq('red_flag',true).eq('date',todayStr).then(function(r){
-        if(!r.error&&r.data) setTodayRedFlags(r.data.filter(function(rf){return _visibleToThisCoach(rf.profiles&&rf.profiles.sports);}));
-      });
 
-      /* Last 7 days for consecutive streak detection */
-      var d = new Date();
-      var weekAgo = new Date(d.getTime()-7*86400000).toISOString().slice(0,10);
-      SB.from('checkins').select('athlete_id, red_flag, date, profiles!inner(first_name, last_name, sports)').eq('red_flag',true).gte('date',weekAgo).order('date',{ascending:true}).then(function(r){
+      /* Today's checkins — pain_zones + readiness for traffic lights.
+         The coach sees BODY (injury) and FEEL (perceived readiness); the AD
+         sees a follow-up list for any athlete who reported sharp pain today. */
+      SB.from('checkins').select('athlete_id, pain_zones, readiness, profiles!inner(first_name, last_name, sports)').eq('date',todayStr).then(function(r){
         if(!r.error&&r.data){
-          /* Group by athlete and find 3+ consecutive days */
-          var byAthlete = {};
+          var map = {};
+          var trainer = [];
           r.data.forEach(function(c){
-            if(!byAthlete[c.athlete_id]) byAthlete[c.athlete_id] = {name:(c.profiles.first_name||"")+" "+(c.profiles.last_name||""),sports:c.profiles.sports||[],dates:[]};
-            if(!byAthlete[c.athlete_id].dates.includes(c.date)) byAthlete[c.athlete_id].dates.push(c.date);
-          });
-          var alerts = [];
-          Object.keys(byAthlete).forEach(function(aid){
-            var a = byAthlete[aid];
-            a.dates.sort();
-            /* Find longest consecutive run */
-            var maxRun = 1, run = 1;
-            for(var i=1;i<a.dates.length;i++){
-              var prev = new Date(a.dates[i-1]+"T00:00:00");
-              var curr = new Date(a.dates[i]+"T00:00:00");
-              if(curr.getTime()-prev.getTime()===86400000){ run++; maxRun=Math.max(maxRun,run); }
-              else { run=1; }
-            }
-            if(maxRun>=3 && _visibleToThisCoach(a.sports)) alerts.push({id:aid,name:a.name,sports:a.sports,days:maxRun,lastDate:a.dates[a.dates.length-1]});
-          });
-          setStreakAlerts(alerts);
-        }
-      });
-
-      /* Past 7 days of injury notes — any checkin with a "note:" entry in pain_zones */
-      SB.from('checkins').select('athlete_id, date, pain_zones, profiles!inner(first_name, last_name, sports)').gte('date',weekAgo).not('pain_zones','is',null).order('date',{ascending:false}).then(function(r){
-        if(!r.error&&r.data){
-          var notes = [];
-          r.data.forEach(function(c){
-            var zones = c.pain_zones || [];
-            var noteEntry = zones.find(function(z){return z.startsWith("note:");});
-            if (!noteEntry) return;
             if (!_visibleToThisCoach(c.profiles && c.profiles.sports)) return;
-            var injuries = zones.filter(function(z){return z.startsWith("sharp:");}).map(function(z){return z.replace("sharp:","");});
-            notes.push({
-              athleteId: c.athlete_id,
-              name: (c.profiles.first_name||"")+" "+(c.profiles.last_name||""),
-              sports: c.profiles.sports || [],
-              date: c.date,
-              text: noteEntry.replace("note:",""),
-              injuries: injuries
-            });
+            var pz = c.pain_zones || [];
+            map[c.athlete_id] = { pain_zones: pz, readiness: c.readiness };
+            var hasSharp = pz.some(function(z){ return typeof z === "string" && z.indexOf("sharp:") === 0; });
+            if (hasSharp) {
+              trainer.push({
+                athlete_id: c.athlete_id,
+                name: ((c.profiles.first_name||"") + " " + (c.profiles.last_name||"")).trim(),
+                sports: c.profiles.sports || []
+              });
+            }
           });
-          setInjuryNotes(notes);
+          setTodayCheckins(map);
+          setTrainerFollowups(trainer);
         }
       });
     }
@@ -3639,40 +3402,121 @@ function CoachDashboard({
       label: "NO CHECK-IN"
     };
   }
-  function trendArrow(t) {
-    if (t === "up") return {
-      arrow: "↑",
-      color: "#00FF87",
-      label: "ABOVE BASELINE"
-    };
-    if (t === "down") return {
-      arrow: "↓",
-      color: "#EF5350",
-      label: "BELOW BASELINE"
-    };
-    if (t === "steady") return {
-      arrow: "→",
-      color: "var(--sub)",
-      label: "STEADY"
-    };
-    if (t === "new") return {
-      arrow: "·",
-      color: "var(--dim)",
-      label: "NEW"
-    };
-    return {
-      arrow: "—",
-      color: "var(--dim)",
-      label: ""
-    };
+
+  /* LOAD light — training load (effort × duration). Uses the same thresholds
+     as the athlete-side load detection: caution at 450/sport, danger at 750/sport.
+     Rest day (load=0) reads as green (no stress on body). */
+  function loadStatus(a) {
+    if (!a.checked_in) return "none";
+    var load = a.today_load || 0;
+    if (load === 0) return "green";
+    var sessions = Math.max(1, a.sports_today || 1);
+    if (load >= 750 * sessions) return "red";
+    if (load >= 450 * sessions) return "yellow";
+    return "green";
   }
-  function flagLabel(cat) {
-    if (cat === "physical_head_neck") return "HEAD/NECK — PULL FROM CONTACT";
-    if (cat === "wellness_exhausted") return "EXHAUSTED — MODIFY INTENSITY";
-    if (cat === "wellness_critical") return "CRITICAL — CHECK IN WITH ATHLETE";
-    if (cat === "wellness_general") return "WELLNESS ALERT — MONITOR";
-    return "FLAG";
+
+  /* FEEL light — athlete's self-reported readiness to compete today.
+     Handles both the new numeric scale (1-5) and legacy text values
+     (ready/sluggish/exhausted) so historical rows still render correctly.
+     1=red, 2-3=yellow, 4-5=green. */
+  function feelStatus(athleteId) {
+    var c = todayCheckins[athleteId];
+    if (!c || c.readiness == null) return "none";
+    var r = c.readiness;
+    if (typeof r === "number") {
+      if (r <= 1) return "red";
+      if (r <= 3) return "yellow";
+      return "green";
+    }
+    /* Legacy text values */
+    if (r === "exhausted") return "red";
+    if (r === "sluggish")  return "yellow";
+    if (r === "ready")     return "green";
+    /* Numeric stored as text ("1".."5") — handle just in case */
+    var n = parseInt(r, 10);
+    if (!isNaN(n)) {
+      if (n <= 1) return "red";
+      if (n <= 3) return "yellow";
+      return "green";
+    }
+    return "none";
   }
+
+  /* BODY light — injury status from generic pain_zones sentinel.
+     sharp:* = pain (red), sore:* = discomfort (yellow), empty = all clear (green). */
+  function bodyStatusFor(athleteId) {
+    var c = todayCheckins[athleteId];
+    if (!c) return "none";
+    var pz = c.pain_zones || [];
+    if (pz.some(function(z){return typeof z === "string" && z.indexOf("sharp:") === 0;})) return "red";
+    if (pz.some(function(z){return typeof z === "string" && z.indexOf("sore:") === 0;})) return "yellow";
+    return "green";
+  }
+
+  /* lightCell — tinted table cell. Background + border use the status color
+     family so the whole column reads as red/yellow/green at a glance, with
+     a brighter dot in the center for emphasis. status === "none" renders a
+     muted cell with an em-dash to signal "no data". */
+  function lightCell(status) {
+    var STYLES = {
+      green:  { bg: "rgba(0,255,135,0.12)",  border: "rgba(0,255,135,0.32)",  dot: "#00FF87" },
+      yellow: { bg: "rgba(255,179,0,0.12)",  border: "rgba(255,179,0,0.32)",  dot: "#FFB300" },
+      red:    { bg: "rgba(239,83,80,0.14)",  border: "rgba(239,83,80,0.40)",  dot: "#EF5350" },
+      none:   { bg: "rgba(255,255,255,0.02)",border: "rgba(255,255,255,0.05)",dot: null }
+    };
+    var s = STYLES[status] || STYLES.none;
+    return React.createElement("div", {
+      style:{
+        width:36, height:34,
+        display:"flex", justifyContent:"center", alignItems:"center",
+        background: s.bg,
+        border: "1px solid " + s.border,
+        borderRadius: 8
+      }
+    },
+      s.dot
+        ? React.createElement("div", {
+            style:{ width:12, height:12, borderRadius:"50%", background:s.dot, boxShadow:"0 0 6px " + s.dot }
+          })
+        : React.createElement("span", {
+            style:{fontFamily:D2, fontSize:14, color:"var(--dim)", fontWeight:700, lineHeight:1}
+          }, "\u2014")
+    );
+  }
+
+  /* Single traffic light pill — used for SCORE / FEEL / BODY in roster rows
+     and alert panels. Shows colored dot + short label. No personal answers. */
+  function lightPill(label, status) {
+    var COLORS = {
+      green:  "#00FF87",
+      yellow: "#FFB300",
+      red:    "#EF5350",
+      none:   "var(--dim)"
+    };
+    var STATES = {
+      green:  "GOOD",
+      yellow: "WATCH",
+      red:    "FLAG",
+      none:   "—"
+    };
+    var col = COLORS[status] || "var(--dim)";
+    return React.createElement("div", {
+      style:{
+        flex:1,padding:"10px 8px",borderRadius:12,
+        background:status==="none"?"rgba(12,12,18,0.6)":col+"14",
+        border:"1px solid "+(status==="none"?"rgba(255,255,255,0.04)":col+"33"),
+        textAlign:"center"
+      }
+    },
+      React.createElement("div", {style:{fontFamily:D2,fontSize:9,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginBottom:4}}, label),
+      React.createElement("div", {style:{display:"flex",alignItems:"center",justifyContent:"center",gap:6}},
+        React.createElement("span", {style:{display:"inline-block",width:10,height:10,borderRadius:"50%",background:col,boxShadow:status==="none"?"none":"0 0 6px "+col,flexShrink:0}}),
+        React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:col,fontWeight:700,letterSpacing:"0.8px"}}, STATES[status] || "—")
+      )
+    );
+  }
+
   return /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "20px 20px 110px"
@@ -3691,104 +3535,104 @@ function CoachDashboard({
     React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:"var(--pr2)",fontWeight:700,letterSpacing:"1px"}}, profile.sports.join(" \u00B7 ").toUpperCase())
   ),
 
-  /* ── AD/Coach Red Flag Alert Panel ── */
-  (streakAlerts.length > 0) && React.createElement("div", {style:{
+  /* ── TRAINER FOLLOW-UP NEEDED — AD only. Athletes who reported sharp pain
+        today, directed to the athletic trainer. AD coordinates with trainer,
+        coach, and athlete. ── */
+  profile.role === "ad" && trainerFollowups.length > 0 && React.createElement("div", {style:{
     marginBottom:20,padding:"18px 16px",borderRadius:16,
-    background:"linear-gradient(160deg,rgba(239,83,80,0.12),rgba(30,8,8,0.9))",
-    border:"1.5px solid rgba(239,83,80,0.35)"
+    background:"linear-gradient(160deg,rgba(239,83,80,0.14),rgba(30,8,8,0.92))",
+    border:"1.5px solid rgba(239,83,80,0.40)"
   }},
-    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10,marginBottom:12}},
-      React.createElement("i", {className:"ph-thin ph-warning-octagon",style:{fontSize:32,color:"var(--red)"}}),
+    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:12,marginBottom:12}},
+      React.createElement("i", {className:"ph-thin ph-first-aid-kit",style:{fontSize:32,color:"var(--red)"}}),
       React.createElement("div", null,
-        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--red)",letterSpacing:"-0.02em"}}, "CONSECUTIVE RED FLAG ALERT"),
-        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,letterSpacing:"1px"}}, "REQUIRES IMMEDIATE FOLLOW-UP WITH ATHLETE AND COACH")
+        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--red)",letterSpacing:"-0.02em"}}, "TRAINER FOLLOW-UP NEEDED"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,letterSpacing:"1px"}}, "COORDINATE WITH TRAINER, COACH, ATHLETE")
       )
     ),
-    streakAlerts.map(function(a){
-      return React.createElement("div", {key:a.id,style:{
-        display:"flex",alignItems:"center",justifyContent:"space-between",
+    trainerFollowups.map(function(a){
+      return React.createElement("div", {key:a.athlete_id,style:{
+        display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,
         padding:"12px 14px",marginBottom:6,borderRadius:12,
-        background:"rgba(239,83,80,0.08)",border:"1px solid rgba(239,83,80,0.2)"
+        background:"rgba(239,83,80,0.08)",border:"1px solid rgba(239,83,80,0.20)"
       }},
         React.createElement("div", null,
           React.createElement("div", {style:{fontFamily:D2,fontSize:15,color:"var(--txt)",fontWeight:700}}, a.name),
           React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600,letterSpacing:"1px"}}, (a.sports||[]).join(" \u00B7 ").toUpperCase())
         ),
-        React.createElement("div", {style:{textAlign:"right"}},
-          React.createElement("div", {style:{fontFamily:D,fontSize:28,color:"var(--red)"}}, a.days + " DAYS"),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:600,letterSpacing:"1px"}}, "LAST: " + a.lastDate)
+        React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--red)",fontWeight:700,letterSpacing:"1.5px"}}, "REVIEW")
+      );
+    })
+  ),
+
+  /* ── AD TEAM WELLNESS — per-team wellness score (% green of checked-in
+        athletes). Department-wide rollup uses the deduplicated `data` array
+        rather than summing across teams (multi-sport athletes would be
+        double-counted otherwise). ── */
+  profile.role === "ad" && teamSummary.length > 0 && React.createElement("div", {style:{marginBottom:20}},
+    React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:32,letterSpacing:"-0.02em",lineHeight:0.85,marginBottom:4}}, "TEAM WELLNESS"),
+    React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"2px",fontWeight:700,marginBottom:14}}, "% READY TO TRAIN"),
+
+    /* Department-wide card — rollup across all athletes (deduplicated) */
+    function(){
+      var deptPct = checkedIn > 0 ? Math.round(greens / checkedIn * 100) : 0;
+      var deptCol = deptPct >= 75 ? "var(--g1)" : deptPct >= 50 ? "#FFB300" : "var(--red)";
+      return React.createElement("div", {style:{
+        padding:"16px 18px",marginBottom:12,
+        borderRadius:"4px 16px 16px 4px",
+        background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",
+        border:"1px solid rgba(124,58,237,0.10)",
+        borderLeft:"4px solid " + deptCol
+      }},
+        React.createElement("div", {style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:6}},
+          React.createElement("div", null,
+            React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"var(--txt)",letterSpacing:"-0.02em"}}, "ALL TEAMS"),
+            React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:700,letterSpacing:"1.5px",marginTop:2}}, "DEPARTMENT-WIDE")
+          ),
+          React.createElement("div", {style:{fontFamily:D,fontSize:44,color:deptCol,lineHeight:0.9}}, deptPct + "%")
+        ),
+        React.createElement("div", {style:{display:"flex",gap:12,fontFamily:D2,fontSize:11,fontWeight:700,letterSpacing:"1px",marginTop:4}},
+          React.createElement("span", {style:{color:"var(--sub)"}}, checkedIn + "/" + total + " CHECKED IN"),
+          greens > 0 && React.createElement("span", {style:{color:"#00FF87"}}, greens + " GREEN"),
+          yellows > 0 && React.createElement("span", {style:{color:"#FFB300"}}, yellows + " YELLOW"),
+          reds > 0 && React.createElement("span", {style:{color:"#EF5350"}}, reds + " RED")
+        )
+      );
+    }(),
+
+    /* Per-team cards */
+    teamSummary.map(function(s){
+      var checkedInTeam = Number(s.checked_in_today||0);
+      var totalTeam = Number(s.total_athletes||0);
+      var greenTeam = Number(s.green_count||0);
+      var yellowTeam = Number(s.yellow_count||0);
+      var redTeam = Number(s.red_count||0);
+      var pct = checkedInTeam > 0 ? Math.round(greenTeam / checkedInTeam * 100) : 0;
+      var col = pct >= 75 ? "var(--g1)" : pct >= 50 ? "#FFB300" : "var(--red)";
+      var dim = checkedInTeam === 0;
+      return React.createElement("div", {key:s.sport,style:{
+        padding:"14px 16px",marginBottom:8,
+        borderRadius:"4px 12px 12px 4px",
+        background:"rgba(12,12,18,0.6)",
+        border:"1px solid rgba(124,58,237,0.06)",
+        borderLeft:"4px solid " + (dim ? "rgba(255,255,255,0.08)" : col),
+        opacity:dim ? 0.55 : 1
+      }},
+        React.createElement("div", {style:{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:4}},
+          React.createElement("div", {style:{fontFamily:D,fontSize:20,color:"var(--txt)",letterSpacing:"-0.02em"}}, s.sport.toUpperCase()),
+          React.createElement("div", {style:{fontFamily:D,fontSize:32,color:dim ? "var(--dim)" : col,lineHeight:0.9}}, dim ? "\u2014" : pct + "%")
+        ),
+        React.createElement("div", {style:{display:"flex",gap:10,fontFamily:D2,fontSize:11,fontWeight:700,letterSpacing:"1px",flexWrap:"wrap"}},
+          React.createElement("span", {style:{color:"var(--sub)"}}, checkedInTeam + "/" + totalTeam + " CHECKED IN"),
+          greenTeam > 0 && React.createElement("span", {style:{color:"#00FF87"}}, greenTeam + " GREEN"),
+          yellowTeam > 0 && React.createElement("span", {style:{color:"#FFB300"}}, yellowTeam + " YELLOW"),
+          redTeam > 0 && React.createElement("span", {style:{color:"#EF5350"}}, redTeam + " RED")
         )
       );
     })
   ),
 
-  todayRedFlags.length > 0 && React.createElement("div", {style:{
-    marginBottom:20,padding:"16px",borderRadius:16,
-    background:"rgba(255,179,0,0.06)",
-    border:"1px solid rgba(255,179,0,0.2)"
-  }},
-    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10,marginBottom:10}},
-      React.createElement("i", {className:"ph-thin ph-flag-banner",style:{fontSize:26,color:"#FFB300"}}),
-      React.createElement("div", {style:{fontFamily:D,fontSize:18,color:"#FFB300",letterSpacing:"-0.02em"}}, "TODAY'S RED FLAGS (" + todayRedFlags.length + ")")
-    ),
-    todayRedFlags.map(function(rf,i){
-      return React.createElement("div", {key:i,style:{
-        display:"flex",alignItems:"center",justifyContent:"space-between",
-        padding:"10px 12px",marginBottom:4,borderRadius:10,
-        background:"rgba(12,12,18,0.6)"
-      }},
-        React.createElement("div", null,
-          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--txt)",fontWeight:700}}, (rf.profiles.first_name||"")+" "+(rf.profiles.last_name||"")),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600}}, (rf.red_flag_reasons||[]).join(" \u00B7 "))
-        ),
-        React.createElement("div", {style:{fontFamily:D,fontSize:20,color:"var(--red)"}}, (rf.readiness_score||0)+"/100")
-      );
-    })
-  ),
-
-  injuryNotes.length > 0 && React.createElement("div", {style:{
-    marginBottom:20,padding:"16px",borderRadius:16,
-    background:"rgba(255,107,107,0.05)",
-    border:"1px solid rgba(255,107,107,0.2)"
-  }},
-    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10,marginBottom:10}},
-      React.createElement("i", {className:"ph-thin ph-notepad",style:{fontSize:26,color:"var(--red)"}}),
-      React.createElement("div", {style:{fontFamily:D,fontSize:18,color:"var(--red)",letterSpacing:"-0.02em"}}, "INJURY NOTES \u00B7 PAST 7 DAYS (" + injuryNotes.length + ")")
-    ),
-    injuryNotes.map(function(n,i){
-      /* Relative-day label */
-      var _today = new Date().toISOString().slice(0,10);
-      var _rel;
-      if (n.date === _today) _rel = "TODAY";
-      else {
-        var _diff = Math.round((new Date(_today+"T00:00:00").getTime() - new Date(n.date+"T00:00:00").getTime()) / 86400000);
-        _rel = _diff === 1 ? "YESTERDAY" : _diff + " DAYS AGO";
-      }
-      return React.createElement("div", {key:i,style:{
-        padding:"12px 14px",marginBottom:6,borderRadius:10,
-        background:"rgba(12,12,18,0.6)"
-      }},
-        React.createElement("div", {style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6,gap:8}},
-          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--txt)",fontWeight:700}}, n.name),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:700,letterSpacing:"1px",flexShrink:0}}, _rel)
-        ),
-        React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--sub)",fontWeight:600,fontStyle:"italic",lineHeight:1.4,marginBottom:n.injuries.length>0?6:0}}, "\u201C" + n.text + "\u201D"),
-        n.injuries.length > 0 && React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:4}},
-          n.injuries.map(function(id,j){
-            return React.createElement("span", {key:j,style:{
-              fontFamily:D2,fontSize:10,fontWeight:700,letterSpacing:"0.5px",
-              padding:"2px 8px",borderRadius:999,
-              color:"var(--red)",
-              background:"rgba(255,107,107,0.12)",
-              border:"1px solid rgba(255,107,107,0.3)"
-            }}, id.replace(/_/g," ").toUpperCase());
-          })
-        )
-      );
-    })
-  ),
-
-  /*#__PURE__*/React.createElement("h1", {
+  profile.role !== "ad" && /*#__PURE__*/React.createElement("h1", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -3796,7 +3640,7 @@ function CoachDashboard({
       lineHeight: 0.85,
       marginBottom: 4
     }
-  }, "ROSTER"), /*#__PURE__*/React.createElement("p", {
+  }, "ROSTER"), profile.role !== "ad" && /*#__PURE__*/React.createElement("p", {
     style: {
       fontFamily: D2,
       fontSize: 14,
@@ -3805,52 +3649,10 @@ function CoachDashboard({
       marginBottom: 16,
       fontWeight: 700
     }
-  }, profile.role === "ad" ? "ALL ATHLETES" : (profile.sports || []).join(" · ").toUpperCase()),
-
-  /* AD Team Summary — anonymized, no individual IDs */
-  profile.role === "ad" && teamSummary.length > 0 && React.createElement("div", {style:{marginBottom:16}},
-
-    /* Ready to Train headline */
-    function(){
-      var totalAthletes = teamSummary.reduce(function(s,r){return s+Number(r.total_athletes||0)},0);
-      var totalCheckedIn = teamSummary.reduce(function(s,r){return s+Number(r.checked_in_today||0)},0);
-      var totalGreen = teamSummary.reduce(function(s,r){return s+Number(r.green_count||0)},0);
-      var totalYellow = teamSummary.reduce(function(s,r){return s+Number(r.yellow_count||0)},0);
-      var totalRed = teamSummary.reduce(function(s,r){return s+Number(r.red_count||0)},0);
-      var totalFlags = teamSummary.reduce(function(s,r){return s+Number(r.red_flag_count||0)},0);
-      var readyPct = totalCheckedIn > 0 ? Math.round(totalGreen / totalCheckedIn * 100) : 0;
-      var readyColor = readyPct >= 75 ? "var(--g1)" : readyPct >= 50 ? "#FFB300" : "var(--red)";
-      return React.createElement("div", null,
-
-        /* Big percentage */
-        React.createElement("div", {style:{padding:"20px",borderRadius: 16,background:"linear-gradient(160deg,rgba(16,16,22,0.95),rgba(8,8,14,0.98))",border:"1.5px solid rgba(0,255,135,0.08)",marginBottom:12,textAlign:"center"}},
-          React.createElement("div", {style:{fontFamily:D,fontSize:64,color:readyColor,lineHeight:0.9}}, readyPct + "%"),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"3px",fontWeight:700,marginTop:6}}, "READY TO TRAIN"),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",fontWeight:600,marginTop:4}}, totalGreen + " GREEN · " + totalYellow + " YELLOW · " + totalRed + " RED · " + (totalCheckedIn > 0 ? totalCheckedIn : 0) + " OF " + totalAthletes + " CHECKED IN"),
-          totalFlags > 0 && React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--red)",fontWeight:700,marginTop:8}}, "🚩 " + totalFlags + " RED FLAG" + (totalFlags > 1 ? "S" : "") + " TODAY")
-        ),
-
-        /* Per-sport breakdown */
-        teamSummary.map(function(s){
-          var sportReady = Number(s.checked_in_today||0) > 0 ? Math.round(Number(s.green_count||0) / Number(s.checked_in_today) * 100) : 0;
-          var sc = sportReady >= 75 ? "var(--g1)" : sportReady >= 50 ? "#FFB300" : "var(--red)";
-          return React.createElement("div", {key:s.sport,style:{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",borderRadius:12,background:"rgba(12,12,18,0.8)",border:"1px solid rgba(124,58,237,0.06)",marginBottom:6}},
-            React.createElement("div", {style:{fontFamily:D,fontSize:24,color:sc,width:48,textAlign:"center"}}, sportReady + "%"),
-            React.createElement("div", {style:{flex:1}},
-              React.createElement("div", {style:{fontFamily:D,fontSize:16,color:"var(--txt)",letterSpacing:"-0.02em"}}, s.sport.toUpperCase()),
-              React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600}},
-                Number(s.checked_in_today||0) + "/" + Number(s.total_athletes||0) + " CHECKED IN · AVG SLEEP " + (s.avg_sleep_hrs||"—") + "H · AVG LOAD " + (s.avg_load||"0"))
-            ),
-            Number(s.red_flag_count||0) > 0 && React.createElement("span", {style:{fontFamily:D2,fontSize:12,color:"var(--red)",fontWeight:700}}, "🚩" + s.red_flag_count),
-            Number(s.multi_sport_conflicts||0) > 0 && React.createElement("span", {style:{fontFamily:D2,fontSize:12,color:"#FFB300",fontWeight:700}}, "⚡" + s.multi_sport_conflicts)
-          );
-        })
-      );
-    }()
-  ),
+  }, (profile.sports || []).join(" · ").toUpperCase()),
 
   /* Coach Task Setter — one block per sport for multi-sport coaches */
-  React.createElement("div", {style:{marginBottom:16}},
+  profile.role !== "ad" && React.createElement("div", {style:{marginBottom:16}},
     (profile.sports||[]).map(function(sport){
       var text = tasksBySport[sport] || "";
       var isEditing = editingSport === sport;
@@ -3891,7 +3693,7 @@ function CoachDashboard({
     })
   ),
 
-  /*#__PURE__*/React.createElement("div", {
+  profile.role !== "ad" && /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       gap: 6,
@@ -3950,7 +3752,7 @@ function CoachDashboard({
         lineHeight: 0.9
       }
     }, f.n), f.l);
-  })), /*#__PURE__*/React.createElement("div", {
+  })), profile.role !== "ad" && /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 20,
       padding: "12px 16px",
@@ -3993,7 +3795,7 @@ function CoachDashboard({
       borderRadius: 6,
       transition: "width 0.5s ease"
     }
-  }))), filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
+  }))), profile.role !== "ad" && filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
     className: "gc",
     style: {
       padding: 24,
@@ -4007,257 +3809,68 @@ function CoachDashboard({
       letterSpacing: "2px",
       fontWeight: 700
     }
-  }, "NO ATHLETES MATCH FILTER")), filtered.map(function (a) {
+  }, "NO ATHLETES MATCH FILTER")),
+
+  /* Roster table — header row */
+  profile.role !== "ad" && filtered.length > 0 && React.createElement("div", {style:{
+    display:"flex",alignItems:"center",gap:6,
+    padding:"6px 12px 8px",marginBottom:4,
+    borderBottom:"1px solid rgba(255,255,255,0.06)",
+    fontFamily:D2,fontSize:10,color:"var(--dim)",
+    fontWeight:700,letterSpacing:"1.5px"
+  }},
+    React.createElement("div", {style:{flex:1}}, "ATHLETE"),
+    React.createElement("div", {style:{width:36,textAlign:"center"}}, "SCORE"),
+    React.createElement("div", {style:{width:36,textAlign:"center"}}, "FEEL"),
+    React.createElement("div", {style:{width:36,textAlign:"center"}}, "LOAD"),
+    React.createElement("div", {style:{width:36,textAlign:"center"}}, "BODY")
+  ),
+
+  /* Roster table — data rows */
+  profile.role !== "ad" && filtered.map(function(a){
     var sl = statusLight(a.status);
-    var st = trendArrow(a.sleep_trend);
-    var stressTr = trendArrow(a.stress_trend);
-    return /*#__PURE__*/React.createElement("div", {
+    var isIn = !!a.checked_in;
+    return React.createElement("div", {
       key: a.athlete_id,
-      className: "gc",
-      style: {
-        padding: "16px 18px",
-        marginBottom: 10,
-        borderLeft: "4px solid " + sl.color,
-        borderRadius: "4px 18px 18px 4px",
-        border: a.red_flag ? "2px solid rgba(239,83,80,0.3)" : "1px solid rgba(124,58,237,0.06)",
-        borderLeftWidth: 4,
-        borderLeftColor: sl.color
+      style:{
+        display:"flex",alignItems:"center",gap:6,
+        padding:"10px 12px",
+        borderRadius:"4px 12px 12px 4px",
+        borderLeft:"3px solid " + (isIn ? sl.color : "rgba(255,255,255,0.08)"),
+        background:"rgba(12,12,18,0.6)",
+        border:"1px solid rgba(124,58,237,0.06)",
+        borderLeftWidth:3,
+        borderLeftColor:isIn ? sl.color : "rgba(255,255,255,0.08)",
+        marginBottom:4,
+        opacity:isIn ? 1 : 0.55
       }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        marginBottom: 8
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 18
-      }
-    }, sl.icon), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 22,
-        color: "var(--txt)",
-        letterSpacing: "-0.02em"
-      }
-    }, (a.name || "").toUpperCase()), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        marginTop: 2
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 11,
-        color: "var(--dim)",
-        fontWeight: 700
-      }
-    }, "GR ", a.grade), (a.sports || []).slice(0, 2).map(function (s) {
-      return /*#__PURE__*/React.createElement(ST, {
-        key: s,
-        s: s
-      });
-    }))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 16,
-        color: sl.color,
-        letterSpacing: "-0.02em"
-      }
-    }, sl.label), a.streak > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 11,
-        color: "var(--ember)",
-        fontWeight: 700
-      }
-    }, "\uD83D\uDD25 ", a.streak, "d"))), a.checked_in && /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 8,
-        marginBottom: a.red_flag || a.has_pain ? 8 : 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        padding: "8px 10px",
-        borderRadius: 12,
-        background: "rgba(12,12,18,0.6)",
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        color: "var(--dim)",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "SLEEP"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 20,
-        color: st.color,
-        lineHeight: 1,
-        marginTop: 2
-      }
-    }, st.arrow)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        padding: "8px 10px",
-        borderRadius: 12,
-        background: "rgba(12,12,18,0.6)",
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        color: "var(--dim)",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "STRESS"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 20,
-        color: stressTr.color,
-        lineHeight: 1,
-        marginTop: 2
-      }
-    }, stressTr.arrow)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        padding: "8px 10px",
-        borderRadius: 12,
-        background: "rgba(12,12,18,0.6)",
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        color: "var(--dim)",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "LOAD"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 20,
-        color: a.today_load >= 750*Math.max(1,a.sports_today||1) ? "var(--red)" : a.today_load >= 450*Math.max(1,a.sports_today||1) ? "#FFB300" : "var(--g1)",
-        lineHeight: 1,
-        marginTop: 2
-      }
-    }, a.today_load || "—")), a.sports_today >= 2 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        padding: "8px 10px",
-        borderRadius: 12,
-        background: "rgba(255,179,0,0.06)",
-        textAlign: "center",
-        border: "1px solid rgba(255,179,0,0.15)"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        color: "#FFB300",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "MULTI"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 20,
-        color: "#FFB300",
-        lineHeight: 1,
-        marginTop: 2
-      }
-    }, "\u26A1", a.sports_today)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        padding: "8px 10px",
-        borderRadius: 12,
-        background: "rgba(12,12,18,0.6)",
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D2,
-        fontSize: 10,
-        color: "var(--dim)",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "TASK"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 20,
-        color: a.did_coach_task ? "var(--grn)" : "var(--dim)",
-        lineHeight: 1,
-        marginTop: 2
-      }
-    }, a.did_coach_task ? "✓" : "—"))), !a.checked_in && /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "8px 12px",
-        borderRadius: 12,
-        background: "rgba(124,58,237,0.04)",
-        textAlign: "center"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 12,
-        color: "var(--dim)",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "HASN'T CHECKED IN TODAY")), a.has_pain && a.pain_locations && a.pain_locations.length > 0 && /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "8px 12px",
-        borderRadius: 12,
-        background: "rgba(239,83,80,0.04)",
-        border: "1px solid rgba(239,83,80,0.1)",
-        marginTop: 6
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D2,
-        fontSize: 12,
-        color: "var(--red)",
-        letterSpacing: "1px",
-        fontWeight: 700
-      }
-    }, "\u26A0\uFE0F PAIN: ", a.pain_locations.map(function (z) {
-      return z.replace(/_/g, " ");
-    }).join(", ").toUpperCase())), a.red_flag && /*#__PURE__*/React.createElement("div", {
-      style: {
-        padding: "10px 14px",
-        borderRadius: 12,
-        background: "rgba(239,83,80,0.08)",
-        border: "1.5px solid rgba(239,83,80,0.2)",
-        marginTop: 6
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: D,
-        fontSize: 15,
-        color: "var(--red)",
-        letterSpacing: "-0.02em"
-      }
-    }, "\uD83D\uDEA9 ", flagLabel(a.flag_category))));
+    },
+      /* Name + meta column */
+      React.createElement("div", {style:{flex:1,minWidth:0}},
+        React.createElement("div", {style:{
+          fontFamily:D,fontSize:16,color:"var(--txt)",
+          letterSpacing:"-0.01em",lineHeight:1.1,
+          whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"
+        }}, (a.name || "").toUpperCase()),
+        React.createElement("div", {style:{
+          display:"flex",alignItems:"center",gap:6,marginTop:3,
+          fontFamily:D2,fontSize:10,fontWeight:700,letterSpacing:"0.5px",
+          whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"
+        }},
+          React.createElement("span", {style:{color:"var(--dim)"}}, "GR " + (a.grade||"\u2014")),
+          (a.sports || []).slice(0,1).map(function(s){
+            return React.createElement("span", {key:s, style:{color:"var(--sub)",letterSpacing:"1px"}}, "\u00B7 " + s.toUpperCase());
+          }),
+          isIn && a.streak > 0 && React.createElement("span", {style:{color:"var(--ember)"}}, "\u00B7 \uD83D\uDD25" + a.streak),
+          !isIn && React.createElement("span", {style:{color:"var(--dim)",fontStyle:"italic",letterSpacing:"1px"}}, "\u00B7 NO CHECK-IN")
+        )
+      ),
+      /* Four light cells — SCORE (computed) · FEEL (perceived) · LOAD (effort × time) · BODY (injury) */
+      lightCell(isIn ? (a.status || "none") : "none"),
+      lightCell(isIn ? feelStatus(a.athlete_id) : "none"),
+      lightCell(isIn ? loadStatus(a) : "none"),
+      lightCell(isIn ? bodyStatusFor(a.athlete_id) : "none")
+    );
   }));
 }
 
