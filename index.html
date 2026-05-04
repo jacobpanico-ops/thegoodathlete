@@ -3276,6 +3276,7 @@ function ProtocolAgreement({ role, onAccept }) {
       disabled:!allChecked,
       onClick:function(){
         localStorage.setItem(storageKey, new Date().toISOString());
+        SB.rpc('accept_protocol');
         onAccept();
       }
     }, "I ACCEPT THESE RESPONSIBILITIES")
@@ -4400,7 +4401,7 @@ function App() {
   var [todaySessions, setTodaySessions] = useState([]);
   var [levelUp, setLevelUp] = useState(null); /* level-up celebration data */
   var [coachProtocolDone, setCoachProtocolDone] = useState(function(){
-    return !!(localStorage.getItem('tga_coach_protocol') || localStorage.getItem('tga_ad_protocol'));
+    return !!(localStorage.getItem('tga_coach_protocol') || localStorage.getItem('tga_ad_protocol') || (profile && profile.protocol_accepted_at));
   });
   var [toastMsg, setToastMsg] = useState(null);
   var [toastType, setToastType] = useState("ok");
