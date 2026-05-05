@@ -3299,6 +3299,7 @@ function CoachDashboard({
   var [teamSummary, setTeamSummary] = useState([]);
   var [todayCheckins, setTodayCheckins] = useState({}); /* {athlete_id: {pain_zones, readiness}} — feeds BODY + FEEL traffic lights */
   var [trainerFollowups, setTrainerFollowups] = useState([]); /* AD-only: athletes with sharp pain reported today */
+  var [taskCompletion, setTaskCompletion] = useState({}); /* {athlete_id: boolean} — did athlete complete today's coach task? */
 
   /* Sport-scope filter — coach sees only athletes whose sports overlap with their own.
      AD and coaches without a sport set see everything. Matches the existing roster filter
@@ -3353,6 +3354,20 @@ function CoachDashboard({
           });
           setTodayCheckins(map);
           setTrainerFollowups(trainer);
+        }
+      });
+
+      /* Fetch today's coach task completion — coach_task_completion view returns
+         one row per athlete who checked in today. Column is did_task (boolean alias)
+         or coach_task (raw column name) depending on view definition. */
+      SB.from('coach_task_completion').select('athlete_id, did_task, coach_task').then(function(r){
+        if(!r.error && r.data){
+          var map = {};
+          r.data.forEach(function(row){
+            /* Handle both possible column names from the view */
+            map[row.athlete_id] = !!(row.did_task ?? row.coach_task);
+          });
+          setTaskCompletion(map);
         }
       });
     }
@@ -3424,6 +3439,10 @@ function CoachDashboard({
   var noCheckin = data.filter(function (a) {
     return !a.checked_in;
   }).length;
+
+  /* hasTodayTask — true when the coach has at least one active task set for their sports.
+     Controls whether the TASK column is shown in the roster table at all. */
+  var hasTodayTask = Object.keys(tasksBySport).some(function(s){ return !!tasksBySport[s]; });
 
   // Filter
   var filtered = data;
@@ -3513,6 +3532,16 @@ function CoachDashboard({
     if (pz.some(function(z){return typeof z === "string" && z.indexOf("sharp:") === 0;})) return "red";
     if (pz.some(function(z){return typeof z === "string" && z.indexOf("sore:") === 0;})) return "yellow";
     return "green";
+  }
+
+  /* TASK light — did the athlete complete today's coach task?
+     Only rendered when hasTodayTask is true (coach has a task set for their sport).
+     green = completed, yellow = checked in but didn't complete, none = no check-in. */
+  function taskStatus(athleteId) {
+    if (!hasTodayTask) return "none";
+    if (taskCompletion[athleteId] === true)  return "green";
+    if (taskCompletion[athleteId] === false) return "yellow";
+    return "none"; /* athlete_id not in view = didn't check in */
   }
 
   /* lightCell — tinted table cell. Background + border use the status color
@@ -3884,7 +3913,8 @@ function CoachDashboard({
     React.createElement("div", {style:{width:36,textAlign:"center"}}, "SCORE"),
     React.createElement("div", {style:{width:36,textAlign:"center"}}, "FEEL"),
     React.createElement("div", {style:{width:36,textAlign:"center"}}, "LOAD"),
-    React.createElement("div", {style:{width:36,textAlign:"center"}}, "BODY")
+    React.createElement("div", {style:{width:36,textAlign:"center"}}, "BODY"),
+    hasTodayTask && React.createElement("div", {style:{width:36,textAlign:"center"}}, "TASK")
   ),
 
   /* Roster table — data rows */
@@ -3930,7 +3960,9 @@ function CoachDashboard({
       lightCell(isIn ? (a.status || "none") : "none"),
       lightCell(isIn ? feelStatus(a.athlete_id) : "none"),
       lightCell(isIn ? loadStatus(a) : "none"),
-      lightCell(isIn ? bodyStatusFor(a.athlete_id) : "none")
+      lightCell(isIn ? bodyStatusFor(a.athlete_id) : "none"),
+      /* TASK — only rendered when coach has an active task set today */
+      hasTodayTask && lightCell(isIn ? taskStatus(a.athlete_id) : "none")
     );
   }));
 }
