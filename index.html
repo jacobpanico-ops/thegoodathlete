@@ -1287,7 +1287,8 @@ function Huddle({
   card === 0 && React.createElement("div", {className:"ci",key:"c0",style:{padding:"24px 20px",overflowY:"auto"}},
     React.createElement("i", {className:"ph-thin ph-moon",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "SLEEP"),
-    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW'D YOU SLEEP?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "HOW'D YOU SLEEP?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",margin:"0 0 18px",fontWeight:600,letterSpacing:"0.4px",lineHeight:1.5}}, "Sleep is when your body repairs itself. Poor sleep slows recovery, raises injury risk, and drains focus before you even step on the court."),
 
     React.createElement("label", {className:"lbl"}, "HOURS"),
     React.createElement("div", {style:{display:"flex",gap:8,marginBottom:22}},
@@ -1332,7 +1333,8 @@ function Huddle({
   card === 1 && React.createElement("div", {className:"ci",key:"c1",style:{padding:"24px 20px",overflowY:"auto"}},
     React.createElement("i", {className:"ph-thin ph-heartbeat",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "BODY SCAN"),
-    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 20px",fontWeight:700}}, "HOW IS YOUR BODY TODAY?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "HOW IS YOUR BODY TODAY?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",margin:"0 0 18px",fontWeight:600,letterSpacing:"0.4px",lineHeight:1.5}}, "Catching stress and soreness early lets coaches adjust your load before a small problem becomes a big one. Your honesty here protects your season."),
 
     React.createElement("label", {className:"lbl"}, "MENTAL LOAD"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",margin:"0 0 12px",fontWeight:600,letterSpacing:"1px"}}, "STRESS \u00B7 CLASSES \u00B7 MENTAL ENERGY"),
@@ -1431,7 +1433,8 @@ function Huddle({
     React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:52,marginBottom:6,color:"var(--ember)",filter:"drop-shadow(0 0 12px rgba(255,109,0,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
-    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 16px",fontWeight:700}}, "WHAT DID YOU DO TODAY?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "WHAT DID YOU DO TODAY?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",margin:"0 0 14px",fontWeight:600,letterSpacing:"0.4px",lineHeight:1.5}}, "Logging your work gives coaches a real picture of what your body is handling — not just what happens at practice. Rest days count too."),
 
     didWork === null && React.createElement("div", {style:{display:"flex",gap:12,marginBottom:16}},
       React.createElement("button", {onClick:function(){buzz(15);setDidWork(true);},style:{flex:1,padding:22,borderRadius:16,textAlign:"center",background:"rgba(12,12,18,0.8)",border:"2px solid rgba(0,255,135,0.04)"}},
@@ -1520,7 +1523,8 @@ function Huddle({
   card === 3 ? React.createElement("div", {className:"ci",key:"c3",style:{padding:"24px 20px",overflowY:"auto"}},
     React.createElement("i", {className:"ph-thin ph-fork-knife",style:{fontSize:52,marginBottom:6,color:"var(--g1)",filter:"drop-shadow(0 0 12px rgba(0,255,135,0.25))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "FUEL"),
-    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 18px",fontWeight:700}}, "HOW DID YOU FUEL?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "HOW DID YOU FUEL?"),
+    React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",margin:"0 0 16px",fontWeight:600,letterSpacing:"0.4px",lineHeight:1.5}}, "Eating around training fuels your performance and speeds recovery. Consistently skipping meals before or after practice is one of the easiest things to fix — and one of the most impactful."),
 
     React.createElement("label", {className:"lbl"}, "GLASSES OF WATER TODAY"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",margin:"0 0 10px",fontWeight:600,letterSpacing:"0.5px"}}, "Tap how many \u2014 about 8 oz each, like a small water bottle."),
