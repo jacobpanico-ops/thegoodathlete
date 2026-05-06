@@ -1,34 +1,27 @@
 <!DOCTYPE html>
 <!--
 ================================================================================
-  SESSION END — 2026-04-30 · OPEN ITEMS BEFORE JUNE TRIAL
+  SESSION END — 2026-05-06 · OPEN ITEMS BEFORE JUNE TRIAL
 ================================================================================
 
   HTML/CLIENT TODO (in this file):
   --------------------------------
-  [ ] lightPill helper (around line ~3500) is unused — defined for the
-      old red-flag panel that got removed. Safe to delete.
-  [ ] RPE_DESC and RPE_COLOR constants (in §3) are unused since the
-      effort slider rewrite. Safe to delete.
-  [ ] "BUILD-V15 · FULL FLOW" footer string on Card 4 of Huddle —
-      version label is stale. Bump or remove.
+  [x] lightPill helper — REMOVED (2026-05-06)
+  [x] RPE_DESC and RPE_COLOR constants — REMOVED (2026-05-06)
+  [x] "BUILD-V15 · FULL FLOW" footer label on Card 4 — REMOVED (2026-05-06)
+  [x] Error overlay div + SW unregister script — REMOVED (2026-05-06)
+  [x] coach_task_completion column — wired to coach roster table (2026-05-06)
+      State: taskCompletion {}, fetch: coach_task_completion view,
+      helper: taskStatus(), column gated on hasTodayTask.
   [ ] Trial setup: confirm SCHOOL.SHORT_NAME and SCHOOL.LOGO read
       correctly for the "ALL [SHORT_NAME]" leaderboard subtitle.
 
   SUPABASE / DB TODO (BLOCKING JUNE TRIAL):
   -----------------------------------------
-  [!] checkins.readiness column type — submit_checkin RPC now sends
-      INTEGER 1-5 for p_readiness. Current column is likely TEXT with
-      CHECK constraint on ('ready','sluggish','exhausted'). Submits will
-      FAIL until migrated. Mirror the sleep_quality migration path:
-      change column to smallint, drop or update CHECK constraint, update
-      RPC param type from text → smallint.
-  [!] consistency_scores view — add a checkin_count column for accurate
-      leaderboard counts. Until it's added, leaderboard falls back to
-      Math.round(consistency_score / 100 * 30) which is approximate.
-      Same column should be added to the leaderboard view (used as
-      secondary fallback).
-      Suggested: COUNT(DISTINCT c.date) AS checkin_count
+  [x] checkins.readiness column type — confirmed int4, CHECK constraint
+      (1-5) added 2026-05-06. submit_checkin INTEGER param is live.
+  [x] consistency_scores view — checkin_count already present as
+      COUNT(DISTINCT c.date) over 30 days. No migration needed.
 
   SUPABASE / DB TODO (PRIVACY HARDENING — POST-TRIAL OK):
   -------------------------------------------------------
@@ -123,36 +116,6 @@ i[class^="ph-"],i[class*=" ph-"]{display:inline-flex;align-items:center;justify-
 </head>
 <body>
 <div id="root"></div>
-<div id="tga-err-overlay" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#8B0000;color:#fff;font-family:monospace;font-size:12px;padding:10px 14px;line-height:1.4;max-height:45vh;overflow:auto;border-top:2px solid #EF5350;white-space:pre-wrap;word-break:break-word"></div>
-<script>
-/* ── On-screen error overlay — mobile-safe diagnostic when console is unreachable.
-   Shows any uncaught JS error or unhandled promise rejection as a red banner at
-   bottom of screen. Tap to dismiss. Remove once mobile debug console is set up. */
-(function(){
-  var el = document.getElementById('tga-err-overlay');
-  function show(msg){
-    try { el.textContent = String(msg).slice(0, 2000); el.style.display = 'block'; } catch(e){}
-  }
-  el.addEventListener('click', function(){ el.style.display='none'; });
-  window.addEventListener('error', function(e){
-    show('ERROR: ' + (e.message||'') + '\n' + (e.filename||'') + ':' + (e.lineno||'') + ':' + (e.colno||'') + '\n(tap to dismiss)');
-  });
-  window.addEventListener('unhandledrejection', function(e){
-    var r = e.reason;
-    var m = (r && (r.message || r.error_description || r.toString())) || 'unknown rejection';
-    show('PROMISE: ' + m + '\n(tap to dismiss)');
-  });
-})();
-/* ── Kill any stale service worker from a prior deploy. PWAs cache aggressively,
-   and a SW from the old "Apache 360" build could be serving stale index.html. */
-(function(){
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      regs.forEach(function(r){ r.unregister(); });
-    }).catch(function(){});
-  }
-})();
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -236,9 +199,6 @@ var SCHOOL = {
 SB = supabase.createClient(SCHOOL.SUPABASE_URL, SCHOOL.SUPABASE_KEY);
 var ALL_SPORTS = ["Football", "Basketball", "Volleyball", "Soccer", "Track & Field", "Baseball", "Softball", "Wrestling", "Tennis", "Golf", "Swimming", "Cross Country", "Cheer", "Bowling"];
 var SESSION_TYPES = ["Skill Work", "Strength / Conditioning", "Team Practice", "Game / Tournament", "Open Gym / Pickup", "Film Study", "Recovery / Rehab"];
-var RPE_DESC = [, "", "", "Light", "Light", "Moderate", "Moderate", "High", "High", "Near max", "MAX EFFORT"];
-var RPE_COLOR = [, "#4CAF50", "#4CAF50", "#4CAF50", "#8BC34A", "#FFB300", "#FFB300", "#FF8F00", "#FF6D00", "#FF3D00", "#D50000"];
-
 /* XP levels — {l: level#, x: threshold, t: title, i: icon} */
 var LVS = [{
   l: 1,
@@ -1705,9 +1665,6 @@ function Huddle({
         );
       })(),
 
-      React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",textAlign:"center",marginTop:8,fontWeight:600}},
-        "BUILD-V15 \u00B7 FULL FLOW"
-      )
     );
   }()),
 
@@ -3572,38 +3529,6 @@ function CoachDashboard({
         : React.createElement("span", {
             style:{fontFamily:D2, fontSize:14, color:"var(--dim)", fontWeight:700, lineHeight:1}
           }, "\u2014")
-    );
-  }
-
-  /* Single traffic light pill — used for SCORE / FEEL / BODY in roster rows
-     and alert panels. Shows colored dot + short label. No personal answers. */
-  function lightPill(label, status) {
-    var COLORS = {
-      green:  "#00FF87",
-      yellow: "#FFB300",
-      red:    "#EF5350",
-      none:   "var(--dim)"
-    };
-    var STATES = {
-      green:  "GOOD",
-      yellow: "WATCH",
-      red:    "FLAG",
-      none:   "—"
-    };
-    var col = COLORS[status] || "var(--dim)";
-    return React.createElement("div", {
-      style:{
-        flex:1,padding:"10px 8px",borderRadius:12,
-        background:status==="none"?"rgba(12,12,18,0.6)":col+"14",
-        border:"1px solid "+(status==="none"?"rgba(255,255,255,0.04)":col+"33"),
-        textAlign:"center"
-      }
-    },
-      React.createElement("div", {style:{fontFamily:D2,fontSize:9,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginBottom:4}}, label),
-      React.createElement("div", {style:{display:"flex",alignItems:"center",justifyContent:"center",gap:6}},
-        React.createElement("span", {style:{display:"inline-block",width:10,height:10,borderRadius:"50%",background:col,boxShadow:status==="none"?"none":"0 0 6px "+col,flexShrink:0}}),
-        React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:col,fontWeight:700,letterSpacing:"0.8px"}}, STATES[status] || "—")
-      )
     );
   }
 
