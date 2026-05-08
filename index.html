@@ -1265,7 +1265,7 @@ function Huddle({
   var progress = (card + (canNext() ? 0.5 : 0)) / TOTAL * 100;
 
   return React.createElement("div", {
-    style: {position:"fixed",inset:0,background:"var(--bg)",color:"var(--txt)",zIndex:50,overflowY:"auto"}
+    style: {position:"fixed",inset:0,background:"rgba(8,8,12,0.72)",color:"var(--txt)",zIndex:50,overflowY:"auto"}
   },
   /* ── Progress bar + nav ── */
   React.createElement("div", {style:{padding:"16px 20px 0"}},
@@ -1284,7 +1284,7 @@ function Huddle({
   /* ── Card content ── */
 
   /* ═══ CARD 0 — Sleep ═══ */
-  card === 0 && React.createElement("div", {className:"ci",key:"c0",style:{padding:"24px 20px",overflowY:"auto"}},
+  card === 0 && React.createElement("div", {className:"ci gc",key:"c0",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
     React.createElement("i", {className:"ph-thin ph-moon",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "SLEEP"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "HOW'D YOU SLEEP?"),
@@ -1330,7 +1330,7 @@ function Huddle({
   ),
 
   /* ═══ CARDS 1-4 placeholder ═══ */
-  card === 1 && React.createElement("div", {className:"ci",key:"c1",style:{padding:"24px 20px",overflowY:"auto"}},
+  card === 1 && React.createElement("div", {className:"ci gc",key:"c1",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
     React.createElement("i", {className:"ph-thin ph-heartbeat",style:{fontSize:52,marginBottom:6,color:"var(--pr2)",filter:"drop-shadow(0 0 12px rgba(185,123,255,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "BODY SCAN"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "HOW IS YOUR BODY TODAY?"),
@@ -1429,7 +1429,7 @@ function Huddle({
     })()
   ),
 
-  card >= 2 && card <= 4 && (card === 2 ? React.createElement("div", {className:"ci",key:"c2",style:{padding:"24px 20px",overflowY:"auto"}},
+  card >= 2 && card <= 4 && (card === 2 ? React.createElement("div", {className:"ci gc",key:"c2",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
     React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:52,marginBottom:6,color:"var(--ember)",filter:"drop-shadow(0 0 12px rgba(255,109,0,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
@@ -1520,7 +1520,7 @@ function Huddle({
   ) :
 
   /* ═══ CARD 3 — Fuel ═══ */
-  card === 3 ? React.createElement("div", {className:"ci",key:"c3",style:{padding:"24px 20px",overflowY:"auto"}},
+  card === 3 ? React.createElement("div", {className:"ci gc",key:"c3",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
     React.createElement("i", {className:"ph-thin ph-fork-knife",style:{fontSize:52,marginBottom:6,color:"var(--g1)",filter:"drop-shadow(0 0 12px rgba(0,255,135,0.25))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "FUEL"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "HOW DID YOU FUEL?"),
@@ -1593,7 +1593,7 @@ function Huddle({
     var sessions = buildSessions();
     var pts = calcPts();
     var streakNext = Math.min(15, Math.max(1, (profile.streak||0) + 1));
-    return React.createElement("div", {className:"ci",key:"c4",style:{padding:"24px 20px",overflowY:"auto"}},
+    return React.createElement("div", {className:"ci gc",key:"c4",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
       React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
         React.createElement("i", {className:"ph-thin ph-check-circle pi",style:{fontSize:64,marginBottom:8,color:"var(--g1)",filter:"drop-shadow(0 0 16px rgba(0,255,135,0.4))"}}),
         React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:44,lineHeight:0.85,marginBottom:12}}, "HUDDLE COMPLETE")
@@ -3123,7 +3123,7 @@ function Leaderboard({
             overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
             letterSpacing:"1px", fontWeight:700
           }}, (a.name || "").toUpperCase()),
-          onFire && React.createElement("span", {style:{fontSize:18,lineHeight:1,flexShrink:0}}, "\uD83D\uDD25"),
+          onFire && React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:16,color:"#FF6D00",flexShrink:0,filter:"drop-shadow(0 0 6px rgba(255,109,0,0.5))"}}),
           isMe && React.createElement("span", {style:{
             fontFamily:D2, fontSize:10, padding:"2px 8px", borderRadius:8,
             background:"rgba(0,255,135,0.1)", color:"var(--g1)",
@@ -3244,6 +3244,188 @@ function ProtocolAgreement({ role, onAccept }) {
   );
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+   ATHLETE DETAIL PANEL — Slide-up bottom sheet showing last 7 days of
+   traffic lights for a single athlete. Coach taps a roster row to open.
+   Privacy: only shows green/yellow/red/none — no raw scores or text.
+   ════════════════════════════════════════════════════════════════════════ */
+
+function AthleteDetailPanel({ athlete, onClose }) {
+  var [history, setHistory]   = useState([]);
+  var [loading, setLoading]   = useState(true);
+
+  useEffect(function(){
+    if (!athlete) return;
+    var from = new Date();
+    from.setDate(from.getDate() - 6);
+    var fromDate = from.toISOString().slice(0,10);
+    SB.from('checkins')
+      .select('date, readiness, sleep_quality, pain_zones, rest_day')
+      .eq('athlete_id', athlete.athlete_id)
+      .gte('date', fromDate)
+      .order('date', {ascending: true})
+      .then(function(r){
+        if (!r.error && r.data) setHistory(r.data);
+        setLoading(false);
+      });
+  }, [athlete && athlete.athlete_id]);
+
+  /* Build a map of date → checkin for O(1) lookup */
+  var byDate = {};
+  history.forEach(function(c){ byDate[c.date] = c; });
+
+  /* Last 7 calendar dates including today */
+  var days = Array.from({length:7}, function(_,i){
+    var d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d.toISOString().slice(0,10);
+  });
+  var todayStr = new Date().toISOString().slice(0,10);
+
+  /* Status helpers — traffic light only, no raw values exposed */
+  function hFeel(c){
+    if (!c) return "none";
+    if (c.rest_day) return "rest";
+    var r = c.readiness;
+    if (r == null) return "none";
+    var n = typeof r === "number" ? r : parseInt(r,10);
+    if (isNaN(n)) return r === "ready" ? "green" : r === "sluggish" ? "yellow" : r === "exhausted" ? "red" : "none";
+    return n >= 4 ? "green" : n >= 2 ? "yellow" : "red";
+  }
+  function hSleep(c){
+    if (!c) return "none";
+    if (c.rest_day) return "rest";
+    var s = c.sleep_quality;
+    if (s == null) return "none";
+    return s >= 4 ? "green" : s >= 2 ? "yellow" : "red";
+  }
+  function hBody(c){
+    if (!c) return "none";
+    var pz = c.pain_zones || [];
+    if (pz.some(function(z){return typeof z==="string"&&z.indexOf("sharp:")===0;})) return "red";
+    if (pz.some(function(z){return typeof z==="string"&&z.indexOf("sore:")===0;})) return "yellow";
+    if (c.rest_day) return "rest";
+    return "green";
+  }
+
+  var DOT_STYLE = {
+    green:  {bg:"rgba(0,255,135,0.15)",  border:"#00FF87", glow:"rgba(0,255,135,0.35)"},
+    yellow: {bg:"rgba(255,179,0,0.15)",  border:"#FFB300", glow:"rgba(255,179,0,0.35)"},
+    red:    {bg:"rgba(239,83,80,0.15)",  border:"#EF5350", glow:"rgba(239,83,80,0.35)"},
+    rest:   {bg:"rgba(100,100,180,0.1)", border:"rgba(100,100,180,0.4)", glow:"none"},
+    none:   {bg:"rgba(255,255,255,0.03)",border:"rgba(255,255,255,0.10)", glow:"none"}
+  };
+
+  function dot(status){
+    var s = DOT_STYLE[status] || DOT_STYLE.none;
+    return React.createElement("div", {style:{
+      width:26, height:26, borderRadius:"50%", margin:"0 auto",
+      background: s.bg,
+      border: "1.5px solid " + s.border,
+      boxShadow: s.glow !== "none" ? "0 0 8px " + s.glow : "none"
+    }});
+  }
+
+  function dayLabel(dateStr){
+    var d = new Date(dateStr + "T12:00:00");
+    var isToday = dateStr === todayStr;
+    return React.createElement("div", {style:{
+      fontFamily:D2, fontSize:9, fontWeight:700, letterSpacing:"0.8px",
+      textAlign:"center", color: isToday ? "var(--g1)" : "var(--dim)"
+    }}, isToday ? "TODAY" : d.toLocaleDateString("en-US",{weekday:"short"}).toUpperCase());
+  }
+
+  var ROWS = [
+    {key:"feel",  label:"FEEL",  fn:hFeel},
+    {key:"sleep", label:"SLEEP", fn:hSleep},
+    {key:"body",  label:"BODY",  fn:hBody}
+  ];
+
+  return React.createElement("div", {style:{
+    position:"fixed", inset:0, zIndex:200,
+    display:"flex", flexDirection:"column", justifyContent:"flex-end"
+  }},
+    /* Backdrop */
+    React.createElement("div", {onClick:onClose, style:{
+      position:"absolute", inset:0,
+      background:"rgba(0,0,0,0.55)",
+      backdropFilter:"blur(4px)", WebkitBackdropFilter:"blur(4px)"
+    }}),
+    /* Panel */
+    React.createElement("div", {className:"gc2 fu", style:{
+      position:"relative", zIndex:1,
+      borderRadius:"20px 20px 0 0",
+      padding:"0 0 48px",
+      maxHeight:"80vh", overflowY:"auto"
+    }},
+      /* Drag handle */
+      React.createElement("div", {style:{display:"flex",justifyContent:"center",padding:"12px 0 0"}},
+        React.createElement("div", {style:{width:36,height:4,borderRadius:2,background:"rgba(255,255,255,0.15)"}})
+      ),
+      /* Header */
+      React.createElement("div", {style:{
+        display:"flex", alignItems:"center",
+        padding:"12px 20px 0", gap:12
+      }},
+        React.createElement("div", {style:{flex:1,minWidth:0}},
+          React.createElement("div", {style:{fontFamily:D,fontSize:28,lineHeight:0.9,color:"var(--txt)"}},
+            (athlete.name||"").toUpperCase()),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"1.5px",marginTop:5}},
+            "GR " + (athlete.grade||"—") + (athlete.sports&&athlete.sports.length>0 ? " · " + athlete.sports.join(", ").toUpperCase() : ""))
+        ),
+        React.createElement("button", {onClick:onClose, style:{
+          background:"rgba(255,255,255,0.06)", border:"0.5px solid rgba(255,255,255,0.1)",
+          borderRadius:8, color:"var(--sub)", fontSize:16, lineHeight:1,
+          padding:"6px 10px", cursor:"pointer", fontFamily:D2, fontWeight:700
+        }}, "✕")
+      ),
+      /* 7-day grid */
+      React.createElement("div", {style:{padding:"20px 16px 0"}},
+        React.createElement("div", {style:{
+          fontFamily:D2, fontSize:10, color:"var(--dim)",
+          letterSpacing:"2px", fontWeight:700, marginBottom:14
+        }}, "LAST 7 DAYS — TRAFFIC LIGHTS ONLY"),
+        loading
+          ? React.createElement("div", {style:{textAlign:"center",padding:32,fontFamily:D2,fontSize:13,color:"var(--dim)",letterSpacing:"2px"}}, "LOADING...")
+          : React.createElement("div", {style:{
+              display:"grid",
+              gridTemplateColumns:"44px repeat(7, 1fr)",
+              rowGap:8, columnGap:4,
+              alignItems:"center"
+            }},
+              /* Header row */
+              React.createElement("div"),
+              days.map(function(d){ return React.createElement(React.Fragment,{key:"h"+d}, dayLabel(d)); }),
+              /* Data rows */
+              ROWS.reduce(function(acc, row){
+                acc.push(
+                  React.createElement("div", {key:row.key+"-lbl", style:{
+                    fontFamily:D2, fontSize:9, fontWeight:700,
+                    color:"var(--dim)", letterSpacing:"1px"
+                  }}, row.label)
+                );
+                days.forEach(function(d){
+                  acc.push(React.createElement("div", {key:row.key+d}, dot(row.fn(byDate[d]||null))));
+                });
+                return acc;
+              }, [])
+            )
+      ),
+      /* Legend */
+      React.createElement("div", {style:{
+        display:"flex", gap:16, padding:"16px 16px 0",
+        fontFamily:D2, fontSize:10, color:"var(--dim)", letterSpacing:"1px", fontWeight:700
+      }},
+        React.createElement("span", null, React.createElement("span", {style:{color:"#00FF87"}}, "● "), "GOOD"),
+        React.createElement("span", null, React.createElement("span", {style:{color:"#FFB300"}}, "● "), "WATCH"),
+        React.createElement("span", null, React.createElement("span", {style:{color:"#EF5350"}}, "● "), "FLAG"),
+        React.createElement("span", null, React.createElement("span", {style:{color:"rgba(100,100,180,0.6)"}}, "● "), "REST DAY"),
+        React.createElement("span", null, React.createElement("span", {style:{color:"rgba(255,255,255,0.15)"}}, "● "), "NO DATA")
+      )
+    )
+  );
+}
+
 /* ████████████████████████████████████████████████████████████████████████
    §11b  COACH DASHBOARD — Tiered access roster with traffic lights
    ████████████████████████████████████████████████████████████████████████ */
@@ -3261,6 +3443,7 @@ function CoachDashboard({
   var [todayCheckins, setTodayCheckins] = useState({}); /* {athlete_id: {pain_zones, readiness}} — feeds BODY + FEEL traffic lights */
   var [trainerFollowups, setTrainerFollowups] = useState([]); /* AD-only: athletes with sharp pain reported today */
   var [taskCompletion, setTaskCompletion] = useState({}); /* {athlete_id: boolean} — did athlete complete today's coach task? */
+  var [selectedAthlete, setSelectedAthlete] = useState(null); /* athlete object for detail panel, null = closed */
 
   /* Sport-scope filter — coach sees only athletes whose sports overlap with their own.
      AD and coaches without a sport set see everything. Matches the existing roster filter
@@ -3404,6 +3587,10 @@ function CoachDashboard({
   /* hasTodayTask — true when the coach has at least one active task set for their sports.
      Controls whether the TASK column is shown in the roster table at all. */
   var hasTodayTask = Object.keys(tasksBySport).some(function(s){ return !!tasksBySport[s]; });
+
+  /* taskDone — count of athletes who completed today's task (from taskCompletion map).
+     Denominator is checkedIn — you can only complete the task if you checked in. */
+  var taskDone = Object.values(taskCompletion).filter(Boolean).length;
 
   // Filter
   var filtered = data;
@@ -3830,6 +4017,30 @@ function CoachDashboard({
     }
   }, "NO ATHLETES MATCH FILTER")),
 
+  /* Task completion summary bar — only shown when a task is set today.
+     Shows aggregate count only — no athlete names or individual data. */
+  profile.role !== "ad" && hasTodayTask && React.createElement("div", {
+    className:"gc",
+    style:{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",marginBottom:10}
+  },
+    React.createElement("i", {className:"ph-thin ph-check-square",style:{fontSize:22,color:"var(--g1)",flexShrink:0}}),
+    React.createElement("div", {style:{flex:1,minWidth:0}},
+      React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"2px",fontWeight:700,marginBottom:4}}, "TODAY'S TASK COMPLETION"),
+      React.createElement("div", {style:{height:4,borderRadius:4,background:"rgba(255,255,255,0.06)",overflow:"hidden"}},
+        React.createElement("div", {style:{
+          height:"100%",borderRadius:4,
+          width:(checkedIn > 0 ? Math.round(taskDone / checkedIn * 100) : 0) + "%",
+          background:"linear-gradient(90deg,var(--g0),var(--g1))",
+          transition:"width 0.6s ease"
+        }})
+      )
+    ),
+    React.createElement("div", {style:{textAlign:"right",flexShrink:0}},
+      React.createElement("span", {style:{fontFamily:D,fontSize:22,color:taskDone === checkedIn && checkedIn > 0 ? "var(--g1)" : "var(--txt)"}}, taskDone),
+      React.createElement("span", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",fontWeight:700}}, " / " + checkedIn)
+    )
+  ),
+
   /* Roster table — header row */
   profile.role !== "ad" && filtered.length > 0 && React.createElement("div", {style:{
     display:"flex",alignItems:"center",gap:6,
@@ -3852,6 +4063,7 @@ function CoachDashboard({
     var isIn = !!a.checked_in;
     return React.createElement("div", {
       key: a.athlete_id,
+      onClick: function(){ setSelectedAthlete(a); },
       style:{
         display:"flex",alignItems:"center",gap:6,
         padding:"10px 12px",
@@ -3862,7 +4074,8 @@ function CoachDashboard({
         borderLeftWidth:3,
         borderLeftColor:isIn ? sl.color : "rgba(255,255,255,0.08)",
         marginBottom:4,
-        opacity:isIn ? 1 : 0.55
+        opacity:isIn ? 1 : 0.55,
+        cursor:"pointer"
       }
     },
       /* Name + meta column */
@@ -3893,7 +4106,15 @@ function CoachDashboard({
       /* TASK — only rendered when coach has an active task set today */
       hasTodayTask && lightCell(isIn ? taskStatus(a.athlete_id) : "none")
     );
-  }));
+  }),
+
+  /* Athlete detail panel — rendered when a roster row is tapped */
+  selectedAthlete && React.createElement(AthleteDetailPanel, {
+    athlete: selectedAthlete,
+    onClose: function(){ setSelectedAthlete(null); }
+  })
+
+  )
 }
 
 /* ████████████████████████████████████████████████████████████████████████
@@ -3973,7 +4194,8 @@ function ProfilePage({
       padding: "14px 8px",
       textAlign: "center"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {className:"ph-thin ph-lightning",style:{fontSize:22,color:"var(--g1)",marginBottom:4,display:"block"}}),
+  /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -3995,7 +4217,8 @@ function ProfilePage({
       padding: "14px 8px",
       textAlign: "center"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:22,color:"#FF6D00",marginBottom:4,display:"block",filter:"drop-shadow(0 0 6px rgba(255,109,0,0.4))"}}),
+  /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
@@ -4015,7 +4238,8 @@ function ProfilePage({
       padding: "14px 8px",
       textAlign: "center"
     }
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("i", {className:"ph-thin ph-trend-up",style:{fontSize:22,color:"var(--pr2)",marginBottom:4,display:"block"}}),
+  /*#__PURE__*/React.createElement("div", {
     className: "gs",
     style: {
       fontFamily: D,
