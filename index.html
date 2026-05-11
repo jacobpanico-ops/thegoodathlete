@@ -3251,8 +3251,8 @@ function ProtocolAgreement({ role, onAccept }) {
    ════════════════════════════════════════════════════════════════════════ */
 
 function AthleteDetailPanel({ athlete, onClose }) {
-  var [history, setHistory]   = useState([]);
-  var [loading, setLoading]   = useState(true);
+  var [history, setHistory]     = useState([]);
+  var [loading, setLoading]     = useState(true);
 
   useEffect(function(){
     if (!athlete) return;
@@ -3414,7 +3414,8 @@ function AthleteDetailPanel({ athlete, onClose }) {
       /* Legend */
       React.createElement("div", {style:{
         display:"flex", gap:16, padding:"16px 16px 0",
-        fontFamily:D2, fontSize:10, color:"var(--dim)", letterSpacing:"1px", fontWeight:700
+        fontFamily:D2, fontSize:10, color:"var(--dim)", letterSpacing:"1px", fontWeight:700,
+        flexWrap:"wrap"
       }},
         React.createElement("span", null, React.createElement("span", {style:{color:"#00FF87"}}, "● "), "GOOD"),
         React.createElement("span", null, React.createElement("span", {style:{color:"#FFB300"}}, "● "), "WATCH"),
@@ -3444,6 +3445,8 @@ function CoachDashboard({
   var [trainerFollowups, setTrainerFollowups] = useState([]); /* AD-only: athletes with sharp pain reported today */
   var [taskCompletion, setTaskCompletion] = useState({}); /* {athlete_id: boolean} — did athlete complete today's coach task? */
   var [selectedAthlete, setSelectedAthlete] = useState(null); /* athlete object for detail panel, null = closed */
+  var [consecutiveFlags, setConsecutiveFlags] = useState([]); /* AD-only: athletes on 3+ day red flag streaks */
+  var [weeklyStats, setWeeklyStats] = useState(null); /* AD-only: {checkIns, totalSlots, redFlags} for past 7 days */
 
   /* Sport-scope filter — coach sees only athletes whose sports overlap with their own.
      AD and coaches without a sport set see everything. Matches the existing roster filter
@@ -3469,7 +3472,32 @@ function CoachDashboard({
         }
       });
     }
-    if(profile.role==="ad"){SB.from('ad_team_summary').select('*').then(function(r){if(!r.error&&r.data)setTeamSummary(r.data)})}
+    if(profile.role==="ad"){
+      SB.from('ad_team_summary').select('*').then(function(r){if(!r.error&&r.data)setTeamSummary(r.data)});
+
+      /* Consecutive red flag streaks — athletes flagged 3+ days running */
+      SB.from('consecutive_red_flags').select('*')
+        .gte('consecutive_days', 3)
+        .order('consecutive_days', {ascending: false})
+        .then(function(r){
+          if(!r.error && r.data) setConsecutiveFlags(r.data);
+        });
+
+      /* Weekly check-in stats — past 7 days for the summary header */
+      var sevenAgo = new Date();
+      sevenAgo.setDate(sevenAgo.getDate() - 6);
+      var sevenAgoStr = sevenAgo.toISOString().slice(0,10);
+      SB.from('checkins').select('athlete_id, date, red_flag')
+        .gte('date', sevenAgoStr)
+        .then(function(r){
+          if(!r.error && r.data){
+            setWeeklyStats({
+              checkIns: r.data.length,
+              redFlags: r.data.filter(function(c){ return c.red_flag; }).length
+            });
+          }
+        });
+    }
 
     /* Fetch today's pain reports — drives the BODY traffic light for coaches
        and the AD's trainer follow-up panel. */
@@ -3744,6 +3772,44 @@ function CoachDashboard({
   /* ── TRAINER FOLLOW-UP NEEDED — AD only. Athletes who reported sharp pain
         today, directed to the athletic trainer. AD coordinates with trainer,
         coach, and athlete. ── */
+  /* ── AD WEEKLY SUMMARY — check-in rate and red flag count for past 7 days ── */
+  profile.role === "ad" && weeklyStats && React.createElement("div", {
+    className:"gc", style:{marginBottom:20, padding:"16px 18px"}
+  },
+    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10,marginBottom:12}},
+      React.createElement("i", {className:"ph-thin ph-chart-bar",style:{fontSize:22,color:"var(--pr2)"}}),
+      React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"2px",fontWeight:700}}, "THIS WEEK · LAST 7 DAYS")
+    ),
+    React.createElement("div", {style:{display:"flex",gap:12}},
+      /* Check-ins this week */
+      React.createElement("div", {style:{
+        flex:1, padding:"12px 14px", borderRadius:12,
+        background:"rgba(185,123,255,0.06)", border:"1px solid rgba(185,123,255,0.15)"
+      }},
+        React.createElement("div", {style:{fontFamily:D,fontSize:36,color:"var(--pr2)",lineHeight:0.9}}, weeklyStats.checkIns),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginTop:6}}, "CHECK-INS")
+      ),
+      /* Red flags this week */
+      React.createElement("div", {style:{
+        flex:1, padding:"12px 14px", borderRadius:12,
+        background: weeklyStats.redFlags > 0 ? "rgba(239,83,80,0.06)" : "rgba(0,255,135,0.06)",
+        border:"1px solid " + (weeklyStats.redFlags > 0 ? "rgba(239,83,80,0.2)" : "rgba(0,255,135,0.15)")
+      }},
+        React.createElement("div", {style:{fontFamily:D,fontSize:36,color:weeklyStats.redFlags > 0 ? "var(--red)" : "var(--g1)",lineHeight:0.9}}, weeklyStats.redFlags),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginTop:6}}, "RED FLAGS")
+      ),
+      /* Athletes in programme this week */
+      React.createElement("div", {style:{
+        flex:1, padding:"12px 14px", borderRadius:12,
+        background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)"
+      }},
+        React.createElement("div", {style:{fontFamily:D,fontSize:36,color:"var(--txt)",lineHeight:0.9}}, total),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginTop:6}}, "ATHLETES")
+      )
+    )
+  ),
+
+  /* ── AD TRAINER FOLLOW-UP — sharp pain reported today ── */
   profile.role === "ad" && trainerFollowups.length > 0 && React.createElement("div", {style:{
     marginBottom:20,padding:"18px 16px",borderRadius:16,
     background:"linear-gradient(160deg,rgba(239,83,80,0.14),rgba(30,8,8,0.92))",
@@ -3767,6 +3833,40 @@ function CoachDashboard({
           React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600,letterSpacing:"1px"}}, (a.sports||[]).join(" \u00B7 ").toUpperCase())
         ),
         React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--red)",fontWeight:700,letterSpacing:"1.5px"}}, "REVIEW")
+      );
+    })
+  ),
+
+  /* ── AD PERSISTENT FLAGS — athletes on 3+ consecutive red flag days ── */
+  profile.role === "ad" && consecutiveFlags.length > 0 && React.createElement("div", {style:{
+    marginBottom:20, padding:"18px 16px", borderRadius:16,
+    background:"linear-gradient(160deg,rgba(255,179,0,0.10),rgba(30,20,0,0.92))",
+    border:"1.5px solid rgba(255,179,0,0.35)"
+  }},
+    React.createElement("div", {style:{display:"flex",alignItems:"center",gap:12,marginBottom:12}},
+      React.createElement("i", {className:"ph-thin ph-warning",style:{fontSize:32,color:"#FFB300"}}),
+      React.createElement("div", null,
+        React.createElement("div", {style:{fontFamily:D,fontSize:22,color:"#FFB300",letterSpacing:"-0.02em"}}, "PERSISTENT FLAGS"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--sub)",fontWeight:600,letterSpacing:"1px"}}, "3+ CONSECUTIVE RED FLAG DAYS")
+      )
+    ),
+    consecutiveFlags.map(function(a){
+      return React.createElement("div", {key:a.athlete_id||a.name, style:{
+        display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,
+        padding:"12px 14px",marginBottom:6,borderRadius:12,
+        background:"rgba(255,179,0,0.06)",border:"1px solid rgba(255,179,0,0.18)"
+      }},
+        React.createElement("div", null,
+          React.createElement("div", {style:{fontFamily:D2,fontSize:15,color:"var(--txt)",fontWeight:700}}, a.name||"—"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:600,letterSpacing:"1px"}},
+            (a.sports||[]).join(" · ").toUpperCase() || "—")
+        ),
+        React.createElement("div", {style:{
+          fontFamily:D, fontSize:28, color:"#FFB300", lineHeight:0.9, textAlign:"right"
+        }},
+          a.consecutive_days,
+          React.createElement("div", {style:{fontFamily:D2,fontSize:9,color:"var(--dim)",letterSpacing:"1px",fontWeight:700,marginTop:2}}, "DAYS")
+        )
       );
     })
   ),
