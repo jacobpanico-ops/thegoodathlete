@@ -1037,31 +1037,39 @@ function Huddle({
   profile,
   onDone,
   onCancel,
-  toast
+  toast,
+  editMode,
+  existingCheckin
 }) {
   var TOTAL = 5;
   var [card, setCard] = useState(0);
   var [saving, setSaving] = useState(false);
 
-  /* §9a Sleep + Readiness (merged) */
-  var [sleepHrs, setSleepHrs] = useState(null);
-  var [sleepQ, setSleepQ] = useState(null);
-  var [readiness, setReadiness] = useState(null); /* perceived readiness to compete: 1-5 (1=not at all, 5=locked in). Captured but does not feed calcReadiness — kept as athlete reflection only. */
+  /* Derive bodyStatus from pain_zones array (for edit pre-population) */
+  function bodyStatusFromPainZones(pz) {
+    if (!pz || pz.length === 0) return "good";
+    if (pz.some(function(z){ return typeof z==="string" && z.indexOf("sharp:")===0; })) return "injury";
+    if (pz.some(function(z){ return typeof z==="string" && z.indexOf("sore:")===0; })) return "sore";
+    return "good";
+  }
 
-  /* §9b Body Scan — generic pain reporting only (no body-part detail, no notes).
-     Liability stance: TGA is not a medical record. Detailed pain location and
-     verbatim symptom descriptions belong with the athletic trainer, not in this
-     app. We collect a single 3-state signal (good / sore / injury) and route any
-     "pain" report straight to the athletic trainer. */
-  var [stress, setStress] = useState(null);
-  var [bodyStatus, setBodyStatus] = useState(null); /* null | "good" | "sore" | "injury" */
+  var ex = editMode && existingCheckin ? existingCheckin : null;
 
-  /* §9c Work — Quick Log */
-  var [didWork, setDidWork] = useState(null);
+  /* §9a Sleep + Readiness — pre-populated from existingCheckin in edit mode */
+  var [sleepHrs, setSleepHrs] = useState(ex ? ex.sleep_hrs : null);
+  var [sleepQ, setSleepQ] = useState(ex ? ex.sleep_quality : null);
+  var [readiness, setReadiness] = useState(ex ? ex.readiness : null);
+
+  /* §9b Body Scan */
+  var [stress, setStress] = useState(ex ? ex.stress : null);
+  var [bodyStatus, setBodyStatus] = useState(ex ? bodyStatusFromPainZones(ex.pain_zones) : null);
+
+  /* §9c Work — pre-populated but LOCKED in edit mode (sessions can't be re-logged) */
+  var [didWork, setDidWork] = useState(ex ? !ex.rest_day : null);
   var [selectedSports, setSelectedSports] = useState([]);
   var [overallRpe, setOverallRpe] = useState(null);
   var [totalDur, setTotalDur] = useState(null);
-  var [coachTask, setCoachTask] = useState(false);
+  var [coachTask, setCoachTask] = useState(ex ? !!ex.coach_task : false);
   var [editPhoto, setEditPhoto] = useState(null);
   var fileRef = React.useRef(null);
   var [coachTaskText, setCoachTaskText] = useState(null);
@@ -1076,10 +1084,10 @@ function Huddle({
     })
   },[])
 
-  /* §9d Fuel */
-  var [hydration, setHydration] = useState(0);
-  var [fuelWindow, setFuelWindow] = useState(null);
-  var [mealColor, setMealColor] = useState(null);
+  /* §9d Fuel — pre-populated from existingCheckin in edit mode */
+  var [hydration, setHydration] = useState(ex ? (ex.hydration || 0) : 0);
+  var [fuelWindow, setFuelWindow] = useState(ex ? ex.fuel_window : null);
+  var [mealColor, setMealColor] = useState(ex ? ex.meal_color : null);
 
   /* ── Haptic ── */
   function buzz(ms) {
@@ -1257,6 +1265,31 @@ function Huddle({
     try {
       buzzDouble();
       var rd = calcReadiness();
+
+      /* Edit mode — update existing checkin, no points change */
+      if (editMode && existingCheckin) {
+        var upRes = await SB.rpc('update_checkin', {
+          p_checkin_id:      existingCheckin.id,
+          p_sleep_hrs:       sleepHrs,
+          p_sleep_quality:   sleepQ,
+          p_readiness:       readiness,
+          p_stress:          stress,
+          p_pain_zones:      bodyZonesPayload(),
+          p_hydration:       hydration,
+          p_fuel_window:     fuelWindow || 'na',
+          p_meal_color:      mealColor,
+          p_coach_task:      coachTask,
+          p_readiness_score: rd.score,
+          p_red_flag:        rd.redFlag,
+          p_red_flag_reasons:rd.reasons,
+          p_rest_day:        didWork === false
+        });
+        if (upRes.error) return toast(upRes.error.message || "Update failed", "err");
+        toast("Check-in updated!", "ok");
+        onDone(null);
+        return;
+      }
+
       var sessions = buildSessions();
 
       /* Upload proof photo ONCE — shared across all sessions from this Huddle */
@@ -1511,6 +1544,19 @@ function Huddle({
   ),
 
   card >= 2 && card <= 4 && (card === 2 ? React.createElement("div", {className:"ci gc",key:"c2",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
+    /* Edit mode — show locked state for THE WORK card */
+    editMode ? React.createElement("div", {style:{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"60vh",textAlign:"center",gap:16}},
+      React.createElement("i", {className:"ph-thin ph-lock",style:{fontSize:64,color:"var(--dim)"}}),
+      React.createElement("div", {style:{fontFamily:D,fontSize:36,color:"var(--dim)"}}, "THE WORK"),
+      React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",letterSpacing:"1.5px",lineHeight:1.6,maxWidth:280}},
+        "SESSIONS WERE LOGGED WITH YOUR ORIGINAL CHECK-IN AND CAN'T BE EDITED HERE."
+      ),
+      React.createElement("div", {style:{display:"flex",gap:12,marginTop:8}},
+        React.createElement("button", {onClick:function(){setCard(1);},style:{padding:"10px 20px",borderRadius:12,background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",fontFamily:D2,fontSize:13,color:"var(--dim)",letterSpacing:"1px",cursor:"pointer"}}, "← BACK"),
+        React.createElement("button", {onClick:function(){setCard(3);},style:{padding:"10px 20px",borderRadius:12,background:"rgba(0,255,135,0.1)",border:"1px solid rgba(0,255,135,0.2)",fontFamily:D2,fontSize:13,color:"var(--g1)",letterSpacing:"1px",cursor:"pointer"}}, "NEXT →")
+      )
+    ) :
+    React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:52,marginBottom:6,color:"var(--ember)",filter:"drop-shadow(0 0 12px rgba(255,109,0,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
@@ -2072,6 +2118,7 @@ function Dashboard({
   todayCheckin,
   todaySessions,
   onHuddle,
+  onEditHuddle,
   onSignOut
 }) {
   var lv = gL(profile.xp),
@@ -2278,7 +2325,22 @@ function Dashboard({
     )
   ), todayCheckin.readiness_score != null && /*#__PURE__*/React.createElement(RecoveryCard, {
     checkin: todayCheckin
-  }), /*#__PURE__*/React.createElement("div", {
+  }),
+
+  /* Edit today's check-in — only shown until midnight */
+  /*#__PURE__*/React.createElement("button", {
+    onClick: onEditHuddle,
+    style:{
+      width:"100%", padding:"13px", marginBottom:16, borderRadius:12, cursor:"pointer",
+      background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.08)",
+      display:"flex", alignItems:"center", justifyContent:"center", gap:10
+    }
+  },
+    React.createElement("i", {className:"ph-thin ph-pencil-simple",style:{fontSize:18,color:"var(--dim)"}}),
+    React.createElement("span", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700}}, "EDIT TODAY'S CHECK-IN")
+  ),
+
+  /*#__PURE__*/React.createElement("div", {
     className: "gc",
     style: {
       padding: "20px",
@@ -4182,21 +4244,40 @@ function CoachDashboard({
       borderRadius: 6,
       transition: "width 0.5s ease"
     }
-  }))), profile.role !== "ad" && filtered.length === 0 && /*#__PURE__*/React.createElement("div", {
-    className: "gc",
-    style: {
-      padding: 24,
-      textAlign: "center"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 14,
-      color: "var(--dim)",
-      letterSpacing: "2px",
-      fontWeight: 700
-    }
+  }))), /* Empty roster states — coach role only */
+  profile.role !== "ad" && data.length === 0 && React.createElement("div", {
+    className:"gc", style:{padding:"32px 24px",textAlign:"center",marginBottom:16}
+  },
+    React.createElement("i", {className:"ph-thin ph-users-three",style:{fontSize:56,color:"var(--pr2)",display:"block",marginBottom:16}}),
+    React.createElement("div", {style:{fontFamily:D,fontSize:28,color:"var(--txt)",marginBottom:8}}, "NO ATHLETES YET"),
+    React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",letterSpacing:"1px",lineHeight:1.8,marginBottom:20}},
+      "SHARE THE APP LINK WITH YOUR ATHLETES. THEY SIGN UP AT THEGOODATHLETE.VERCEL.APP AND SELECT STUDENT-ATHLETE."
+    ),
+    React.createElement("div", {style:{
+      padding:"12px 16px",borderRadius:12,
+      background:"rgba(185,123,255,0.08)",border:"1px solid rgba(185,123,255,0.2)",
+      fontFamily:D2,fontSize:11,color:"var(--pr2)",letterSpacing:"1px",fontWeight:700
+    }}, "ONCE THEY CREATE AN ACCOUNT THEY'LL APPEAR HERE AUTOMATICALLY")
+  ),
+
+  profile.role !== "ad" && data.length > 0 && filtered.length === 0 && React.createElement("div", {
+    className:"gc", style:{padding:24,textAlign:"center"}
+  }, React.createElement("div", {
+    style:{fontFamily:D2,fontSize:14,color:"var(--dim)",letterSpacing:"2px",fontWeight:700}
   }, "NO ATHLETES MATCH FILTER")),
+
+  /* Waiting for check-ins — athletes rostered but nobody checked in yet today */
+  profile.role !== "ad" && data.length > 0 && checkedIn === 0 && React.createElement("div", {
+    style:{
+      display:"flex",alignItems:"center",gap:12,padding:"12px 16px",marginBottom:10,
+      borderRadius:12,background:"rgba(255,179,0,0.06)",border:"1px solid rgba(255,179,0,0.15)"
+    }
+  },
+    React.createElement("i", {className:"ph-thin ph-clock",style:{fontSize:22,color:"#FFB300",flexShrink:0}}),
+    React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--sub)",letterSpacing:"1px",fontWeight:600,lineHeight:1.5}},
+      "NO CHECK-INS YET TODAY — ATHLETES CHECK IN FROM THEIR DASHBOARD. CHECK BACK AFTER PRACTICE OR FIRST THING IN THE MORNING."
+    )
+  ),
 
   /* Task completion summary bar — only shown when a task is set today.
      Shows aggregate count only — no athlete names or individual data. */
@@ -4763,6 +4844,7 @@ function App() {
   var [profile, setProfile] = useState(null); // profiles row
   var [page, setPage] = useState("home");
   var [inHuddle, setInHuddle] = useState(false);
+  var [editHuddle, setEditHuddle] = useState(false);
   var [todayCheckin, setTodayCheckin] = useState(null);
   var [todaySessions, setTodaySessions] = useState([]);
   var [levelUp, setLevelUp] = useState(null); /* level-up celebration data */
@@ -4911,31 +4993,34 @@ function App() {
     }
   }, "LOADING..."));
 
-  // In huddle
-  if (inHuddle) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
+  // In huddle (new or edit)
+  if (inHuddle || editHuddle) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
     msg: toastMsg,
     type: toastType
   }), /*#__PURE__*/React.createElement(Huddle, {
     profile: profile,
     toast: toast,
+    editMode: editHuddle,
+    existingCheckin: editHuddle ? todayCheckin : null,
     onCancel: function () {
       setInHuddle(false);
+      setEditHuddle(false);
     },
     onDone: function (data) {
-      var oldLevel = gL(profile.xp || 0);
-      var newLevel = gL((data && data.xp) || 0);
       setInHuddle(false);
-      setProfile(Object.assign({}, profile, {
-        xp: (data && data.xp) || profile.xp || 0,
-        streak: (data && data.streak) || profile.streak || 0,
-        longest_streak: Math.max(profile.longest_streak || 0, (data && data.streak) || 0)
-      }));
-      loadProfile(user.id);
-      toast("+" + ((data && data.points) || 0) + " GP EARNED!", "ok");
-      /* Check for level-up */
-      if (newLevel.l > oldLevel.l) {
-        setLevelUp(newLevel);
+      setEditHuddle(false);
+      if (data) {
+        var oldLevel = gL(profile.xp || 0);
+        var newLevel = gL((data && data.xp) || 0);
+        setProfile(Object.assign({}, profile, {
+          xp: (data && data.xp) || profile.xp || 0,
+          streak: (data && data.streak) || profile.streak || 0,
+          longest_streak: Math.max(profile.longest_streak || 0, (data && data.streak) || 0)
+        }));
+        if (newLevel.l > oldLevel.l) setLevelUp(newLevel);
+        toast("+" + ((data && data.points) || 0) + " GP EARNED!", "ok");
       }
+      loadProfile(user.id);
     }
   }));
 
@@ -4997,6 +5082,9 @@ function App() {
     todaySessions: todaySessions,
     onHuddle: function () {
       setInHuddle(true);
+    },
+    onEditHuddle: function () {
+      setEditHuddle(true);
     },
     onSignOut: signOut
   }), page === "trends" && /*#__PURE__*/React.createElement(TrendsPage, {
