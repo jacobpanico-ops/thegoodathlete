@@ -191,6 +191,8 @@ var SCHOOL = {
   MASCOT: "Good",
   // used in level titles
   TAGLINE: "TRAIN · TRACK · DOMINATE",
+  COACH_CODE: "APACHE.COACH",  // change before each season
+  AD_CODE:    "APACHE.AD",     // share only with athletic director
   SUPABASE_URL: 'https://tjwtzbnyflyoicnrfyzc.supabase.co',
   SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqd3R6Ym55Zmx5b2ljbnJmeXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwOTY2NDgsImV4cCI6MjA5MTY3MjY0OH0.z1LlHS5ouqQgKD7IdQ1BKvp9aK9ZxPFmUbWuiLYe6kc'
 };
@@ -328,14 +330,69 @@ function Toast({
    §7  AUTH SCREEN — Sign Up / Sign In
    ████████████████████████████████████████████████████████████████████████ */
 
+/* ════════════════════════════════════════════════════════════════════════
+   PASSWORD RESET SCREEN — shown when user clicks the reset link in email.
+   Supabase fires PASSWORD_RECOVERY event which the main app intercepts.
+   ════════════════════════════════════════════════════════════════════════ */
+function PasswordResetScreen({ toast, onDone }) {
+  var [pass,    setPass]    = useState("");
+  var [confirm, setConfirm] = useState("");
+  var [loading, setLoading] = useState(false);
+
+  async function handleReset() {
+    if (pass.length < 6)     return toast("Password must be 6+ characters", "err");
+    if (pass !== confirm)    return toast("Passwords don't match", "err");
+    setLoading(true);
+    var res = await SB.auth.updateUser({ password: pass });
+    setLoading(false);
+    if (res.error) return toast(res.error.message, "err");
+    toast("Password updated! You're signed in.", "ok");
+    onDone();
+  }
+
+  return React.createElement("div", {style:{
+    minHeight:"100vh", display:"flex", flexDirection:"column",
+    justifyContent:"center", padding:"40px 24px"
+  }},
+    React.createElement("div", {style:{textAlign:"center",marginBottom:32}},
+      React.createElement("i", {className:"ph-thin ph-lock-key-open",style:{fontSize:64,color:"var(--pr2)",display:"block",marginBottom:12}}),
+      React.createElement("h1", {className:"gs",style:{fontFamily:D,fontSize:44,lineHeight:0.85}}, "NEW PASSWORD"),
+      React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",letterSpacing:"2px",marginTop:10}},
+        "CHOOSE SOMETHING YOU'LL REMEMBER")
+    ),
+    React.createElement("div", {style:{maxWidth:400,margin:"0 auto",width:"100%"}},
+      React.createElement("label", {className:"lbl"}, "NEW PASSWORD"),
+      React.createElement("input", {
+        className:"inp", type:"password", value:pass,
+        onChange:function(e){setPass(e.target.value);},
+        placeholder:"6+ characters", style:{marginBottom:16}
+      }),
+      React.createElement("label", {className:"lbl"}, "CONFIRM PASSWORD"),
+      React.createElement("input", {
+        className:"inp", type:"password", value:confirm,
+        onChange:function(e){setConfirm(e.target.value);},
+        placeholder:"Same password again", style:{marginBottom:24},
+        onKeyDown:function(e){if(e.key==="Enter")handleReset();}
+      }),
+      React.createElement("button", {
+        className:"btn-gold",
+        onClick:handleReset,
+        disabled:loading||!pass.trim()||!confirm.trim()
+      }, loading ? "UPDATING..." : "UPDATE PASSWORD →")
+    )
+  );
+}
+
 function AuthScreen({
   onAuth,
   toast
 }) {
-  var [mode, setMode] = useState("signin"); // signin | signup
+  var [mode, setMode] = useState("signin"); // signin | signup | forgot
   var [email, setEmail] = useState("");
   var [pass, setPass] = useState("");
   var [loading, setLoading] = useState(false);
+  var [resetSent, setResetSent] = useState(false);
+
   async function handleSubmit() {
     if (!email.trim() || !pass.trim()) return toast("Fill in all fields", "err");
     if (pass.length < 6) return toast("Password must be 6+ characters", "err");
@@ -362,6 +419,17 @@ function AuthScreen({
       }
     }
     setLoading(false);
+  }
+
+  async function handleForgot() {
+    if (!email.trim()) return toast("Enter your email first", "err");
+    setLoading(true);
+    var res = await SB.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+    setLoading(false);
+    if (res.error) return toast(res.error.message, "err");
+    setResetSent(true);
   }
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -414,7 +482,12 @@ function AuthScreen({
       margin: "10px 0 0",
       letterSpacing: "8px"
     }
-  }, SCHOOL.SCHOOL_NAME || SCHOOL.TAGLINE)), /*#__PURE__*/React.createElement("div", {
+  }, SCHOOL.SCHOOL_NAME || SCHOOL.TAGLINE), mode === "signup" && /*#__PURE__*/React.createElement("p", {
+    style:{
+      fontFamily:D2, fontSize:12, color:"var(--dim)",
+      margin:"12px 0 0", letterSpacing:"1.5px", lineHeight:1.7
+    }
+  }, "YOUR DAILY CHECK-IN FOR SLEEP, READINESS & TRAINING LOAD.\nCOACHES USE IT TO KEEP YOU HEALTHY AND ON THE COURT.")), /*#__PURE__*/React.createElement("div", {
     style: {
       maxWidth: 400,
       margin: "0 auto",
@@ -476,7 +549,55 @@ function AuthScreen({
     className: "btn-gold",
     onClick: handleSubmit,
     disabled: loading || !email.trim() || !pass.trim()
-  }, loading ? "..." : mode === "signin" ? "LET'S GO →" : "CREATE ACCOUNT →"), mode === "signup" && /*#__PURE__*/React.createElement("div", {
+  }, loading ? "..." : mode === "signin" ? "LET'S GO →" : "CREATE ACCOUNT →"),
+
+  /* Forgot password link — sign-in mode only */
+  mode === "signin" && React.createElement("div", {style:{textAlign:"center",marginTop:14}},
+    React.createElement("button", {
+      onClick:function(){ setMode("forgot"); setResetSent(false); },
+      style:{background:"none",border:"none",color:"var(--dim)",fontFamily:D2,
+        fontSize:12,letterSpacing:"1px",textDecoration:"underline",cursor:"pointer"}
+    }, "Forgot your password?")
+  ),
+
+  /* Forgot password form */
+  mode === "forgot" && React.createElement("div", {className:"fu",style:{marginTop:24}},
+    resetSent
+      ? React.createElement("div", {style:{
+          textAlign:"center",padding:"20px",borderRadius:16,
+          background:"rgba(0,255,135,0.06)",border:"1px solid rgba(0,255,135,0.2)"
+        }},
+          React.createElement("i", {className:"ph-thin ph-envelope-open",style:{fontSize:40,color:"var(--g1)",display:"block",marginBottom:10}}),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--g1)",letterSpacing:"1px",fontWeight:700,marginBottom:6}}, "CHECK YOUR EMAIL"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"0.5px"}},
+            "A reset link was sent to " + email + ". Click it to set a new password."),
+          React.createElement("button", {
+            onClick:function(){ setMode("signin"); setResetSent(false); },
+            style:{background:"none",border:"none",color:"var(--dim)",fontFamily:D2,
+              fontSize:12,letterSpacing:"1px",marginTop:14,textDecoration:"underline",cursor:"pointer"}
+          }, "Back to sign in")
+        )
+      : React.createElement(React.Fragment, null,
+          React.createElement("label", {className:"lbl"}, "YOUR EMAIL"),
+          React.createElement("input", {
+            className:"inp", type:"email", value:email,
+            onChange:function(e){setEmail(e.target.value);},
+            placeholder:"you@school.edu", style:{marginBottom:16},
+            onKeyDown:function(e){if(e.key==="Enter")handleForgot();}
+          }),
+          React.createElement("button", {
+            className:"btn-gold", onClick:handleForgot,
+            disabled:loading||!email.trim()
+          }, loading ? "SENDING..." : "SEND RESET LINK →"),
+          React.createElement("div", {style:{textAlign:"center",marginTop:14}},
+            React.createElement("button", {
+              onClick:function(){ setMode("signin"); },
+              style:{background:"none",border:"none",color:"var(--dim)",fontFamily:D2,
+                fontSize:12,letterSpacing:"1px",textDecoration:"underline",cursor:"pointer"}
+            }, "Back to sign in")
+          )
+        )
+  ), mode === "signup" && /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: "center",
       marginTop: 16,
@@ -710,6 +831,10 @@ function Onboarding({
   var [grade, setGrade] = useState("");
   var [sports, setSports] = useState([]);
   var [loading, setLoading] = useState(false);
+  var [accessCode, setAccessCode] = useState("");
+  var [codeVerified, setCodeVerified] = useState(false);
+  var [codeError, setCodeError] = useState(false);
+
   function togSport(s) {
     setSports(function (p) {
       return p.includes(s) ? p.filter(function (x) {
@@ -717,7 +842,24 @@ function Onboarding({
       }) : [].concat(p, [s]);
     });
   }
-  var ok = first.trim() && last.trim() && role && (role !== "athlete" || grade && sports.length > 0) && (role !== "coach" || sports.length >= 1);
+  function resetRole() {
+    setRole(null); setSports([]); setAccessCode("");
+    setCodeVerified(false); setCodeError(false);
+  }
+  function verifyCode() {
+    var expected = role === "ad" ? SCHOOL.AD_CODE : SCHOOL.COACH_CODE;
+    if (accessCode.trim().toUpperCase() === expected.toUpperCase()) {
+      setCodeVerified(true); setCodeError(false);
+    } else {
+      setCodeError(true);
+    }
+  }
+  var needsCode = role === "coach" || role === "ad";
+  var ok = first.trim() && last.trim() && role &&
+    (!needsCode || codeVerified) &&
+    (role !== "athlete" || grade && sports.length > 0) &&
+    (role !== "coach" || sports.length >= 1);
+
   async function submit() {
     setLoading(true);
     var res = await SB.rpc('complete_onboarding', {
@@ -762,185 +904,124 @@ function Onboarding({
       maxWidth: 420,
       margin: "0 auto"
     }
-  }, !role && /*#__PURE__*/React.createElement("div", {
-    className: "fu"
-  }, /*#__PURE__*/React.createElement("p", {
-    style: {
-      fontFamily: D2,
-      fontSize: 16,
-      color: "var(--dim)",
-      textAlign: "center",
-      letterSpacing: "4px",
-      marginBottom: 16
-    }
-  }, "I AM A..."), [{
-    id: "athlete",
-    l: "STUDENT-ATHLETE",
-    i: "◆"
-  }, {
-    id: "coach",
-    l: "COACH",
-    i: "▲"
-  }, {
-    id: "ad",
-    l: "ATHLETIC DIRECTOR",
-    i: "⬡"
-  }].map(function (r) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: r.id,
-      onClick: function () {
-        setRole(r.id);
+  },
+
+  /* ── STEP 1: Role selection ── */
+  !role && /*#__PURE__*/React.createElement("div", {className:"fu"},
+    /*#__PURE__*/React.createElement("p", {
+      style:{fontFamily:D2,fontSize:16,color:"var(--dim)",textAlign:"center",letterSpacing:"4px",marginBottom:16}
+    }, "I AM A..."),
+    [{id:"athlete",l:"STUDENT-ATHLETE",icon:"ph-person-simple-run"},
+     {id:"coach",  l:"COACH",          icon:"ph-whistle"},
+     {id:"ad",     l:"ATHLETIC DIRECTOR", icon:"ph-clipboard-text"}
+    ].map(function(r){
+      return /*#__PURE__*/React.createElement("button", {
+        key: r.id,
+        onClick: function(){ setRole(r.id); },
+        className: "gc2",
+        style:{display:"flex",alignItems:"center",gap:14,padding:"18px 20px",width:"100%",textAlign:"left",marginBottom:12}
       },
-      className: "gc2",
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "18px 20px",
-        width: "100%",
-        textAlign: "left",
-        marginBottom: 12
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 30
-      }
-    }, r.i), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: D,
-        fontSize: 26,
-        color: "var(--g6)"
-      }
-    }, r.l));
-  })), role && /*#__PURE__*/React.createElement("div", {
-    className: "fu"
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: function () {
-      setRole(null);
-      setSports([]);
-    },
-    style: {
-      background: "none",
-      border: "none",
-      color: "var(--dim)",
-      fontFamily: D2,
-      fontSize: 16,
-      letterSpacing: "3px",
-      marginBottom: 18
-    }
-  }, "\u2190 BACK"), /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "FIRST NAME"), /*#__PURE__*/React.createElement("input", {
-    className: "inp",
-    value: first,
-    onChange: function (e) {
-      setFirst(e.target.value);
-    },
-    placeholder: "First name",
-    style: {
-      marginBottom: 16
-    }
-  }), /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "LAST NAME"), /*#__PURE__*/React.createElement("input", {
-    className: "inp",
-    value: last,
-    onChange: function (e) {
-      setLast(e.target.value);
-    },
-    placeholder: "Last name",
-    style: {
-      marginBottom: 16
-    }
-  }), role === "athlete" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "GRADE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 8,
-      marginBottom: 16
-    }
-  }, ["9", "10", "11", "12"].map(function (g) {
-    return /*#__PURE__*/React.createElement("button", {
-      key: g,
-      onClick: function () {
-        setGrade(g);
-      },
-      style: {
-        flex: 1,
-        padding: "12px",
-        borderRadius: 12,
-        fontFamily: D,
-        fontSize: 24,
-        background: grade === g ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
-        color: grade === g ? "var(--g1)" : "var(--dim)",
-        border: "2px solid " + (grade === g ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
-      }
-    }, g);
-  })), /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "MY SPORTS ", /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--dim)"
-    }
-  }, "(SELECT ALL)")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 8,
-      marginBottom: 24
-    }
-  }, ALL_SPORTS.map(function (s) {
-    var on = sports.includes(s);
-    return /*#__PURE__*/React.createElement("button", {
-      key: s,
-      onClick: function () {
-        togSport(s);
-      },
-      style: {
-        padding: "8px 14px",
-        borderRadius: 12,
-        fontFamily: D2,
-        fontSize: 13,
-        letterSpacing: "1px",
-        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
-        color: on ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
-      }
-    }, on ? "✓ " : "", s.toUpperCase());
-  }))), role === "coach" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
-    className: "lbl"
-  }, "MY TEAMS (SELECT ALL THAT APPLY)"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: 8,
-      marginBottom: 24
-    }
-  }, ALL_SPORTS.map(function (s) {
-    var on = sports.includes(s);
-    return /*#__PURE__*/React.createElement("button", {
-      key: s,
-      onClick: function () {
-        togSport(s);
-      },
-      style: {
-        padding: "8px 14px",
-        borderRadius: 12,
-        fontFamily: D2,
-        fontSize: 13,
-        letterSpacing: "1px",
-        background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
-        color: on ? "var(--g1)" : "var(--dim)",
-        border: "1.5px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)")
-      }
-    }, on ? "✓ " : "", s.toUpperCase());
-  }))), /*#__PURE__*/React.createElement("button", {
-    className: "btn-gold",
-    onClick: submit,
-    disabled: !ok || loading
-  }, loading ? "SAVING..." : "LET'S GO →"))));
-}
+        /*#__PURE__*/React.createElement("i", {className:"ph-thin " + r.icon, style:{fontSize:30,color:"var(--g1)",width:36,textAlign:"center"}}),
+        /*#__PURE__*/React.createElement("span", {style:{fontFamily:D,fontSize:26,color:"var(--g6)"}}, r.l)
+      );
+    })
+  ),
+
+  /* ── STEP 1.5: Access code gate for coach / AD ── */
+  role && needsCode && !codeVerified && /*#__PURE__*/React.createElement("div", {className:"fu"},
+    /*#__PURE__*/React.createElement("button", {
+      onClick: resetRole,
+      style:{background:"none",border:"none",color:"var(--dim)",fontFamily:D2,fontSize:16,letterSpacing:"3px",marginBottom:18,cursor:"pointer"}
+    }, "\u2190 BACK"),
+    /*#__PURE__*/React.createElement("div", {className:"gc2",style:{padding:"24px 20px",marginBottom:16}},
+      /*#__PURE__*/React.createElement("i", {className:"ph-thin ph-lock-key",style:{fontSize:40,color:"var(--pr2)",display:"block",textAlign:"center",marginBottom:12}}),
+      /*#__PURE__*/React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",textAlign:"center",letterSpacing:"2px",marginBottom:20}},
+        role === "ad" ? "ATHLETIC DIRECTOR ACCESS CODE REQUIRED" : "COACH ACCESS CODE REQUIRED"
+      ),
+      /*#__PURE__*/React.createElement("input", {
+        className:"inp",
+        value: accessCode,
+        onChange: function(e){ setAccessCode(e.target.value); setCodeError(false); },
+        onKeyDown: function(e){ if(e.key==="Enter") verifyCode(); },
+        placeholder: "Enter access code",
+        style:{marginBottom:8,textTransform:"uppercase",letterSpacing:"4px",textAlign:"center",fontSize:18}
+      }),
+      codeError && /*#__PURE__*/React.createElement("p", {style:{fontFamily:D2,fontSize:12,color:"var(--red)",textAlign:"center",letterSpacing:"1px",marginBottom:8}},
+        "INCORRECT CODE — SEE YOUR ATHLETIC DIRECTOR"
+      ),
+      /*#__PURE__*/React.createElement("button", {
+        className:"btn-gold",
+        onClick: verifyCode,
+        disabled: !accessCode.trim()
+      }, "VERIFY →")
+    )
+  ),
+
+  /* ── STEP 2: Name / grade / sports ── */
+  role && (!needsCode || codeVerified) && /*#__PURE__*/React.createElement("div", {className:"fu"},
+    /*#__PURE__*/React.createElement("button", {
+      onClick: resetRole,
+      style:{background:"none",border:"none",color:"var(--dim)",fontFamily:D2,fontSize:16,letterSpacing:"3px",marginBottom:18,cursor:"pointer"}
+    }, "\u2190 BACK"),
+    /*#__PURE__*/React.createElement("label", {className:"lbl"}, "FIRST NAME"),
+    /*#__PURE__*/React.createElement("input", {
+      className:"inp", value:first,
+      onChange:function(e){setFirst(e.target.value);},
+      placeholder:"First name", style:{marginBottom:16}
+    }),
+    /*#__PURE__*/React.createElement("label", {className:"lbl"}, "LAST NAME"),
+    /*#__PURE__*/React.createElement("input", {
+      className:"inp", value:last,
+      onChange:function(e){setLast(e.target.value);},
+      placeholder:"Last name", style:{marginBottom:16}
+    }),
+    role === "athlete" && /*#__PURE__*/React.createElement(React.Fragment, null,
+      /*#__PURE__*/React.createElement("label", {className:"lbl"}, "GRADE"),
+      /*#__PURE__*/React.createElement("div", {style:{display:"flex",gap:8,marginBottom:16}},
+        ["9","10","11","12"].map(function(g){
+          return /*#__PURE__*/React.createElement("button", {
+            key:g, onClick:function(){setGrade(g);},
+            style:{flex:1,padding:"12px",borderRadius:12,fontFamily:D,fontSize:24,
+              background:grade===g?"rgba(0,255,135,0.15)":"rgba(12,12,18,0.8)",
+              color:grade===g?"var(--g1)":"var(--dim)",
+              border:"2px solid "+(grade===g?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)")}
+          }, g);
+        })
+      ),
+      /*#__PURE__*/React.createElement("label", {className:"lbl"}, "MY SPORTS ", /*#__PURE__*/React.createElement("span", {style:{color:"var(--dim)"}}, "(SELECT ALL)")),
+      /*#__PURE__*/React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:8,marginBottom:24}},
+        ALL_SPORTS.map(function(s){
+          var on = sports.includes(s);
+          return /*#__PURE__*/React.createElement("button", {
+            key:s, onClick:function(){togSport(s);},
+            style:{padding:"8px 14px",borderRadius:12,fontFamily:D2,fontSize:13,letterSpacing:"1px",
+              background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",
+              color:on?"var(--g1)":"var(--dim)",
+              border:"1.5px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)")}
+          }, on ? "✓ " : "", s.toUpperCase());
+        })
+      )
+    ),
+    role === "coach" && /*#__PURE__*/React.createElement(React.Fragment, null,
+      /*#__PURE__*/React.createElement("label", {className:"lbl"}, "MY TEAMS (SELECT ALL THAT APPLY)"),
+      /*#__PURE__*/React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:8,marginBottom:24}},
+        ALL_SPORTS.map(function(s){
+          var on = sports.includes(s);
+          return /*#__PURE__*/React.createElement("button", {
+            key:s, onClick:function(){togSport(s);},
+            style:{padding:"8px 14px",borderRadius:12,fontFamily:D2,fontSize:13,letterSpacing:"1px",
+              background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",
+              color:on?"var(--g1)":"var(--dim)",
+              border:"1.5px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)")}
+          }, on ? "✓ " : "", s.toUpperCase());
+        })
+      )
+    ),
+    /*#__PURE__*/React.createElement("button", {
+      className:"btn-gold", onClick:submit, disabled:!ok||loading
+    }, loading ? "SAVING..." : "LET'S GO →")
+  )));}
+
 
 
 /* ████████████████████████████████████████████████████████████████████████
@@ -4710,6 +4791,8 @@ function App() {
     return p.data;
   }
 
+  var [passwordReset, setPasswordReset] = useState(false); /* true when Supabase fires PASSWORD_RECOVERY */
+
   // Auth listener
   useEffect(function () {
     SB.auth.getSession().then(function (res) {
@@ -4728,6 +4811,10 @@ function App() {
         subscription
       }
     } = SB.auth.onAuthStateChange(function (event, session) {
+      if (event === 'PASSWORD_RECOVERY') {
+        setPasswordReset(true);
+        return;
+      }
       if (event === 'SIGNED_IN' && session) {
         setUser(session.user);
         loadProfile(session.user.id);
@@ -4763,6 +4850,15 @@ function App() {
       fontSize: 32
     }
   }, "LOADING..."));
+
+  // Password reset — Supabase PASSWORD_RECOVERY event intercepted
+  if (passwordReset) return React.createElement(React.Fragment, null,
+    React.createElement(Toast, {msg:toastMsg, type:toastType}),
+    React.createElement(PasswordResetScreen, {
+      toast: toast,
+      onDone: function(){ setPasswordReset(false); }
+    })
+  );
 
   // Not logged in → Auth screen
   if (!user) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
