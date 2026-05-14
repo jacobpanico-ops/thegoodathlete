@@ -4874,7 +4874,9 @@ function App() {
 
   // Load profile + today's check-in + today's sessions
   async function loadProfile(uid) {
+    var el = document.getElementById('tga-err-overlay');
     var p = await SB.from('profiles').select('*').eq('id', uid).single();
+    if (p.error && el) { el.textContent = 'PROFILE ERROR: ' + p.error.message + ' (code: ' + p.error.code + ')\nUID: ' + uid + '\n(tap to dismiss)'; el.style.display='block'; }
     if (p.data) setProfile(p.data);
     var c = await SB.from('checkins').select('*').eq('athlete_id', uid).eq('date', today()).maybeSingle();
     if (c.data) setTodayCheckin(c.data);
@@ -5002,21 +5004,28 @@ function App() {
     }
   }));
 
-  // Logged in but profile not loaded yet
+  // Logged in but profile not loaded yet — show retry option
   if (!profile) return /*#__PURE__*/React.createElement("div", {
     style: {
       minHeight: "100vh",
       display: "flex",
       alignItems: "center",
-      justifyContent: "center"
+      justifyContent: "center",
+      flexDirection: "column",
+      gap: 20
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "gs",
-    style: {
-      fontFamily: D,
-      fontSize: 32
+    style: { fontFamily: D, fontSize: 32 }
+  }, "LOADING..."),
+  /*#__PURE__*/React.createElement("button", {
+    onClick: function(){ if(user) loadProfile(user.id); },
+    style:{
+      fontFamily:D2, fontSize:12, letterSpacing:"2px", padding:"10px 24px",
+      borderRadius:12, background:"rgba(0,255,135,0.1)", border:"1px solid rgba(0,255,135,0.3)",
+      color:"var(--g1)", cursor:"pointer"
     }
-  }, "LOADING..."));
+  }, "RETRY"));
 
   // In huddle (new or edit)
   if (inHuddle || editHuddle) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
