@@ -4891,13 +4891,28 @@ function App() {
         setUser(s.user);
         loadProfile(s.user.id).then(function () {
           setLoading(false);
-        }).catch(function() {
+        }).catch(function(err) {
+          console.error('loadProfile error:', err);
           setLoading(false);
         });
       } else {
         setLoading(false);
       }
+    }).catch(function(err) {
+      console.error('getSession error:', err);
+      setLoading(false);
     });
+
+    /* Safety net — if loading is still true after 8s, something silently hung */
+    var loadTimeout = setTimeout(function(){
+      setLoading(function(current){
+        if(current){
+          var el = document.getElementById('tga-err-overlay');
+          if(el){ el.textContent = 'LOAD TIMEOUT: getSession() never resolved.\nCheck network connection and Supabase status.\n(tap to dismiss)'; el.style.display='block'; }
+        }
+        return false;
+      });
+    }, 8000);
     var {
       data: {
         subscription
