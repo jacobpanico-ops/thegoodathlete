@@ -115,6 +115,16 @@ i[class^="ph-"],i[class*=" ph-"]{display:inline-flex;align-items:center;justify-
 </style>
 </head>
 <body>
+<div id="tga-err-overlay" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#8B0000;color:#fff;font-family:monospace;font-size:12px;padding:10px 14px;line-height:1.4;max-height:45vh;overflow:auto;border-top:2px solid #EF5350;white-space:pre-wrap;word-break:break-word"></div>
+<script>
+(function(){
+  var el=document.getElementById('tga-err-overlay');
+  function show(msg){try{el.textContent=String(msg).slice(0,2000);el.style.display='block';}catch(e){}}
+  el.addEventListener('click',function(){el.style.display='none';});
+  window.addEventListener('error',function(e){show('ERROR: '+(e.message||'')+'\n'+(e.filename||'')+':'+(e.lineno||'')+'\n(tap to dismiss)');});
+  window.addEventListener('unhandledrejection',function(e){var r=e.reason;show('PROMISE: '+((r&&(r.message||r.toString()))||'unknown')+'\n(tap to dismiss)');});
+})();
+</script>
 <div id="root"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
@@ -1556,7 +1566,6 @@ function Huddle({
         React.createElement("button", {onClick:function(){setCard(3);},style:{padding:"10px 20px",borderRadius:12,background:"rgba(0,255,135,0.1)",border:"1px solid rgba(0,255,135,0.2)",fontFamily:D2,fontSize:13,color:"var(--g1)",letterSpacing:"1px",cursor:"pointer"}}, "NEXT →")
       )
     ) :
-    React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:52,marginBottom:6,color:"var(--ember)",filter:"drop-shadow(0 0 12px rgba(255,109,0,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
@@ -4845,6 +4854,7 @@ function App() {
   var [page, setPage] = useState("home");
   var [inHuddle, setInHuddle] = useState(false);
   var [editHuddle, setEditHuddle] = useState(false);
+  var [passwordReset, setPasswordReset] = useState(false);
   var [todayCheckin, setTodayCheckin] = useState(null);
   var [todaySessions, setTodaySessions] = useState([]);
   var [levelUp, setLevelUp] = useState(null); /* level-up celebration data */
@@ -4873,8 +4883,6 @@ function App() {
     return p.data;
   }
 
-  var [passwordReset, setPasswordReset] = useState(false); /* true when Supabase fires PASSWORD_RECOVERY */
-
   // Auth listener
   useEffect(function () {
     SB.auth.getSession().then(function (res) {
@@ -4882,6 +4890,8 @@ function App() {
       if (s && s.user) {
         setUser(s.user);
         loadProfile(s.user.id).then(function () {
+          setLoading(false);
+        }).catch(function() {
           setLoading(false);
         });
       } else {
