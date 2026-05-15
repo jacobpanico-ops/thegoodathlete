@@ -3599,6 +3599,9 @@ function CoachDashboard({
   var [selectedAthlete, setSelectedAthlete] = useState(null); /* athlete object for detail panel, null = closed */
   var [consecutiveFlags, setConsecutiveFlags] = useState([]); /* AD-only: athletes on 3+ day red flag streaks */
   var [weeklyStats, setWeeklyStats] = useState(null); /* AD-only: {checkIns, totalSlots, redFlags} for past 7 days */
+  var [userList, setUserList] = useState([]); /* AD-only: all profiles for user management panel */
+  var [removingUser, setRemovingUser] = useState(null); /* AD-only: user pending removal confirmation {id, name} */
+  var [userFilter, setUserFilter] = useState("all"); /* AD user management filter: all|athlete|coach|ad */
 
   /* Sport-scope filter — coach sees only athletes whose sports overlap with their own.
      AD and coaches without a sport set see everything. Matches the existing roster filter
@@ -3649,6 +3652,11 @@ function CoachDashboard({
             });
           }
         });
+
+      /* User management — full profile list with email via get_all_users RPC */
+      SB.rpc('get_all_users').then(function(r){
+        if(!r.error && r.data) setUserList(r.data);
+      });
     }
 
     /* Fetch today's pain reports — drives the BODY traffic light for coaches
@@ -3707,6 +3715,17 @@ function CoachDashboard({
         setTimeout(function(){setTaskSavedSport(null)},2000);
       }
     });
+  }
+
+  async function removeUser(userId, displayName) {
+    var res = await SB.rpc('remove_user', { p_user_id: userId });
+    if (res.error) {
+      /* Surface error inline — no console at school */
+      setRemovingUser({ id: userId, name: displayName, error: res.error.message });
+      return;
+    }
+    setUserList(function(prev){ return prev.filter(function(u){ return u.id !== userId; }); });
+    setRemovingUser(null);
   }
 
   useEffect(function () {
@@ -4088,6 +4107,120 @@ function CoachDashboard({
         )
       );
     })
+  ),
+
+  /* ── AD USER MANAGEMENT — full user list with remove capability ── */
+  profile.role === "ad" && React.createElement("div", {style:{marginBottom:20}},
+    /* Header */
+    React.createElement("div", {style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}},
+      React.createElement("div", null,
+        React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:32,letterSpacing:"-0.02em",lineHeight:0.85,marginBottom:2}}, "USER MANAGEMENT"),
+        React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"2px",fontWeight:700}},
+          userList.length + " TOTAL USERS")
+      ),
+      React.createElement("i", {className:"ph-thin ph-users-three",style:{fontSize:32,color:"var(--pr2)"}})
+    ),
+
+    /* Role filter pills */
+    React.createElement("div", {style:{display:"flex",gap:6,marginBottom:14,overflowX:"auto"}},
+      [{id:"all",l:"ALL"},{id:"athlete",l:"ATHLETES"},{id:"coach",l:"COACHES"},{id:"ad",l:"DIRECTORS"}].map(function(f){
+        var on = userFilter === f.id;
+        var count = f.id === "all" ? userList.length : userList.filter(function(u){ return u.role === f.id; }).length;
+        return React.createElement("button", {
+          key:f.id, onClick:function(){ setUserFilter(f.id); },
+          style:{
+            padding:"8px 14px",borderRadius:12,fontFamily:D2,fontSize:11,fontWeight:700,
+            letterSpacing:"1px",whiteSpace:"nowrap",
+            background:on?"rgba(185,123,255,0.15)":"rgba(12,12,18,0.8)",
+            color:on?"var(--pr2)":"var(--dim)",
+            border:"1.5px solid "+(on?"rgba(185,123,255,0.4)":"rgba(255,255,255,0.05)")
+          }
+        }, f.l + " · " + count);
+      })
+    ),
+
+    /* User rows */
+    userList
+      .filter(function(u){ return userFilter === "all" || u.role === userFilter; })
+      .map(function(u){
+        var displayName = ((u.first_name||"") + " " + (u.last_name||"")).trim() || "—";
+        var roleBadge = u.role === "ad" ? {label:"AD",color:"var(--pr2)",bg:"rgba(185,123,255,0.12)"}
+                      : u.role === "coach" ? {label:"COACH",color:"#FFB300",bg:"rgba(255,179,0,0.10)"}
+                      : {label:"ATHLETE",color:"var(--g1)",bg:"rgba(0,255,135,0.08)"};
+        var isPending = removingUser && removingUser.id === u.id;
+        return React.createElement("div", {
+          key:u.id,
+          style:{
+            padding:"12px 14px",marginBottom:6,borderRadius:12,
+            background:isPending?"rgba(239,83,80,0.08)":"rgba(12,12,18,0.6)",
+            border:"1.5px solid "+(isPending?"rgba(239,83,80,0.35)":"rgba(255,255,255,0.05)")
+          }
+        },
+          /* Normal row */
+          !isPending && React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10}},
+            /* Role badge */
+            React.createElement("div", {style:{
+              padding:"3px 8px",borderRadius:6,fontFamily:D2,fontSize:10,
+              fontWeight:700,letterSpacing:"1.5px",
+              color:roleBadge.color,background:roleBadge.bg,flexShrink:0
+            }}, roleBadge.label),
+            /* Name + email */
+            React.createElement("div", {style:{flex:1,minWidth:0}},
+              React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:"var(--txt)",fontWeight:700,
+                whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}, displayName.toUpperCase()),
+              React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",
+                whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}, u.email||"")
+            ),
+            /* Remove button */
+            React.createElement("button", {
+              onClick:function(){ setRemovingUser({id:u.id,name:displayName}); },
+              style:{
+                padding:"6px 12px",borderRadius:8,fontFamily:D2,fontSize:11,fontWeight:700,
+                letterSpacing:"1px",background:"none",
+                border:"1px solid rgba(239,83,80,0.25)",color:"rgba(239,83,80,0.7)",
+                cursor:"pointer",flexShrink:0
+              }
+            }, "REMOVE")
+          ),
+
+          /* Confirmation state */
+          isPending && React.createElement("div", null,
+            removingUser.error && React.createElement("div", {style:{
+              fontFamily:D2,fontSize:12,color:"var(--red)",letterSpacing:"1px",marginBottom:8
+            }}, "ERROR: " + removingUser.error),
+            React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--txt)",fontWeight:700,marginBottom:10}},
+              "REMOVE " + displayName.toUpperCase() + "?"),
+            React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",marginBottom:12}},
+              "This deletes their profile and locks them out immediately. This cannot be undone."),
+            React.createElement("div", {style:{display:"flex",gap:8}},
+              React.createElement("button", {
+                onClick:function(){ removeUser(u.id, displayName); },
+                style:{
+                  flex:1,padding:"10px",borderRadius:10,fontFamily:D2,fontSize:12,fontWeight:700,
+                  letterSpacing:"1px",background:"rgba(239,83,80,0.15)",
+                  border:"1.5px solid rgba(239,83,80,0.4)",color:"var(--red)",cursor:"pointer"
+                }
+              }, "YES, REMOVE"),
+              React.createElement("button", {
+                onClick:function(){ setRemovingUser(null); },
+                style:{
+                  flex:1,padding:"10px",borderRadius:10,fontFamily:D2,fontSize:12,fontWeight:700,
+                  letterSpacing:"1px",background:"none",
+                  border:"1px solid rgba(255,255,255,0.08)",color:"var(--dim)",cursor:"pointer"
+                }
+              }, "CANCEL")
+            )
+          )
+        );
+      }),
+
+    userList.length === 0 && React.createElement("div", {style:{
+      textAlign:"center",padding:"30px 20px",borderRadius:16,
+      background:"rgba(12,12,18,0.6)",border:"1px solid rgba(255,255,255,0.05)"
+    }},
+      React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",letterSpacing:"2px"}},
+        "NO USERS LOADED")
+    )
   ),
 
   profile.role !== "ad" && /*#__PURE__*/React.createElement("h1", {
@@ -4992,8 +5125,11 @@ function App() {
     })
   );
 
-  // Logged in but profile incomplete → Onboarding
-  if (profile && (!profile.name || !profile.first_name || profile.name === '')) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
+  // No profile (brand new user) OR profile incomplete → Onboarding
+  // Covers: new coach/AD who just signed up with no profile row yet,
+  // AND existing users whose profile row is missing name/first_name.
+  // DB errors are already surfaced by the tga-err-overlay in loadProfile.
+  if (!profile || !profile.first_name || !profile.name || profile.name === '') return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
     msg: toastMsg,
     type: toastType
   }), /*#__PURE__*/React.createElement(Onboarding, {
@@ -5003,29 +5139,6 @@ function App() {
       loadProfile(user.id);
     }
   }));
-
-  // Logged in but profile not loaded yet — show retry option
-  if (!profile) return /*#__PURE__*/React.createElement("div", {
-    style: {
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-      gap: 20
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "gs",
-    style: { fontFamily: D, fontSize: 32 }
-  }, "LOADING..."),
-  /*#__PURE__*/React.createElement("button", {
-    onClick: function(){ if(user) loadProfile(user.id); },
-    style:{
-      fontFamily:D2, fontSize:12, letterSpacing:"2px", padding:"10px 24px",
-      borderRadius:12, background:"rgba(0,255,135,0.1)", border:"1px solid rgba(0,255,135,0.3)",
-      color:"var(--g1)", cursor:"pointer"
-    }
-  }, "RETRY"));
 
   // In huddle (new or edit)
   if (inHuddle || editHuddle) return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Toast, {
