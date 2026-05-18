@@ -3580,6 +3580,80 @@ function AthleteDetailPanel({ athlete, onClose }) {
 }
 
 /* ████████████████████████████████████████████████████████████████████████
+   §11a  COACH SELF CHECK-IN — Optional ephemeral personal check-in.
+         State-only, never written to DB or shared with anyone.
+   ████████████████████████████████████████████████████████████████████████ */
+
+function CoachCheckinWidget({ onDone }) {
+  var QUESTIONS = [
+    { key: "sleep",  label: "SLEEP",  lo: "POOR",      hi: "GREAT"     },
+    { key: "energy", label: "ENERGY", lo: "DRAINED",   hi: "LOCKED IN" },
+    { key: "stress", label: "STRESS", lo: "OVERWHELMED", hi: "CALM"    }
+  ];
+  var [answers, setAnswers] = useState({ sleep: null, energy: null, stress: null });
+
+  function pick(key, val) {
+    var next = Object.assign({}, answers, {[key]: val});
+    setAnswers(next);
+    /* Auto-submit once all three are answered */
+    if (QUESTIONS.every(function(q){ return next[q.key] !== null; })) {
+      setTimeout(function(){ onDone(next); }, 280);
+    }
+  }
+
+  return React.createElement("div", {style:{
+    padding:"18px 16px", borderRadius:16, marginBottom:16,
+    background:"linear-gradient(160deg,rgba(185,123,255,0.08),rgba(12,12,18,0.95))",
+    border:"1.5px solid rgba(185,123,255,0.2)"
+  }},
+    React.createElement("div", {style:{
+      fontFamily:D, fontSize:24, color:"var(--txt)",
+      letterSpacing:"-0.02em", lineHeight:0.9, marginBottom:4
+    }}, "HOW ARE YOU SHOWING UP?"),
+    React.createElement("div", {style:{
+      fontFamily:D2, fontSize:11, color:"var(--dim)",
+      letterSpacing:"2px", fontWeight:700, marginBottom:18
+    }}, "PERSONAL · NOT STORED · NOT SHARED"),
+
+    QUESTIONS.map(function(q){
+      return React.createElement("div", {key:q.key, style:{marginBottom:14}},
+        React.createElement("div", {style:{
+          display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8
+        }},
+          React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:"var(--sub)",fontWeight:700,letterSpacing:"2px"}}, q.label),
+          React.createElement("div", {style:{display:"flex",gap:4,fontSize:10,fontFamily:D2,fontWeight:700,color:"var(--dim)",letterSpacing:"1px"}},
+            React.createElement("span", null, q.lo),
+            React.createElement("span", {style:{margin:"0 4px"}}, "→"),
+            React.createElement("span", null, q.hi)
+          )
+        ),
+        React.createElement("div", {style:{display:"flex",gap:6}},
+          [1,2,3,4,5].map(function(v){
+            var sel = answers[q.key] === v;
+            var col = v <= 2 ? "#EF5350" : v === 3 ? "#FFB300" : "#00FF87";
+            /* Stress is inverted — high number = calm = good */
+            return React.createElement("button", {
+              key:v,
+              onClick:function(){ pick(q.key, v); },
+              style:{
+                flex:1, padding:"10px 0", borderRadius:10,
+                fontFamily:D, fontSize:20, lineHeight:1,
+                background: sel ? col + "22" : "rgba(255,255,255,0.04)",
+                border:"1.5px solid " + (sel ? col : "rgba(255,255,255,0.07)"),
+                color: sel ? col : "var(--dim)",
+                cursor:"pointer",
+                transform: sel ? "scale(1.08)" : "scale(1)",
+                transition:"all 150ms"
+              }
+            }, v);
+          })
+        )
+      );
+    })
+  );
+}
+
+/* ████████████████████████████████████████████████████████████████████████
    §11b  COACH DASHBOARD — Tiered access roster with traffic lights
    ████████████████████████████████████████████████████████████████████████ */
 
@@ -3602,6 +3676,8 @@ function CoachDashboard({
   var [userList, setUserList] = useState([]); /* AD-only: all profiles for user management panel */
   var [removingUser, setRemovingUser] = useState(null); /* AD-only: user pending removal confirmation {id, name} */
   var [userFilter, setUserFilter] = useState("all"); /* AD user management filter: all|athlete|coach|ad */
+  var [coachCheckin, setCoachCheckin] = useState(null); /* optional personal check-in result — state only, never stored */
+  var [showCoachCheckin, setShowCoachCheckin] = useState(false);
 
   /* Sport-scope filter — coach sees only athletes whose sports overlap with their own.
      AD and coaches without a sport set see everything. Matches the existing roster filter
@@ -3927,6 +4003,70 @@ function CoachDashboard({
       padding: "20px 20px 110px"
     }
   },
+
+  /* ── COACH SELF CHECK-IN — optional, ephemeral, never stored ── */
+  showCoachCheckin
+    ? React.createElement(CoachCheckinWidget, {
+        onDone: function(result){
+          setCoachCheckin(result);
+          setShowCoachCheckin(false);
+        }
+      })
+    : coachCheckin
+      /* Result card — shown after check-in is complete */
+      ? (function(){
+          function scoreColor(v){ return v <= 2 ? "#EF5350" : v === 3 ? "#FFB300" : "#00FF87"; }
+          var avg = Math.round((coachCheckin.sleep + coachCheckin.energy + coachCheckin.stress) / 3);
+          var label = avg <= 2 ? "ROUGH DAY" : avg === 3 ? "HOLDING IT TOGETHER" : "DIALED IN";
+          var col = scoreColor(avg);
+          return React.createElement("div", {style:{
+            padding:"14px 16px", borderRadius:14, marginBottom:16,
+            background:"rgba(12,12,18,0.7)",
+            border:"1.5px solid " + col + "44",
+            display:"flex", alignItems:"center", gap:14
+          }},
+            React.createElement("div", {style:{
+              fontFamily:D, fontSize:36, color:col, lineHeight:0.9, flexShrink:0
+            }}, avg),
+            React.createElement("div", {style:{flex:1}},
+              React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:col,fontWeight:700,letterSpacing:"1.5px"}}, label),
+              React.createElement("div", {style:{display:"flex",gap:12,marginTop:6}},
+                ["SLEEP","ENERGY","STRESS"].map(function(l,i){
+                  var v = [coachCheckin.sleep, coachCheckin.energy, coachCheckin.stress][i];
+                  return React.createElement("span", {key:l, style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:700,letterSpacing:"1px"}},
+                    l + " ", React.createElement("span", {style:{color:scoreColor(v)}}, v)
+                  );
+                })
+              )
+            ),
+            React.createElement("button", {
+              onClick:function(){ setShowCoachCheckin(true); },
+              style:{
+                padding:"6px 10px", borderRadius:8, background:"none",
+                border:"1px solid rgba(255,255,255,0.08)",
+                fontFamily:D2, fontSize:10, color:"var(--dim)",
+                fontWeight:700, letterSpacing:"1px", cursor:"pointer", flexShrink:0
+              }
+            }, "REDO")
+          );
+        })()
+      /* Button — shown when no check-in done yet */
+      : React.createElement("button", {
+          onClick:function(){ setShowCoachCheckin(true); },
+          style:{
+            width:"100%", padding:"12px 16px", borderRadius:14, marginBottom:16,
+            background:"rgba(185,123,255,0.06)",
+            border:"1.5px solid rgba(185,123,255,0.15)",
+            display:"flex", alignItems:"center", gap:12,
+            cursor:"pointer", textAlign:"left"
+          }
+        },
+        React.createElement("i", {className:"ph-thin ph-pulse",style:{fontSize:26,color:"var(--pr2)",flexShrink:0}}),
+        React.createElement("div", null,
+          React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:"var(--pr2)",fontWeight:700,letterSpacing:"1px"}}, "HOW ARE YOU SHOWING UP TODAY?"),
+          React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1px",marginTop:2}}, "OPTIONAL · PERSONAL · NOT STORED")
+        )
+      ),
 
   /* Scope indicator — shows coaches what teams they're viewing (hidden for AD and unscoped coaches) */
   _scopeActive && React.createElement("div", {style:{
@@ -5010,7 +5150,15 @@ function App() {
     var el = document.getElementById('tga-err-overlay');
     var p = await SB.from('profiles').select('*').eq('id', uid).single();
     if (p.error && el) { el.textContent = 'PROFILE ERROR: ' + p.error.message + ' (code: ' + p.error.code + ')\nUID: ' + uid + '\n(tap to dismiss)'; el.style.display='block'; }
-    if (p.data) setProfile(p.data);
+    if (p.data) {
+      setProfile(p.data);
+      /* Coaches and ADs land on the roster — skip athlete checkin/session queries
+         entirely so no staff data is ever read into or stored in athlete tables. */
+      if (p.data.role === 'coach' || p.data.role === 'ad') {
+        setPage('roster');
+        return p.data;
+      }
+    }
     var c = await SB.from('checkins').select('*').eq('athlete_id', uid).eq('date', today()).maybeSingle();
     if (c.data) setTodayCheckin(c.data);
     var s = await SB.from('sessions').select('*').eq('athlete_id', uid).eq('date', today());
