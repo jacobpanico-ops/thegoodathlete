@@ -2169,8 +2169,8 @@ function Dashboard({
   });
   var distinctSports = Object.keys(sportSet);
   var sessionCount = Math.max(1, todaySessions.length);
-  var LOAD_CAUTION = 450 * sessionCount;
-  var LOAD_DANGER = 750 * sessionCount;
+  var LOAD_CAUTION = 900 * sessionCount;
+  var LOAD_DANGER = 1500 * sessionCount;
   var hasConflict = distinctSports.length >= 2;
   var loadLevel = totalLoad >= LOAD_DANGER ? "danger" : totalLoad >= LOAD_CAUTION ? "caution" : "ok";
   return /*#__PURE__*/React.createElement("div", {
@@ -3914,8 +3914,8 @@ function CoachDashboard({
     var load = a.today_load || 0;
     if (load === 0) return "green";
     var sessions = Math.max(1, a.sports_today || 1);
-    if (load >= 750 * sessions) return "red";
-    if (load >= 450 * sessions) return "yellow";
+    if (load >= 1500 * sessions) return "red";
+    if (load >= 900 * sessions) return "yellow";
     return "green";
   }
 
@@ -4438,7 +4438,7 @@ function CoachDashboard({
     c: "var(--g1)"
   }, {
     id: "red",
-    n: reds + redFlags,
+    n: data.filter(function(a){ return a.status === "red" || a.red_flag; }).length,
     l: "RED",
     c: "#EF5350"
   }, {
