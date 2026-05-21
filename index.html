@@ -741,7 +741,7 @@ function DataAgreement({
       fontWeight: 600,
       margin: 0
     }
-  }, "We collect only what's needed to keep you healthy and performing. Your coach sees four daily traffic lights for you: SCORE (the app's overall readiness number), FEEL (how ready you said you were to compete), LOAD (your training intensity), and BODY (whether you reported any pain). They see the colors, not your specific answers \u2014 your sleep hours, mental load, hydration, and meal choices stay between you and the app. Your athletic director sees team-level wellness totals; if you report pain, they're notified by name so they can coordinate with the trainer. No GPS tracking, no social media, no advertising, no data sold to third parties \u2014 ever. All data is encrypted, stored on SOC 2-compliant infrastructure, and can be deleted at any time by request. We follow FERPA guidelines for student data protection.")), /*#__PURE__*/React.createElement("div", {
+  }, "We collect only what's needed to keep you healthy and performing. Your coach sees four daily traffic lights for you: SCORE (the app's overall readiness number), FEEL (how ready you said you were to compete), LOAD (your training intensity), and BODY (whether you reported any pain). They see the colors, not your specific answers \u2014 your sleep hours, mental load, hydration, and meal choices stay between you and the app. Your athletic director sees team-level wellness totals; if you report pain, they're notified by name so they can coordinate with the trainer. No GPS tracking, no social media, no advertising, no data sold to third parties \u2014 ever. All data is encrypted and stored on SOC 2-compliant infrastructure. Daily check-in records are automatically deleted after 7 days. Profile data can be deleted at any time by request. We follow FERPA guidelines for student data protection.")), /*#__PURE__*/React.createElement("div", {
     style: {
       marginBottom: 28
     }
@@ -798,7 +798,11 @@ function DataAgreement({
     style: {
       marginBottom: 4
     }
-  }, "\u25C6 No tracking, no ads, no third-party access"), /*#__PURE__*/React.createElement("div", null, "\u25C6 FERPA-aligned \u00B7 Delete any time on request"))), /*#__PURE__*/React.createElement("button", {
+  }, "\u25C6 No tracking, no ads, no third-party access"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 4
+    }
+  }, "\u25C6 Check-in records auto-deleted after 7 days"), /*#__PURE__*/React.createElement("div", null, "\u25C6 FERPA-aligned \u00B7 Delete any time on request"))), /*#__PURE__*/React.createElement("button", {
     className: "btn-gold",
     onClick: onAgree
   }, "I UNDERSTAND AND AGREE"), /*#__PURE__*/React.createElement("div", {
@@ -1079,20 +1083,6 @@ function Huddle({
   var [selectedSports, setSelectedSports] = useState([]);
   var [overallRpe, setOverallRpe] = useState(null);
   var [totalDur, setTotalDur] = useState(null);
-  var [coachTask, setCoachTask] = useState(ex ? !!ex.coach_task : false);
-  var [editPhoto, setEditPhoto] = useState(null);
-  var fileRef = React.useRef(null);
-  var [coachTaskText, setCoachTaskText] = useState(null);
-  var [coachTaskId, setCoachTaskId] = useState(null);
-  useEffect(function(){
-    if(!profile.sports || profile.sports.length === 0) return;
-    SB.from('coach_tasks').select('id, task_text').in('sport',profile.sports).eq('active',true).order('updated_at',{ascending:false}).limit(1).then(function(res){
-      if(!res.error && res.data && res.data.length > 0) {
-        setCoachTaskId(res.data[0].id);
-        setCoachTaskText(res.data[0].task_text);
-      }
-    })
-  },[])
 
   /* §9d Fuel — pre-populated from existingCheckin in edit mode */
   var [hydration, setHydration] = useState(ex ? (ex.hydration || 0) : 0);
@@ -1156,9 +1146,7 @@ function Huddle({
         sport: s,
         type: "General Training",
         rpe: overallRpe,
-        dur: durPer,
-        proof: !!editPhoto,
-        proofThumb: editPhoto
+        dur: durPer
       };
     });
   }
@@ -1182,7 +1170,6 @@ function Huddle({
     p += streakBonus;
     if (sleepHrs && ["8", "9", "9+", "10+"].includes(sleepHrs)) p += 8;
     if (mealColor === "green") p += 5;
-    if (coachTask) p += 5;
     if ((hydration || 0) >= 8) p += 3;
     if (didWork === false) p += 3;
     return p;
@@ -1246,27 +1233,6 @@ function Huddle({
 
   var submitInFlight = React.useRef(false);
 
-  /* Upload the Proof of Grind photo to private storage. Runs once per Huddle
-     (same photo attached to every sport logged that day). Returns the storage
-     path on success, null on any failure — submit flow continues either way. */
-  async function uploadProofPhoto(objectUrl, athleteId) {
-    if (!objectUrl || !athleteId) return null;
-    try {
-      var blob = await fetch(objectUrl).then(function(r){return r.blob();});
-      var ext = (blob.type && blob.type.split('/')[1]) || 'bin';
-      if (ext === 'jpeg') ext = 'jpg';
-      var rand = (typeof crypto !== 'undefined' && crypto.randomUUID)
-        ? crypto.randomUUID()
-        : (Date.now() + '-' + Math.random().toString(36).slice(2,9));
-      var path = athleteId + '/' + today() + '/' + rand + '.' + ext;
-      var up = await SB.storage.from('proof-of-grind').upload(path, blob, {
-        contentType: blob.type || 'application/octet-stream'
-      });
-      if (up && up.error) return null;
-      return path;
-    } catch (e) { return null; }
-  }
-
   /* Submit */
   async function finish() {
     if (submitInFlight.current) return;  // race guard — blocks re-entry faster than setState
@@ -1288,7 +1254,6 @@ function Huddle({
           p_hydration:       hydration,
           p_fuel_window:     fuelWindow || 'na',
           p_meal_color:      mealColor,
-          p_coach_task:      coachTask,
           p_readiness_score: rd.score,
           p_red_flag:        rd.redFlag,
           p_red_flag_reasons:rd.reasons,
@@ -1302,12 +1267,6 @@ function Huddle({
 
       var sessions = buildSessions();
 
-      /* Upload proof photo ONCE — shared across all sessions from this Huddle */
-      var proofPath = null;
-      if (editPhoto && profile && profile.id) {
-        proofPath = await uploadProofPhoto(editPhoto, profile.id);
-      }
-
       var ciRes = await SB.rpc('submit_checkin', {
         p_sleep_hrs: sleepHrs,
         p_sleep_quality: sleepQ,
@@ -1317,7 +1276,6 @@ function Huddle({
         p_hydration: hydration,
         p_fuel_window: fuelWindow || 'na',
         p_meal_color: mealColor,
-        p_coach_task: coachTask,
         p_readiness_score: rd.score,
         p_red_flag: rd.redFlag,
         p_red_flag_reasons: rd.reasons,
@@ -1332,16 +1290,14 @@ function Huddle({
       }
 
       /* Log all sessions in ONE round-trip via the batch RPC. If the batch RPC
-         isn't deployed yet, fall back to parallel single-session calls (still
-         faster than the old sequential loop — no photo_url on fallback path). */
+         isn't deployed yet, fall back to parallel single-session calls. */
       if (sessions.length > 0) {
         var batchPayload = sessions.map(function(s){
           return {
             sport: s.sport,
             type: s.type,
             rpe: s.rpe,
-            dur: s.dur,
-            photo_url: proofPath || ''
+            dur: s.dur
           };
         });
         var batchRes = await SB.rpc('log_sessions_batch', {
@@ -1360,15 +1316,6 @@ function Huddle({
             });
           }));
         }
-      }
-
-      /* Record which coach task this checkin responded to (for coach-side
-         accountability reports). Silent no-op if RPC isn't deployed yet. */
-      if (coachTaskId && ciData.checkin_id) {
-        await SB.rpc('link_coach_task', {
-          p_checkin_id: ciData.checkin_id,
-          p_task_id: coachTaskId
-        });
       }
 
       onDone({
@@ -1566,7 +1513,6 @@ function Huddle({
         React.createElement("button", {onClick:function(){setCard(3);},style:{padding:"10px 20px",borderRadius:12,background:"rgba(0,255,135,0.1)",border:"1px solid rgba(0,255,135,0.2)",fontFamily:D2,fontSize:13,color:"var(--g1)",letterSpacing:"1px",cursor:"pointer"}}, "NEXT →")
       )
     ) :
-    React.createElement("input", {ref:fileRef,type:"file",accept:"image/*,video/*",capture:"environment",style:{display:"none"},onChange:function(e){if(e.target.files&&e.target.files[0])setEditPhoto(URL.createObjectURL(e.target.files[0]));}}),
     React.createElement("i", {className:"ph-thin ph-flame",style:{fontSize:52,marginBottom:6,color:"var(--ember)",filter:"drop-shadow(0 0 12px rgba(255,109,0,0.3))"}}),
     React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.85,marginBottom:6}}, "THE WORK"),
     React.createElement("p", {style:{fontFamily:D2,fontSize:14,color:"var(--sub)",letterSpacing:"2px",margin:"6px 0 6px",fontWeight:700}}, "WHAT DID YOU DO TODAY?"),
@@ -1635,23 +1581,9 @@ function Huddle({
           var on = totalDur === d;
           return React.createElement("button", {key:d,onClick:function(){buzz();setTotalDur(d);},style:{flex:1,padding:"12px 0",borderRadius:12,fontFamily:D,fontSize:18,background:on?"rgba(0,255,135,0.15)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.35)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, d);
         })
-      ),
-
-      React.createElement("button", {onClick:function(){buzz();if(fileRef.current)fileRef.current.click();},style:{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:12,background:editPhoto?"rgba(76,175,80,0.06)":"rgba(124,58,237,0.03)",border:"1.5px solid "+(editPhoto?"rgba(76,175,80,0.2)":"rgba(124,58,237,0.06)"),marginBottom:12,width:"100%"}},
-        React.createElement("span", {style:{fontSize:22}}, editPhoto ? "\u2705" : "\uD83D\uDCF8"),
-        React.createElement("div", {style:{flex:1}},
-          React.createElement("div", {style:{fontFamily:D2,fontSize:13,color:editPhoto?"var(--grn)":"var(--dim)",fontWeight:700,letterSpacing:"0.5px"}}, editPhoto ? "PROOF ATTACHED" : "PROOF OF GRIND")
-        )
-      ),
-
-      coachTaskText && React.createElement("button", {onClick:function(){buzz();setCoachTask(!coachTask);},style:{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:12,background:coachTask?"rgba(0,255,135,0.06)":"rgba(12,12,18,0.8)",border:"1.5px solid "+(coachTask?"rgba(0,255,135,0.2)":"rgba(0,255,135,0.04)"),width:"100%"}},
-        React.createElement("span", {style:{fontSize:18,color:coachTask?"var(--g1)":"var(--dim)"}}, coachTask ? "\u2713" : ""),
-        React.createElement("div", {style:{flex:1,textAlign:"left"}},
-          React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",letterSpacing:"2px",fontWeight:700}}, "COACH'S TASK"),
-          React.createElement("div", {style:{fontFamily:D2,fontSize:14,color:coachTask?"var(--g1)":"var(--sub)",fontWeight:600}}, coachTaskText)
-        )
       )
     ),
+
     React.createElement(DailyTip, {tip:TIPS_TRAINING[TIP_DAY],color:"var(--ember)"})
   ) :
 
@@ -2400,7 +2332,6 @@ function Dashboard({
     items.push({l: streak + "-DAY STREAK",v:streak});
     if (["8","9","9+","10+"].indexOf(todayCheckin.sleep_hrs) !== -1) items.push({l:"8+ HOURS SLEEP",v:8});
     if (todayCheckin.meal_color === "green") items.push({l:"WHOLE FOODS MEAL",v:5});
-    if (todayCheckin.coach_task) items.push({l:"COACH'S TASK DONE",v:5});
     if ((todayCheckin.hydration||0) >= 8) items.push({l:"HYDRATION 8+ GLASSES",v:3});
     if (todayCheckin.rest_day) items.push({l:"SMART REST DAY",v:3});
     return React.createElement("div", {style:{marginTop:14, paddingTop:12, borderTop:"1px dashed rgba(76,175,80,0.15)"}},
@@ -2431,11 +2362,7 @@ function Dashboard({
     var n = parseInt(q, 10);
     if (!isNaN(n) && n >= 1 && n <= 5) return n >= 4 ? "👍" : n === 3 ? "🆗" : "👎";
     return q === "good" ? "👍" : "👎";
-  })(todayCheckin.sleep_quality)), /*#__PURE__*/React.createElement("span", null, "\uD83E\uDDE0 ", todayCheckin.stress, "/5"), /*#__PURE__*/React.createElement("span", null, todayCheckin.meal_color === "green" ? "🟢" : todayCheckin.meal_color === "yellow" ? "🟡" : "🔴"), /*#__PURE__*/React.createElement("span", null, "\uD83D\uDCA7 ", todayCheckin.hydration), todayCheckin.coach_task && /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--grn)"
-    }
-  }, "\u2705 TASK")), todayCheckin.pain_zones && todayCheckin.pain_zones.length > 0 && (function(){
+  })(todayCheckin.sleep_quality)), /*#__PURE__*/React.createElement("span", null, "\uD83E\uDDE0 ", todayCheckin.stress, "/5"), /*#__PURE__*/React.createElement("span", null, todayCheckin.meal_color === "green" ? "🟢" : todayCheckin.meal_color === "yellow" ? "🟡" : "🔴"), /*#__PURE__*/React.createElement("span", null, "\uD83D\uDCA7 ", todayCheckin.hydration)), todayCheckin.pain_zones && todayCheckin.pain_zones.length > 0 && (function(){
     var pz = todayCheckin.pain_zones || [];
     var hasPain  = pz.some(function (z) { return z.startsWith("sharp:"); });
     var hasSore  = pz.some(function (z) { return z.startsWith("sore:"); });
@@ -3663,13 +3590,10 @@ function CoachDashboard({
   var [data, setData] = useState([]);
   var [loading, setLoading] = useState(true);
   var [filter, setFilter] = useState("all");
-  var [tasksBySport, setTasksBySport] = useState({}); /* {sport: taskText} */
-  var [taskSavedSport, setTaskSavedSport] = useState(null); /* sport name that just saved */
   var [editingSport, setEditingSport] = useState(null); /* sport currently being edited */
   var [teamSummary, setTeamSummary] = useState([]);
   var [todayCheckins, setTodayCheckins] = useState({}); /* {athlete_id: {pain_zones, readiness}} — feeds BODY + FEEL traffic lights */
   var [trainerFollowups, setTrainerFollowups] = useState([]); /* AD-only: athletes with sharp pain reported today */
-  var [taskCompletion, setTaskCompletion] = useState({}); /* {athlete_id: boolean} — did athlete complete today's coach task? */
   var [selectedAthlete, setSelectedAthlete] = useState(null); /* athlete object for detail panel, null = closed */
   var [consecutiveFlags, setConsecutiveFlags] = useState([]); /* AD-only: athletes on 3+ day red flag streaks */
   var [weeklyStats, setWeeklyStats] = useState(null); /* AD-only: {checkIns, totalSlots, redFlags} for past 7 days */
@@ -3690,19 +3614,6 @@ function CoachDashboard({
   var _scopeActive = profile.role === 'coach' && profile.sports && profile.sports.length > 0;
 
   useEffect(function(){
-    var mySports = profile.sports||[];
-    if(mySports.length > 0){
-      SB.from('coach_tasks').select('sport, task_text, updated_at').in('sport',mySports).eq('active',true).order('updated_at',{ascending:false}).then(function(r){
-        if(!r.error&&r.data){
-          /* First row per sport wins (results are already sorted desc by updated_at) */
-          var tasks = {};
-          r.data.forEach(function(row){
-            if(!tasks[row.sport]) tasks[row.sport] = row.task_text;
-          });
-          setTasksBySport(tasks);
-        }
-      });
-    }
     if(profile.role==="ad"){
       SB.from('ad_team_summary').select('*').then(function(r){if(!r.error&&r.data)setTeamSummary(r.data)});
 
@@ -3765,33 +3676,8 @@ function CoachDashboard({
         }
       });
 
-      /* Fetch today's coach task completion — coach_task_completion view returns
-         one row per athlete who checked in today. Column is did_task (boolean alias)
-         or coach_task (raw column name) depending on view definition. */
-      SB.from('coach_task_completion').select('athlete_id, did_task, coach_task').then(function(r){
-        if(!r.error && r.data){
-          var map = {};
-          r.data.forEach(function(row){
-            /* Handle both possible column names from the view */
-            map[row.athlete_id] = !!(row.did_task ?? row.coach_task);
-          });
-          setTaskCompletion(map);
-        }
-      });
     }
   },[]);
-
-  function saveTask(sport){
-    var text = (tasksBySport[sport]||"").trim();
-    if(!sport||!text)return;
-    SB.rpc('set_coach_task',{p_sport:sport,p_task:text}).then(function(r){
-      if(!r.error){
-        setTaskSavedSport(sport);
-        setEditingSport(null);
-        setTimeout(function(){setTaskSavedSport(null)},2000);
-      }
-    });
-  }
 
   async function removeUser(userId, displayName) {
     var res = await SB.rpc('remove_user', { p_user_id: userId });
@@ -3858,14 +3744,6 @@ function CoachDashboard({
   var noCheckin = data.filter(function (a) {
     return !a.checked_in;
   }).length;
-
-  /* hasTodayTask — true when the coach has at least one active task set for their sports.
-     Controls whether the TASK column is shown in the roster table at all. */
-  var hasTodayTask = Object.keys(tasksBySport).some(function(s){ return !!tasksBySport[s]; });
-
-  /* taskDone — count of athletes who completed today's task (from taskCompletion map).
-     Denominator is checkedIn — you can only complete the task if you checked in. */
-  var taskDone = Object.values(taskCompletion).filter(Boolean).length;
 
   // Filter
   var filtered = data;
@@ -3955,16 +3833,6 @@ function CoachDashboard({
     if (pz.some(function(z){return typeof z === "string" && z.indexOf("sharp:") === 0;})) return "red";
     if (pz.some(function(z){return typeof z === "string" && z.indexOf("sore:") === 0;})) return "yellow";
     return "green";
-  }
-
-  /* TASK light — did the athlete complete today's coach task?
-     Only rendered when hasTodayTask is true (coach has a task set for their sport).
-     green = completed, yellow = checked in but didn't complete, none = no check-in. */
-  function taskStatus(athleteId) {
-    if (!hasTodayTask) return "none";
-    if (taskCompletion[athleteId] === true)  return "green";
-    if (taskCompletion[athleteId] === false) return "yellow";
-    return "none"; /* athlete_id not in view = didn't check in */
   }
 
   /* lightCell — tinted table cell. Background + border use the status color
@@ -4382,48 +4250,6 @@ function CoachDashboard({
     }
   }, (profile.sports || []).join(" · ").toUpperCase()),
 
-  /* Coach Task Setter — one block per sport for multi-sport coaches */
-  profile.role !== "ad" && React.createElement("div", {style:{marginBottom:16}},
-    (profile.sports||[]).map(function(sport){
-      var text = tasksBySport[sport] || "";
-      var isEditing = editingSport === sport;
-      var justSaved = taskSavedSport === sport;
-      var multi = (profile.sports||[]).length > 1;
-      return React.createElement("div", {
-        key:sport,
-        style:{padding:"12px 16px",borderRadius:12,background:"rgba(12,12,18,0.8)",border:"1.5px solid rgba(124,58,237,0.08)",marginBottom:10}
-      },
-        multi && React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:700,letterSpacing:"1.5px",marginBottom:8,textTransform:"uppercase"}}, sport + " \u00B7 DAILY TASK"),
-        !isEditing ? React.createElement("div", {style:{display:"flex",alignItems:"center",gap:10}},
-          React.createElement("span", {style:{fontFamily:D2,fontSize:13,color:text?"var(--g1)":"var(--dim)",fontWeight:700,letterSpacing:"1px",flex:1}}, text ? "\u25C6 " + text.toUpperCase() : "NO DAILY TASK SET"),
-          React.createElement("button", {onClick:function(){setEditingSport(sport);},style:{padding:"6px 14px",borderRadius:12,border:"1px solid rgba(0,255,135,0.15)",background:"none",fontFamily:D2,fontSize:12,color:"var(--g4)",fontWeight:700,letterSpacing:"1px"}}, text ? "EDIT" : "SET TASK"),
-          justSaved && React.createElement("span", {style:{fontFamily:D2,fontSize:11,color:"var(--grn)",fontWeight:700}}, "\u2713 SAVED")
-        ) : React.createElement("div", null,
-          React.createElement("label", {className:"lbl"}, "TODAY'S TASK FOR " + sport.toUpperCase() + " ATHLETES"),
-          React.createElement("input", {
-            className:"inp",
-            value:text,
-            onChange:function(e){
-              var v = e.target.value;
-              setTasksBySport(function(prev){
-                var next = {};
-                for (var k in prev) next[k] = prev[k];
-                next[sport] = v;
-                return next;
-              });
-            },
-            placeholder:"e.g. 50 free throws before you leave",
-            style:{marginBottom:10,fontSize:14}
-          }),
-          React.createElement("div", {style:{display:"flex",gap:8}},
-            React.createElement("button", {onClick:function(){saveTask(sport);},disabled:!text.trim(),style:{flex:1,padding:"10px",borderRadius:12,border:"none",background:"linear-gradient(135deg,var(--g0),var(--g4))",fontFamily:D2,fontSize:13,color:"var(--bg)",fontWeight:700,letterSpacing:"1px"}}, "SAVE TASK"),
-            React.createElement("button", {onClick:function(){setEditingSport(null);},style:{padding:"10px 16px",borderRadius:12,border:"1px solid rgba(0,255,135,0.1)",background:"none",fontFamily:D2,fontSize:13,color:"var(--dim)",fontWeight:700}}, "CANCEL")
-          )
-        )
-      );
-    })
-  ),
-
   profile.role !== "ad" && /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
@@ -4561,30 +4387,6 @@ function CoachDashboard({
     )
   ),
 
-  /* Task completion summary bar — only shown when a task is set today.
-     Shows aggregate count only — no athlete names or individual data. */
-  profile.role !== "ad" && hasTodayTask && React.createElement("div", {
-    className:"gc",
-    style:{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",marginBottom:10}
-  },
-    React.createElement("i", {className:"ph-thin ph-check-square",style:{fontSize:22,color:"var(--g1)",flexShrink:0}}),
-    React.createElement("div", {style:{flex:1,minWidth:0}},
-      React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"2px",fontWeight:700,marginBottom:4}}, "TODAY'S TASK COMPLETION"),
-      React.createElement("div", {style:{height:4,borderRadius:4,background:"rgba(255,255,255,0.06)",overflow:"hidden"}},
-        React.createElement("div", {style:{
-          height:"100%",borderRadius:4,
-          width:(checkedIn > 0 ? Math.round(taskDone / checkedIn * 100) : 0) + "%",
-          background:"linear-gradient(90deg,var(--g0),var(--g1))",
-          transition:"width 0.6s ease"
-        }})
-      )
-    ),
-    React.createElement("div", {style:{textAlign:"right",flexShrink:0}},
-      React.createElement("span", {style:{fontFamily:D,fontSize:22,color:taskDone === checkedIn && checkedIn > 0 ? "var(--g1)" : "var(--txt)"}}, taskDone),
-      React.createElement("span", {style:{fontFamily:D2,fontSize:13,color:"var(--dim)",fontWeight:700}}, " / " + checkedIn)
-    )
-  ),
-
   /* Roster table — header row */
   profile.role !== "ad" && filtered.length > 0 && React.createElement("div", {style:{
     display:"flex",alignItems:"center",gap:6,
@@ -4597,8 +4399,7 @@ function CoachDashboard({
     React.createElement("div", {style:{width:36,textAlign:"center"}}, "SCORE"),
     React.createElement("div", {style:{width:36,textAlign:"center"}}, "FEEL"),
     React.createElement("div", {style:{width:36,textAlign:"center"}}, "LOAD"),
-    React.createElement("div", {style:{width:36,textAlign:"center"}}, "BODY"),
-    hasTodayTask && React.createElement("div", {style:{width:36,textAlign:"center"}}, "TASK")
+    React.createElement("div", {style:{width:36,textAlign:"center"}}, "BODY")
   ),
 
   /* Roster table — data rows */
@@ -4646,9 +4447,7 @@ function CoachDashboard({
       lightCell(isIn ? (a.status || "none") : "none"),
       lightCell(isIn ? feelStatus(a.athlete_id) : "none"),
       lightCell(isIn ? loadStatus(a) : "none"),
-      lightCell(isIn ? bodyStatusFor(a.athlete_id) : "none"),
-      /* TASK — only rendered when coach has an active task set today */
-      hasTodayTask && lightCell(isIn ? taskStatus(a.athlete_id) : "none")
+      lightCell(isIn ? bodyStatusFor(a.athlete_id) : "none")
     );
   }),
 
@@ -5165,6 +4964,14 @@ function App() {
     if (s.data) setTodaySessions(s.data);
     return p.data;
   }
+
+  // Sync protocol acceptance from DB — covers cases where localStorage was cleared
+  // (new browser, cleared cache, different device) but the coach already accepted in DB.
+  useEffect(function () {
+    if (profile && profile.protocol_accepted_at) {
+      setCoachProtocolDone(true);
+    }
+  }, [profile]);
 
   // Auth listener
   useEffect(function () {
