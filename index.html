@@ -1080,9 +1080,12 @@ function Huddle({
 
   /* §9c Work — pre-populated but LOCKED in edit mode (sessions can't be re-logged) */
   var [didWork, setDidWork] = useState(ex ? !ex.rest_day : null);
-  var [selectedSports, setSelectedSports] = useState([]);
-  var [overallRpe, setOverallRpe] = useState(null);
-  var [totalDur, setTotalDur] = useState(null);
+  var [selectedSports, setSelectedSports] = useState([]); /* kept for legacy edit-mode compat */
+  var [sessions, setSessions] = useState([{id:'s1', sport:'', rpe:null, dur:null}]);
+
+  function addSession(){ buzz(); setSessions(function(p){ return p.concat([{id:'s'+Date.now(), sport:'', rpe:null, dur:null}]); }); }
+  function removeSession(id){ buzz(); setSessions(function(p){ return p.filter(function(s){ return s.id !== id; }); }); }
+  function updateSession(id, key, val){ setSessions(function(p){ return p.map(function(s){ return s.id===id ? Object.assign({},s,{[key]:val}) : s; }); }); }
 
   /* §9d Fuel — pre-populated from existingCheckin in edit mode */
   var [hydration, setHydration] = useState(ex ? (ex.hydration || 0) : 0);
@@ -1114,18 +1117,10 @@ function Huddle({
     return [];
   }
 
-  function togSport(s) {
-    buzz(15);
-    setSelectedSports(function (p) {
-      return p.includes(s) ? p.filter(function (x) {
-        return x !== s;
-      }) : [].concat(p, [s]);
-    });
-  }
   function canNext() {
     if (card === 0) return sleepHrs != null && sleepQ != null;
     if (card === 1) return stress != null && bodyStatus != null;
-    if (card === 2) return didWork != null && (didWork === false || (selectedSports.length > 0 && totalDur != null && overallRpe != null));
+    if (card === 2) return didWork != null && (didWork === false || (sessions.length > 0 && sessions.every(function(s){ return s.sport && s.rpe && s.dur; })));
     if (card === 3) return mealColor != null;
     if (card === 4) return readiness != null;
     return true;
@@ -1139,15 +1134,9 @@ function Huddle({
 
   /* Build sessions from quick log */
   function buildSessions() {
-    if (!didWork || selectedSports.length === 0 || !totalDur) return [];
-    var durPer = Math.round(parseInt(totalDur) / selectedSports.length);
-    return selectedSports.map(function (s) {
-      return {
-        sport: s,
-        type: "General Training",
-        rpe: overallRpe,
-        dur: durPer
-      };
+    if (!didWork) return [];
+    return sessions.filter(function(s){ return s.sport && s.rpe && s.dur; }).map(function(s){
+      return { sport: s.sport, type: s.sport, rpe: s.rpe, dur: s.dur };
     });
   }
 
@@ -1537,51 +1526,110 @@ function Huddle({
     ),
 
     didWork && React.createElement(React.Fragment, null,
-      React.createElement("label", {className:"lbl"}, "SPORTS TODAY ", React.createElement("span", {style:{color:"var(--dim)"}}, "(TAP ALL THAT APPLY)")),
-      React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:18}},
-        (profile.sports || []).map(function(s){
-          var on = selectedSports.includes(s);
-          return React.createElement("button", {key:s,onClick:function(){togSport(s);},style:{padding:"10px 16px",borderRadius:12,fontFamily:D2,fontSize:14,fontWeight:700,letterSpacing:"1px",background:on?"rgba(0,255,135,0.12)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.3)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, on ? "\u2713 " : "", s.toUpperCase());
-        })
-      ),
+      React.createElement("label", {className:"lbl"}, "SESSIONS TODAY"),
 
-      React.createElement("label", {className:"lbl"}, "EFFORT"),
-      (function(){
-        /* Simple 5-step effort slider — 1=EASY ... 5=ALL OUT.
-           Stored as overallRpe in the legacy 1-10 range (2/4/6/8/10) so
-           training_load (rpe * duration) stays comparable to old data. */
-        var effortLabels = ["EASY","LIGHT","MODERATE","HARD","ALL OUT"];
-        var effortIcons  = ["\uD83D\uDEB6","\uD83C\uDFC3","\uD83D\uDCAA","\uD83D\uDD25","\uD83D\uDCA5"];
+      sessions.map(function(sess, idx){
+        var sportOptions = (profile.sports || []).concat(["Weights","Conditioning","Speed Work","Recovery"]).filter(function(v,i,a){ return a.indexOf(v)===i; });
+        var effortLabels = ["EASY","LIGHT","MOD","HARD","MAX"];
         var effortColors = ["#4CAF50","#8BC34A","#FFB300","#FF6D00","#D50000"];
-        var hasValue = overallRpe != null;
-        var pos = hasValue ? Math.max(1, Math.min(5, Math.round(overallRpe / 2))) : 3;
-        var col = hasValue ? effortColors[pos-1] : "var(--dim)";
-        return React.createElement("div", {style:{marginBottom:18}},
-          React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
-            React.createElement("div", {style:{fontSize:48,lineHeight:1,marginBottom:6,opacity:hasValue?1:0.35,transition:"all 0.2s"}}, hasValue ? effortIcons[pos-1] : "\uD83D\uDCAA"),
-            React.createElement("div", {style:{fontFamily:D,fontSize:26,color:col,letterSpacing:"-0.01em",lineHeight:1,transition:"color 0.2s"}}, hasValue ? effortLabels[pos-1] : "TAP THE SLIDER")
+        var effortRpes   = [2,4,6,8,10];
+        var durOptions   = ["15","30","45","60","90","120+"];
+        var selRpe = sess.rpe;
+        var selDur = sess.dur;
+        var selPos = selRpe ? effortRpes.indexOf(selRpe) : -1;
+
+        return React.createElement("div", {
+          key: sess.id,
+          style: {
+            padding:"16px",borderRadius:14,marginBottom:12,
+            background:"rgba(12,12,18,0.7)",
+            border:"1.5px solid rgba(0,255,135,0.08)"
+          }
+        },
+          /* Session number + remove */
+          React.createElement("div", {style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}},
+            React.createElement("div", {style:{fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:700,letterSpacing:"2px"}}, "SESSION " + (idx+1)),
+            sessions.length > 1 && React.createElement("button", {
+              onClick: function(){ removeSession(sess.id); },
+              style:{fontFamily:D2,fontSize:11,color:"var(--red)",background:"none",border:"none",padding:"2px 6px",cursor:"pointer",fontWeight:700,letterSpacing:"1px"}
+            }, "✕ REMOVE")
           ),
-          React.createElement("input", {
-            type:"range",min:1,max:5,step:1,value:pos,
-            onChange:function(e){buzz();setOverallRpe(parseInt(e.target.value)*2);},
-            onTouchStart:function(){if(!hasValue)setOverallRpe(6);},
-            onMouseDown:function(){if(!hasValue)setOverallRpe(6);},
-            style:{width:"100%",accentColor:col}
-          }),
-          React.createElement("div", {style:{display:"flex",justifyContent:"space-between",fontFamily:D2,fontSize:11,color:"var(--dim)",fontWeight:700,letterSpacing:"1.5px",marginTop:6,padding:"0 2px"}},
-            React.createElement("span", null, "EASY"),
-            React.createElement("span", null, "ALL OUT")
+
+          /* Sport/activity selector */
+          React.createElement("div", {style:{display:"flex",flexWrap:"wrap",gap:6,marginBottom:14}},
+            sportOptions.map(function(s){
+              var on = sess.sport === s;
+              return React.createElement("button", {
+                key:s,
+                onClick: function(){ buzz(); updateSession(sess.id,'sport',s); },
+                style:{
+                  padding:"8px 12px",borderRadius:10,fontFamily:D2,fontSize:12,fontWeight:700,
+                  letterSpacing:"0.5px",
+                  background: on ? "rgba(0,255,135,0.12)" : "rgba(12,12,18,0.8)",
+                  color: on ? "var(--g1)" : "var(--dim)",
+                  border: "2px solid " + (on ? "rgba(0,255,135,0.3)" : "rgba(0,255,135,0.04)"),
+                  transition:"all 0.2s"
+                }
+              }, on ? "✓ " : "", s.toUpperCase());
+            })
+          ),
+
+          /* Effort — compact 5-button row */
+          React.createElement("div", {style:{marginBottom:14}},
+            React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:700,letterSpacing:"2px",marginBottom:8}}, "EFFORT"),
+            React.createElement("div", {style:{display:"flex",gap:4}},
+              effortLabels.map(function(lbl,i){
+                var on = selPos === i;
+                return React.createElement("button", {
+                  key:lbl,
+                  onClick: function(){ buzz(); updateSession(sess.id,'rpe',effortRpes[i]); },
+                  style:{
+                    flex:1,padding:"10px 0",borderRadius:10,fontFamily:D2,fontSize:10,fontWeight:700,
+                    letterSpacing:"0.5px",
+                    background: on ? "rgba(255,255,255,0.08)" : "rgba(12,12,18,0.8)",
+                    color: on ? effortColors[i] : "var(--dim)",
+                    border: "2px solid " + (on ? effortColors[i] : "rgba(255,255,255,0.04)"),
+                    transition:"all 0.15s"
+                  }
+                }, lbl);
+              })
+            )
+          ),
+
+          /* Duration */
+          React.createElement("div", null,
+            React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",fontWeight:700,letterSpacing:"2px",marginBottom:8}}, "DURATION (MIN)"),
+            React.createElement("div", {style:{display:"flex",gap:4}},
+              durOptions.map(function(d){
+                var on = selDur === d;
+                return React.createElement("button", {
+                  key:d,
+                  onClick: function(){ buzz(); updateSession(sess.id,'dur',d); },
+                  style:{
+                    flex:1,padding:"10px 0",borderRadius:10,fontFamily:D,fontSize:16,
+                    background: on ? "rgba(0,255,135,0.15)" : "rgba(12,12,18,0.8)",
+                    color: on ? "var(--g1)" : "var(--dim)",
+                    border: "2px solid " + (on ? "rgba(0,255,135,0.35)" : "rgba(0,255,135,0.04)"),
+                    transition:"all 0.2s"
+                  }
+                }, d);
+              })
+            )
           )
         );
-      })(),
+      }),
 
-      React.createElement("label", {className:"lbl"}, "TOTAL DURATION"),
-      React.createElement("div", {style:{display:"flex",gap:6,marginBottom:18}},
-        ["15","30","45","60","90","120+"].map(function(d){
-          var on = totalDur === d;
-          return React.createElement("button", {key:d,onClick:function(){buzz();setTotalDur(d);},style:{flex:1,padding:"12px 0",borderRadius:12,fontFamily:D,fontSize:18,background:on?"rgba(0,255,135,0.15)":"rgba(12,12,18,0.8)",color:on?"var(--g1)":"var(--dim)",border:"2px solid "+(on?"rgba(0,255,135,0.35)":"rgba(0,255,135,0.04)"),transition:"all 0.2s"}}, d);
-        })
-      )
+      /* Add session button */
+      React.createElement("button", {
+        onClick: addSession,
+        style:{
+          width:"100%",padding:"14px",borderRadius:14,marginBottom:18,
+          background:"rgba(0,255,135,0.04)",
+          border:"2px dashed rgba(0,255,135,0.15)",
+          fontFamily:D2,fontSize:13,color:"var(--g4)",fontWeight:700,letterSpacing:"1.5px",
+          cursor:"pointer"
+        }
+      }, "+ ADD SESSION")
     ),
 
     React.createElement(DailyTip, {tip:TIPS_TRAINING[TIP_DAY],color:"var(--ember)"})
