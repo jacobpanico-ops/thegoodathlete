@@ -1707,24 +1707,13 @@ function Huddle({
     var rd = calcReadiness();
     var scoreColor = rd.score >= 70 ? "var(--grn)" : rd.score >= 40 ? "var(--g4)" : "var(--red)";
     var sessions = buildSessions();
-    var pts = calcPts();
-    var streakNext = Math.min(15, Math.max(1, (profile.streak||0) + 1));
+
     return React.createElement("div", {className:"ci gc",key:"c4",style:{padding:"24px 20px",margin:"12px",borderRadius:20,minHeight:"calc(100vh - 24px)",boxSizing:"border-box"}},
       React.createElement("div", {style:{textAlign:"center",marginBottom:14}},
         React.createElement("i", {className:"ph-thin ph-check-circle pi",style:{fontSize:64,marginBottom:8,color:"var(--g1)",filter:"drop-shadow(0 0 16px rgba(0,255,135,0.4))"}}),
         React.createElement("h2", {className:"gs",style:{fontFamily:D,fontSize:44,lineHeight:0.85,marginBottom:12}}, "HUDDLE COMPLETE")
       ),
-      React.createElement("div", {className:"gc2",style:{padding:18,maxWidth:320,margin:"0 auto",marginBottom:14}},
-        React.createElement("div", {className:"gs",style:{fontFamily:D,fontSize:48,lineHeight:0.9,marginBottom:10,textAlign:"center"}},
-          React.createElement("span", {className:"gp"}, "+" + pts + " GP")
-        ),
-        React.createElement("div", {style:{fontFamily:D2,fontSize:12,color:"var(--dim)",textAlign:"center",letterSpacing:"1px",fontWeight:600}},
-          "BASE 10 + STREAK BONUS " + streakNext
-          + (sleepHrs && ["8","9","9+","10+"].includes(sleepHrs) ? " + SLEEP 8" : "")
-          + (mealColor === "green" ? " + FUEL 5" : "")
-          + (didWork === false ? " + REST 3" : "")
-        )
-      ),
+
 
       React.createElement("div", {className:"gc",style:{padding:16,marginBottom:14}},
         React.createElement("div", {style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}},
@@ -2110,9 +2099,7 @@ function Dashboard({
   onEditHuddle,
   onSignOut
 }) {
-  var lv = gL(profile.xp),
-    nxt = gN(profile.xp),
-    pr = gP(profile.xp);
+  var lv = gL(profile.xp);
   var first = profile.first_name || profile.name.split(" ")[0] || "";
   var hr = new Date().getHours();
   var [recentCheckins, setRecentCheckins] = useState([]);
@@ -2265,15 +2252,7 @@ function Dashboard({
       letterSpacing: "3px",
       boxShadow: "0 4px 30px rgba(0,255,135,0.3)"
     }
-  }, "START CHECK-IN \u2192"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 14,
-      color: "var(--g4)",
-      letterSpacing: "2px",
-      marginTop: 12
-    }
-  }, "EARN UP TO +50 GP")))) : /*#__PURE__*/React.createElement("div", {
+  }, "START CHECK-IN \u2192")))) : /*#__PURE__*/React.createElement("div", {
     style: {
       padding: "20px"
     }
@@ -2365,33 +2344,7 @@ function Dashboard({
       fontFamily: D,
       fontSize: 24
     }
-  }, "HUDDLE COMPLETE"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 13,
-      color: "var(--grn)",
-      letterSpacing: "2px"
-    }
-  }, "+", todayCheckin.points_earned, " GP EARNED TODAY"))), (function(){
-    /* GP breakdown — mirrors calcPts() so the athlete sees exactly what they got credit for */
-    var items = [];
-    items.push({l:"HUDDLE CHECK-IN",v:10});
-    var streak = Math.min(15, Math.max(1, (profile.streak||0) + 1));
-    items.push({l: streak + "-DAY STREAK",v:streak});
-    if (["8","9","9+","10+"].indexOf(todayCheckin.sleep_hrs) !== -1) items.push({l:"8+ HOURS SLEEP",v:8});
-    if (todayCheckin.meal_color === "green") items.push({l:"WHOLE FOODS MEAL",v:5});
-    if ((todayCheckin.hydration||0) >= 8) items.push({l:"HYDRATION 8+ GLASSES",v:3});
-    if (todayCheckin.rest_day) items.push({l:"SMART REST DAY",v:3});
-    return React.createElement("div", {style:{marginTop:14, paddingTop:12, borderTop:"1px dashed rgba(76,175,80,0.15)"}},
-      React.createElement("div", {style:{fontFamily:D2,fontSize:10,color:"var(--dim)",letterSpacing:"1.5px",fontWeight:700,marginBottom:8}}, "GP BREAKDOWN"),
-      items.map(function(it,i){
-        return React.createElement("div", {key:i, style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",padding:"3px 0",fontFamily:D2,fontSize:12}},
-          React.createElement("span", {style:{color:"var(--sub)",fontWeight:600,letterSpacing:"0.5px"}}, "\u2713 " + it.l),
-          React.createElement("span", {style:{color:"var(--grn)",fontWeight:700,letterSpacing:"0.5px"}}, "+" + it.v)
-        );
-      })
-    );
-  })(), /*#__PURE__*/React.createElement("div", {
+  }, "HUDDLE COMPLETE"))), /*#__PURE__*/React.createElement("div", {
     className: "gd",
     style: {
       margin: "10px 0"
@@ -2640,50 +2593,7 @@ function Dashboard({
       fontSize: 36,
       lineHeight: 0.9
     }
-  }, lv.i, " ", lv.t.toUpperCase())), /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "right"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "gs",
-    style: {
-      fontFamily: D,
-      fontSize: 42,
-      lineHeight: 0.85
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "gp"
-  }, profile.xp)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 13,
-      color: "var(--dim)",
-      letterSpacing: "3px"
-    }
-  }, "TOTAL GP"))), /*#__PURE__*/React.createElement("div", {
-    className: "xb",
-    style: {
-      height: 14,
-      position: "relative"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "xf",
-    style: {
-      width: pr + "%",
-      height: "100%",
-      position: "relative"
-    }
-  })), nxt && /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginTop: 8,
-      fontFamily: D2,
-      fontSize: 13,
-      color: "var(--dim)",
-      letterSpacing: "1px"
-    }
-  }, /*#__PURE__*/React.createElement("span", null, profile.xp, " GP"), /*#__PURE__*/React.createElement("span", null, nxt.i, " ", nxt.t, " \u2014 ", nxt.x, " GP")))), /*#__PURE__*/React.createElement("div", {
+  }, lv.i, " ", lv.t.toUpperCase()))), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
       gridTemplateColumns: "1fr 1fr",
@@ -4575,34 +4485,11 @@ function ProfilePage({
   }, profile.email)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
+      gridTemplateColumns: "1fr 1fr",
       gap: 10,
       marginBottom: 20
     }
   }, /*#__PURE__*/React.createElement("div", {
-    className: "gc",
-    style: {
-      padding: "14px 8px",
-      textAlign: "center"
-    }
-  }, /*#__PURE__*/React.createElement("i", {className:"ph-thin ph-lightning",style:{fontSize:22,color:"var(--g1)",marginBottom:4,display:"block"}}),
-  /*#__PURE__*/React.createElement("div", {
-    className: "gs",
-    style: {
-      fontFamily: D,
-      fontSize: 28
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "gp"
-  }, profile.xp)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 10,
-      color: "var(--dim)",
-      letterSpacing: "2px",
-      marginTop: 4
-    }
-  }, "TOTAL GP")), /*#__PURE__*/React.createElement("div", {
     className: "gc",
     style: {
       padding: "14px 8px",
@@ -4856,27 +4743,7 @@ function LevelUp({
       textAlign: "center",
       marginTop: 8
     }
-  }, "LEVEL ", level.l)), phase >= 2 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 24,
-      animation: "fadeUp 0.5s ease both"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: D2,
-      fontSize: 14,
-      color: "var(--sub)",
-      letterSpacing: "3px",
-      textAlign: "center"
-    }
-  }, "GP THRESHOLD REACHED"), /*#__PURE__*/React.createElement("div", {
-    className: "gs",
-    style: {
-      fontFamily: D,
-      fontSize: 40,
-      textAlign: "center"
-    }
-  }, level.x, " GP")), phase >= 3 && /*#__PURE__*/React.createElement("button", {
+  }, "LEVEL ", level.l)), phase >= 3 && /*#__PURE__*/React.createElement("button", {
     onClick: onDismiss,
     style: {
       marginTop: 32,
@@ -5168,7 +5035,7 @@ function App() {
           longest_streak: Math.max(profile.longest_streak || 0, (data && data.streak) || 0)
         }));
         if (newLevel.l > oldLevel.l) setLevelUp(newLevel);
-        toast("+" + ((data && data.points) || 0) + " GP EARNED!", "ok");
+        toast("HUDDLE COMPLETE", "ok");
       }
       loadProfile(user.id);
     }
