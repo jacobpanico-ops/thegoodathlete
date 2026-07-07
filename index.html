@@ -41,7 +41,7 @@
   ---------------------------------------------------
   [ ] ad-daily-alerts Edge Function — needs Resend API key + AD email
       + pg_cron schedule.
-  [ ] xp → gp column rename on profiles (RPC audit needed first).
+  [x] xp → gp column rename on profiles — done (client + submit_checkin + get_readiness_report).
   [ ] Restore lost badge icon (Jake to provide source file).
   [ ] photo_url → photo_path rename (cosmetic).
 
@@ -283,20 +283,20 @@ var LVS = [{
    §5  UTILITY FUNCTIONS — Level calc, date helpers
    ████████████████████████████████████████████████████████████████████████ */
 
-/* gL(xp): Get current level | gN(xp): Get next level | gP(xp): Progress % */
-function gL(xp) {
+/* gL(gp): Get current level | gN(gp): Get next level | gP(gp): Progress % */
+function gL(gp) {
   var v = LVS[0];
-  for (var i = 0; i < LVS.length; i++) if (xp >= LVS[i].x) v = LVS[i];
+  for (var i = 0; i < LVS.length; i++) if (gp >= LVS[i].x) v = LVS[i];
   return v;
 }
-function gN(xp) {
-  for (var i = 0; i < LVS.length; i++) if (xp < LVS[i].x) return LVS[i];
+function gN(gp) {
+  for (var i = 0; i < LVS.length; i++) if (gp < LVS[i].x) return LVS[i];
   return null;
 }
-function gP(xp) {
-  var c = gL(xp),
-    n = gN(xp);
-  return n ? Math.min(100, (xp - c.x) / (n.x - c.x) * 100) : 100;
+function gP(gp) {
+  var c = gL(gp),
+    n = gN(gp);
+  return n ? Math.min(100, (gp - c.x) / (n.x - c.x) * 100) : 100;
 }
 function today() {
   return new Date().toISOString().split('T')[0];
@@ -1310,7 +1310,7 @@ function Huddle({
       onDone({
         points: ciData.points,
         streak: ciData.streak,
-        xp: ciData.xp,
+        gp: ciData.gp,
         sessions: sessions,
         readiness: rd
       });
@@ -2099,7 +2099,7 @@ function Dashboard({
   onEditHuddle,
   onSignOut
 }) {
-  var lv = gL(profile.xp);
+  var lv = gL(profile.gp);
   var first = profile.first_name || profile.name.split(" ")[0] || "";
   var hr = new Date().getHours();
   var [recentCheckins, setRecentCheckins] = useState([]);
@@ -4427,7 +4427,7 @@ function ProfilePage({
   onSignOut,
   onUpdateSports
 }) {
-  var lv = gL(profile.xp);
+  var lv = gL(profile.gp);
   var [editing, setEditing] = useState(false);
   var [sel, setSel] = useState([].concat(profile.sports || []));
   function togSport(s) {
@@ -5027,10 +5027,10 @@ function App() {
       setInHuddle(false);
       setEditHuddle(false);
       if (data) {
-        var oldLevel = gL(profile.xp || 0);
-        var newLevel = gL((data && data.xp) || 0);
+        var oldLevel = gL(profile.gp || 0);
+        var newLevel = gL((data && data.gp) || 0);
         setProfile(Object.assign({}, profile, {
-          xp: (data && data.xp) || profile.xp || 0,
+          gp: (data && data.gp) || profile.gp || 0,
           streak: (data && data.streak) || profile.streak || 0,
           longest_streak: Math.max(profile.longest_streak || 0, (data && data.streak) || 0)
         }));
