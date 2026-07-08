@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <!--
 ================================================================================
-  SESSION END — 2026-05-06 · OPEN ITEMS BEFORE JUNE TRIAL
+  SESSION END — 2026-07-07 · OPEN ITEMS
+  (Prior block below was dated 2026-05-06 and had drifted out of sync —
+  rewritten to match reality. GP display removal is done; xp→gp rename
+  is done end-to-end. See "OPEN — NEEDS A DECISION" for what's left.)
 ================================================================================
 
-  HTML/CLIENT TODO (in this file):
+  DONE THIS SESSION (2026-07-07):
   --------------------------------
-  [x] lightPill helper — REMOVED (2026-05-06)
-  [x] RPE_DESC and RPE_COLOR constants — REMOVED (2026-05-06)
-  [x] "BUILD-V15 · FULL FLOW" footer label on Card 4 — REMOVED (2026-05-06)
-  [x] Error overlay div + SW unregister script — REMOVED (2026-05-06)
-  [x] coach_task_completion column — wired to coach roster table (2026-05-06)
-      State: taskCompletion {}, fetch: coach_task_completion view,
-      helper: taskStatus(), column gated on hasTodayTask.
-  [ ] Trial setup: confirm SCHOOL.SHORT_NAME and SCHOOL.LOGO read
-      correctly for the "ALL [SHORT_NAME]" leaderboard subtitle.
+  [x] Fixed missing closing parens in Dashboard() return statement — left
+      over from the GP tally removal, was throwing a syntax error at
+      runtime. Dashboard's "LEVEL" card div was never closed.
+  [x] GP tally removal — audited full client, confirmed no raw point/GP
+      counts render anywhere (Dashboard, ProfilePage, Leaderboard, coach/AD
+      views). Only level badge (gL) and streak are shown, by design.
+  [x] xp → gp rename — DB column renamed, submit_checkin and
+      get_readiness_report rewritten to use gp, all client refs updated
+      (gL/gN params, Huddle onDone payload, Dashboard, ProfilePage,
+      level-up handler). profiles is loaded via select('*') so no other
+      client spot needed touching.
+  [x] Removed dead gP() progress-% helper — was defined but never called
+      anywhere after the GP UI removal.
 
-  SUPABASE / DB TODO (BLOCKING JUNE TRIAL):
-  -----------------------------------------
-  [x] checkins.readiness column type — confirmed int4, CHECK constraint
-      (1-5) added 2026-05-06. submit_checkin INTEGER param is live.
-  [x] consistency_scores view — checkin_count already present as
-      COUNT(DISTINCT c.date) over 30 days. No migration needed.
-
-  SUPABASE / DB TODO (PRIVACY HARDENING — POST-TRIAL OK):
-  -------------------------------------------------------
-  [ ] coach_athlete_status view — drop columns the new UI no longer
-      reads, for FERPA-grade in-transit privacy. KEEP: athlete_id, name,
-      grade, sports, status, checked_in, today_load, sports_today,
-      streak. DROP: sleep_trend, stress_trend, did_coach_task, has_pain,
-      pain_locations, flag_category, multi_sport_conflicts.
-  [ ] checkins.pain_zones historical scrub — old rows contain body-part
-      labels and verbatim notes from before the 3-button body scan.
-      One-time UPDATE to normalize to []/['sore:general']/['sharp:general'].
-  [ ] checkins.red_flag and red_flag_reasons columns — still being
-      written by submit_checkin via calcReadiness, but no UI reads them.
-      Either drop the columns and the writes, or keep for future use.
-
-  SUPABASE / DB TODO (CARRYOVER FROM PRIOR SESSIONS):
-  ---------------------------------------------------
-  [ ] ad-daily-alerts Edge Function — needs Resend API key + AD email
-      + pg_cron schedule.
-  [x] xp → gp column rename on profiles — done (client + submit_checkin + get_readiness_report).
-  [ ] Restore lost badge icon (Jake to provide source file).
-  [ ] photo_url → photo_path rename (cosmetic).
-
-  PRIVACY AGREEMENT:
-  ------------------
-  [ ] Privacy Promise bumped to v2 (May 2026). Consider whether to
-      re-prompt existing users to re-accept, or just stamp going forward.
+  OPEN — NEEDS A DECISION (not code-fixed, needs your call):
+  ------------------------------------------------------------
+  [ ] get_readiness_report RPC — not called from any client code right
+      now. It still selects checkins.coach_task and points_earned, both
+      leftovers from removed features. Either wire it up to something
+      (coach report page?) or drop the function — dealer's choice.
+  [ ] coach_athlete_status view — still exposes sleep_trend, stress_trend,
+      did_coach_task, has_pain, pain_locations, flag_category,
+      multi_sport_conflicts to the client even though the UI doesn't read
+      them. Worth trimming for FERPA-grade in-transit privacy when you
+      have a DB window.
+  [ ] checkins.pain_zones historical scrub — old rows predate the 3-button
+      body scan and still contain free-text notes. One-time UPDATE to
+      normalize to []/['sore:general']/['sharp:general'] whenever you want
+      to clean it up.
+  [ ] checkins.red_flag / red_flag_reasons — still written by
+      submit_checkin, no UI reads them. Drop the columns + writes, or keep
+      for a future coach alert feature.
+  [ ] Restore lost badge icon (need source file from you).
+  [ ] photo_url → photo_path rename — cosmetic, low priority.
+  [ ] Privacy Promise v2 — decide whether to re-prompt existing users to
+      re-accept or just stamp new signups going forward.
+  [ ] Trial setup — confirm SCHOOL.SHORT_NAME / SCHOOL.LOGO render
+      correctly in the "ALL [SHORT_NAME]" leaderboard subtitle.
 
 ================================================================================
 -->
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -283,7 +282,7 @@ var LVS = [{
    §5  UTILITY FUNCTIONS — Level calc, date helpers
    ████████████████████████████████████████████████████████████████████████ */
 
-/* gL(gp): Get current level | gN(gp): Get next level | gP(gp): Progress % */
+/* gL(gp): Get current level | gN(gp): Get next level */
 function gL(gp) {
   var v = LVS[0];
   for (var i = 0; i < LVS.length; i++) if (gp >= LVS[i].x) v = LVS[i];
@@ -292,11 +291,6 @@ function gL(gp) {
 function gN(gp) {
   for (var i = 0; i < LVS.length; i++) if (gp < LVS[i].x) return LVS[i];
   return null;
-}
-function gP(gp) {
-  var c = gL(gp),
-    n = gN(gp);
-  return n ? Math.min(100, (gp - c.x) / (n.x - c.x) * 100) : 100;
 }
 function today() {
   return new Date().toISOString().split('T')[0];
